@@ -2107,7 +2107,7 @@ printScore(details); // Aria is Pro with 98 pts`,
   },
   {
     id: "oop-classes-prototype",
-    title: "OOP Classes & Prototypes",
+    title: "Class Blueprint Specs",
     shortDescription:
       "Configure constructor classes, encapsulation getters, protective setter properties, inheritance subclasses, and local states stack engines.",
     longExplanation:
@@ -2335,6 +2335,104 @@ class ElectricCar extends Vehicle {
             expected: [true, "super-secret-firebase-api-key"],
             description:
               "Verifies that multi-instantiated Registry references match and retrieve shared keys",
+          },
+        ],
+      },
+      {
+        id: "oop-stateful-pubsub",
+        title: "Event Mediator PubSub Class",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "In reactive UI development, a 'Publish-Subscribe' (PubSub) system decouples modules by letting objects listen for particular named event topics and trigger callback lists when events occur.",
+        description:
+          "Let's engineer an event emitter system!\n\nCreate a Class `EventEmitter` that supports event subscription, unsubscription, and publishing.\n- It should have an internal variable (e.g. `this._events = {}`) storing callback arrays keyed by event name.\n- A method `subscribe(event, callback)` that stores the callback under the matching event key. It **must** return a subscription object with an `unsubscribe()` method that removes that specific callback from the event list.\n- A method `publish(event, ...args)` that iterates and invokes all subscribed callbacks of that event key, passing the rest parameter arguments `args` directly to them.",
+        codeTemplate: `class EventEmitter {
+  constructor() {
+    this._events = {};
+  }
+  subscribe(event, callback) {
+    // Register subscription callback and return a subscription object containing unsubscribe()
+    
+  }
+  publish(event, ...args) {
+    // Invoke all registered callbacks of this event using rest parameter arguments
+    
+  }
+}`,
+        functionName: "EventEmitter",
+        hints: [
+          "Initialize the registry as an object in the constructor: `this._events = {};`.",
+          "In `subscribe(event, cb)`, check if `this._events[event]` exists. If not, set it to `[]`. Push `cb` to it.",
+          "Return `{ unsubscribe: () => { this._events[event] = this._events[event].filter(x => x !== cb); } }`.",
+          "In `publish(event, ...args)`, check if any callbacks are registered. If so, loop and trigger: `this._events[event].forEach(cb => cb(...args))`.",
+        ],
+        explanation:
+          "PubSub models form the backbone of state synchronization engines and layout render queues.",
+        testCases: [
+          {
+            id: 1,
+            input: ["click", "data-payload-125"],
+            expected: ["data-payload-125", 0],
+            description:
+              "Correctly publishes event parameters to multiple subscribers, and stops after unsubscription",
+          },
+        ],
+      },
+      {
+        id: "oop-builder-pattern",
+        title: "Fluent Database Query Builder",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "In database SDKs (like Knex or TypeORM), the Builder Pattern provides a fluent interface to construct complex configurations, returning reference to `this` inside each step.",
+        description:
+          "Let's assemble elegant database client calls!\n\nCreate a Class `QueryBuilder` that supports chainable builder commands.\n- Property `this.query = { fields: '*', table: '', conditions: [], limitValue: null }` should hold the active query configuration.\n- Method `from(table)` sets `this.query.table` to the table name string.\n- Method `select(fields)` (where fields is an array of strings, e.g. `['id', 'name']`) sets `this.query.fields` to that string array.\n- Method `where(condition)` accepts a string condition (e.g. `'age > 18'`) and pushes it into the `this.query.conditions` array.\n- Method `limit(num)` sets `this.query.limitValue` to the number `num`.\n- Method `build()` compiles the configuration into a structured query object: `{ fields: this.query.fields, table: this.query.table, where: this.query.conditions, limit: this.query.limitValue }`.\n- Ensure each setting method (except `build`) returns the instance reference `this` to empower fluent chain loading (e.g. `const query = new QueryBuilder().from('users').limit(10).build();`).",
+        codeTemplate: `class QueryBuilder {
+  constructor() {
+    this.query = {
+      fields: '*',
+      table: '',
+      conditions: [],
+      limitValue: null
+    };
+  }
+  from(table) {
+    
+  }
+  select(fields) {
+    
+  }
+  where(condition) {
+    
+  }
+  limit(num) {
+    
+  }
+  build() {
+    
+  }
+}`,
+        functionName: "QueryBuilder",
+        hints: [
+          "Inside `from(table)`, write `this.query.table = table; return this;`.",
+          "Inside `select(fields)`, write `this.query.fields = fields; return this;`.",
+          "Inside `where(condition)`, write `this.query.conditions.push(condition); return this;`.",
+          "Inside `limit(num)`, write `this.query.limitValue = num; return this;`.",
+          "Inside `build()`, assemble the final shape: `return { fields: this.query.fields, table: this.query.table, where: this.query.conditions, limit: this.query.limitValue };`.",
+        ],
+        explanation:
+          "The Builder pattern decouples complex, multi-variable object constructions from constructor initializers, making API suites readable.",
+        testCases: [
+          {
+            id: 1,
+            input: ["users", ["id", "name"], "age > 18", 10],
+            expected: {
+              fields: ["id", "name"],
+              table: "users",
+              where: ["age > 18"],
+              limit: 10,
+            },
+            description:
+              "Correctly chaining methods yields a perfectly assembled and matching database query model",
           },
         ],
       },
@@ -3217,7 +3315,7 @@ const value = stack.pop(); // returns "B", leaving ["A"]`,
   },
   {
     id: "fcc-basic-algorithms",
-    title: "Basic Data Structure",
+    title: "Array & Object Mechanics",
     shortDescription:
       "Master modern array methods, bracket notations, object destructuring, and ES6+ collection iterations in JavaScript.",
     longExplanation:
@@ -3497,11 +3595,116 @@ const updateField = (user, key, val) => ({
           },
         ],
       },
+      {
+        id: "ds-matrix-transpose",
+        title: "Matrix Row-Column Transposer",
+        difficulty: "DSA Easy-Medium",
+        conceptContext:
+          "In data analytics and grid-based games, transposing a 2D matrix replaces rows with columns (i.e. matrix[i][j] becomes matrix[j][i]). In JavaScript, this is constructed cleanly by mapping outer row coordinates to inner column indexes.",
+        description:
+          "Let's align a 2D dataset coordinates!\n\nWrite a function `transposeMatrix(matrix)` that accepts a 2D array of grid numbers and returns its mathematical transpose.\n- Assume a rectangular grid (each row has the same length, but rows vs cols count might differ).\n- Return a fresh translocated 2D array without mutating the input.",
+        codeTemplate: `function transposeMatrix(matrix) {
+  // Map row coordinates into cleanly swapped column lists
+  
+}`,
+        functionName: "transposeMatrix",
+        hints: [
+          "Determine row length: const rows = matrix.length.",
+          "Determine column length: const cols = matrix[0] ? matrix[0].length : 0.",
+          "Construct a new outer array of length 'cols': write \`Array.from({ length: cols }, (_, c) => ...)\`.",
+          "Map each column index 'c' to a row elements array: \`Array.from({ length: rows }, (_, r) => matrix[r][c])\`.",
+        ],
+        explanation:
+          "Transposing values handles coordinate translation cleanly when swapping viewport orientations in canvas grids.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                [
+                  [1, 2, 3],
+                  [4, 5, 6],
+                ],
+              ],
+            ],
+            expected: [
+              [1, 4],
+              [2, 5],
+              [3, 6],
+            ],
+            description: "Transforms a 2x3 matrix into a 3x2 matrix perfectly",
+          },
+          {
+            id: 2,
+            input: [
+              [
+                [
+                  [1, 2],
+                  [3, 4],
+                ],
+              ],
+            ],
+            expected: [
+              [1, 3],
+              [2, 4],
+            ],
+            description: "Transposes a standard square 2x2 grid successfully",
+          },
+        ],
+      },
+      {
+        id: "ds-nested-key-deleter",
+        title: "Recursive Nested Object Omitter",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "When cleaning up sensitive tracking data before dispatching transactions to databases, nested keys like 'password' or 'token' must be dynamically removed. A deep recursive keys pruning utility strips these properties securely.",
+        description:
+          "Let's secure nested records!\n\nWrite a function `omitKeyRecursive(obj, targetKey)` that recursively removes all properties matching `targetKey` from a source object or array of objects.\n\n- Do not mutate the original object; return a clean deeply cloned copy with the specified key deleted from all levels of nesting.\n- Handle nested objects, arrays of objects, and arrays containing other nested structures.",
+        codeTemplate: `function omitKeyRecursive(obj, targetKey) {
+  // Recursively omit matching keys from clones of objects and arrays
+  
+}`,
+        functionName: "omitKeyRecursive",
+        hints: [
+          "Check base conditions first: if \`obj === null\` or \`typeof obj !== 'object'\`, return \`obj\`.",
+          "If \`obj\` is an array, map its elements: \`return obj.map(item => omitKeyRecursive(item, targetKey))\`.",
+          "If it is a plain object, create a new object: \`let copy = {}\`.",
+          "Loop over keys \`Object.keys(obj)\`: if \`key !== targetKey\`, assign \`copy[key] = omitKeyRecursive(obj[key], targetKey)\`.",
+          "Return the pruned \`copy\`.",
+        ],
+        explanation:
+          "Deep filters let systems clean PII fields recursively before syncing states with client devices.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                {
+                  id: 1,
+                  secret: "123",
+                  profile: { name: "Bob", secret: "foo" },
+                },
+                "secret",
+              ],
+            ],
+            expected: { id: 1, profile: { name: "Bob" } },
+            description:
+              "Recursively deletes specified matching keys from both root and nested layers",
+          },
+          {
+            id: 2,
+            input: [[[{ secret: "xyz", value: 10 }, { value: 20 }], "secret"]],
+            expected: [{ value: 10 }, { value: 20 }],
+            description:
+              "Handles arrays of nested objects perfectly, deleting targeted keys",
+          },
+        ],
+      },
     ],
   },
   {
     id: "basic-algorithm-scripting",
-    title: "Basic Algorithm Scripting",
+    title: "Basic Function Scripting",
     shortDescription:
       "Solve standard frequency scans, word counters, and target checkers using declarative, functional ES6+ routines.",
     longExplanation:
@@ -3747,6 +3950,83 @@ const freq = words.reduce((acc, word) => ({
             input: [["a", "b", "c"], 5],
             expected: [["a", "b", "c"]],
             description: "Correctly handles sizes exceeding the array length",
+          },
+        ],
+      },
+      {
+        id: "algo-title-case",
+        title: "Title Case Sentence Formatter",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Title casing is a standard text presentation format where the first letter of each word is capitalized while the remaining letters are in lowercase. In modern JavaScript, this is solved elegantly by splitting a sentence into words, transforming each word individually, and joining them back.",
+        description:
+          "Let's standardize word casings!\n\nWrite a function `titleCase(str)` that receives a full string sentence and returns it nicely formatted in Title Case format.\n- Ensure that words are separated by a single space character in the resultant string.",
+        codeTemplate: `function titleCase(str) {
+  // Convert Str into matching words, capitalise initial index values, and join back with space
+  
+}`,
+        functionName: "titleCase",
+        hints: [
+          "Convert the entire string to lowercase first: \`str.toLowerCase()\`.",
+          "Split the sentence into individual words: \`.split(' ')\`.",
+          "Map through the words array: for each word, capitalize the first index: \`word[0].toUpperCase() + word.slice(1)\` (or handle empty words).",
+          "Re-join the resulting mapped array back with standard spaces: \`.join(' ')\`.",
+        ],
+        explanation:
+          "Dynamic string token parsing handles layout transformations in newsfeeds and content management portals.",
+        testCases: [
+          {
+            id: 1,
+            input: ["I'm a lItTlE tEaPoT"],
+            expected: "I'm A Little Teapot",
+            description:
+              "Format title capitalization perfectly with correct casing across scattered alphabets",
+          },
+          {
+            id: 2,
+            input: ["sHoRt AnD sToUt"],
+            expected: "Short And Stout",
+            description:
+              "Takes lowercased or mixed casing string lines and converts them cleanly",
+          },
+        ],
+      },
+      {
+        id: "algo-fib-sum-odds",
+        title: "Odd Fibonacci Generator & Sum",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Fibonacci numbers are constructed by summing the two previous values: F(n) = F(n-1) + F(n-2). An iterative logic can compute Fibonacci numbers on-the-fly, auditing odd numbers dynamically.",
+        description:
+          "Let's aggregate sequence subsets!\n\nWrite a function `sumFibs(num)` that returns the sum of all **odd** Fibonacci numbers that are less than or equal to `num`.\n\n- The first two numbers in the Fibonacci sequence are 1 and 1.\n- For example, passing `4` should return `5` because the Fibonacci numbers up to 4 are `1, 1, 2, 3`, and the sum of the odd ones is `1 + 1 + 3 = 5`.",
+        codeTemplate: `function sumFibs(num) {
+  // Generate sequence elements progressively and accumulate odd value matches
+  
+}`,
+        functionName: "sumFibs",
+        hints: [
+          "Initialize three variables: \`let prev = 0; let curr = 1; let sum = 0;\`.",
+          "Set up an iterative \`while\` loop that runs while \`curr <= num\`.",
+          "If the current number is odd (\`curr % 2 !== 0\`), add it to the active accumulation: \`sum += curr\`.",
+          "Step forward in the sequence: \`const next = prev + curr; prev = curr; curr = next;\`.",
+          "Return the final sum.",
+        ],
+        explanation:
+          "Iterative sequence filters compute dynamic thresholds in linear O(N) step speeds without triggering Call Stack overflows.",
+        testCases: [
+          {
+            id: 1,
+            input: [4],
+            expected: 5,
+            description:
+              "Calculates sum of odd Fibonacci integers up to 4 correctly: 1 + 1 + 3 = 5",
+          },
+          {
+            id: 2,
+            input: [1000],
+            expected: 1785,
+            description:
+              "Computes total sum of larger odd Fibonacci integers up to 1000 successfully",
           },
         ],
       },

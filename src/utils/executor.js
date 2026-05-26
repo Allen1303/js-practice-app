@@ -224,6 +224,27 @@ export async function runExerciseTests(exercise, userCode) {
           const keyIn2 = reg2.get("apiKey");
           actual = [reg1 === reg2, keyIn2];
           passed = deepEqual(actual, tc.expected);
+        } else if (exercise.id === "oop-stateful-pubsub") {
+          const emitter = new userFunc();
+          let received = [];
+          const sub = emitter.subscribe(tc.input[0], (data) => {
+            received.push(data);
+          });
+          emitter.publish(tc.input[0], tc.input[1]);
+          sub.unsubscribe();
+          emitter.publish(tc.input[0], "never-received");
+          actual = [received[0], received.length - 1];
+          passed = deepEqual(actual, tc.expected);
+        } else if (exercise.id === "oop-builder-pattern") {
+          const builder = new userFunc();
+          const built = builder
+            .from(tc.input[0])
+            .select(tc.input[1])
+            .where(tc.input[2])
+            .limit(tc.input[3])
+            .build();
+          actual = built;
+          passed = deepEqual(actual, tc.expected);
         } else if (exercise.id === "map-group-anagrams") {
           const rawResult = userFunc(tc.input[0]);
           if (Array.isArray(rawResult)) {
