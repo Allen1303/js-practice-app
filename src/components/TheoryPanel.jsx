@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { BookOpen, Layers, ArrowRight } from "lucide-react";
+import { highlightJS } from "../utils/highlighter.js";
 
 export function TheoryPanel({
   activeConcept,
@@ -33,16 +34,19 @@ export function TheoryPanel({
       </div>
 
       {/* Read only code Snippet */}
-      <div className="border border-zinc-200 rounded-xl bg-zinc-50 overflow-hidden mt-6">
-        <div className="flex items-center justify-between px-4 py-2 bg-zinc-100 border-b border-zinc-200">
-          <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500 uppercase">
+      <div className="border border-[#181a1f] rounded-xl bg-[#282c34] overflow-hidden mt-6">
+        <div className="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-[#181a1f] animate-fade-in">
+          <span className="text-[10px] font-mono font-bold tracking-wider text-[#abb2bf] uppercase">
             Interactive Syntax Reference
           </span>
-          <span className="text-[10px] font-mono text-zinc-400">JS / ES6</span>
+          <span className="text-[10px] font-mono text-[#5c6370]">JS / ES6</span>
         </div>
-        <pre className="p-4 overflow-x-auto text-xs font-mono text-zinc-800 bg-zinc-50 leading-relaxed select-all">
-          <code>{activeConcept.codeSnippet}</code>
-        </pre>
+        <pre
+          className="p-4 overflow-x-auto text-xs font-mono text-[#abb2bf] bg-[#282c34] leading-relaxed select-all"
+          dangerouslySetInnerHTML={{
+            __html: highlightJS(activeConcept.codeSnippet, true),
+          }}
+        />
       </div>
 
       {/* Chapter Pattern Blueprint Map */}

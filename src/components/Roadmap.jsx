@@ -10,6 +10,7 @@ import {
   ArrowRight,
   BookMarked,
 } from "lucide-react";
+import { highlightJS } from "../utils/highlighter.js";
 
 export function Roadmap({
   knowledgeMapCategories,
@@ -372,18 +373,21 @@ export function Roadmap({
                           </div>
 
                           {/* Live Code Snippet Display Card */}
-                          <div className="flex flex-col border border-zinc-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                            <div className="flex items-center justify-between px-4 py-2 bg-zinc-50 border-b border-zinc-200 shrink-0 select-none">
-                              <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500 uppercase">
+                          <div className="flex flex-col border border-[#181a1f] rounded-xl overflow-hidden bg-[#282c34] shadow-sm">
+                            <div className="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-[#181a1f] shrink-0 select-none">
+                              <span className="text-[10px] font-mono font-bold tracking-wider text-[#abb2bf] uppercase">
                                 Interactive Syntax Sandbox template
                               </span>
-                              <span className="text-[10px] font-mono text-zinc-450">
+                              <span className="text-[10px] font-mono text-[#5c6370]">
                                 VANILLA JS
                               </span>
                             </div>
-                            <pre className="p-4 flex-1 overflow-x-auto text-[11px] font-mono text-zinc-800 bg-white leading-relaxed select-all">
-                              <code>{topic.codeSnippet}</code>
-                            </pre>
+                            <pre
+                              className="p-4 flex-1 overflow-x-auto text-[11px] font-mono text-[#abb2bf] bg-[#282c34] leading-relaxed select-all"
+                              dangerouslySetInnerHTML={{
+                                __html: highlightJS(topic.codeSnippet, true),
+                              }}
+                            />
                           </div>
                         </div>
 

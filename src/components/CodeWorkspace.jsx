@@ -1,4 +1,6 @@
+import { useRef, useEffect } from "react";
 import { Code, Lightbulb, RotateCcw, Sparkles } from "lucide-react";
+import { highlightJS } from "../utils/highlighter.js";
 
 export function CodeWorkspace({
   currentCode,
@@ -14,6 +16,23 @@ export function CodeWorkspace({
   workspaceHeight = 500,
   setWorkspaceHeight,
 }) {
+  const highlightRef = useRef(null);
+  const textareaRef = useRef(null);
+
+  const handleScroll = (e) => {
+    if (highlightRef.current) {
+      highlightRef.current.scrollTop = e.target.scrollTop;
+      highlightRef.current.scrollLeft = e.target.scrollLeft;
+    }
+  };
+
+  useEffect(() => {
+    if (textareaRef.current && highlightRef.current) {
+      highlightRef.current.scrollTop = textareaRef.current.scrollTop;
+      highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
+    }
+  }, [currentCode]);
+
   const handleMouseDown = (e) => {
     e.preventDefault();
     const startY = e.clientY;
@@ -81,9 +100,9 @@ export function CodeWorkspace({
       </div>
 
       {/* Code Workspace Frame */}
-      <div className="flex-1 relative border-b border-zinc-200 flex overflow-hidden min-h-[160px] bg-white">
+      <div className="flex-1 relative border-b border-[#181a1f] flex overflow-hidden min-h-[160px] bg-[#282c34]">
         {/* Line numbers rail using Consolas styling */}
-        <div className="w-12 bg-zinc-50 select-none flex flex-col pt-4 pb-4 font-mono text-xs text-zinc-400 text-right pr-3 leading-6 border-r border-zinc-200 shrink-0">
+        <div className="w-12 bg-[#21252b] select-none flex flex-col pt-4 pb-4 font-mono text-xs text-[#4b5263] text-right pr-3 leading-6 border-r border-[#181a1f] shrink-0">
           {lineNumbers.map((num) => (
             <span key={num} className="block">
               {num}
@@ -91,23 +110,34 @@ export function CodeWorkspace({
           ))}
         </div>
 
-        {/* Code TextArea using pure Consolas font mappings */}
-        <textarea
-          value={currentCode}
-          onChange={(e) => handleCodeChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="flex-1 p-4 bg-white text-zinc-900 font-mono text-sm focus:outline-none focus:ring-0 leading-6 resize-none overflow-y-auto whitespace-pre tab-calc selection:bg-[#F7DF1E]/45 focus:bg-zinc-50/20"
-          spellCheck="false"
-          placeholder="// Enter your JavaScript code here..."
-        />
+        {/* Code Highlight Overlay Frame */}
+        <div className="flex-1 relative overflow-hidden bg-[#282c34]">
+          <pre
+            ref={highlightRef}
+            className="absolute inset-0 p-4 m-0 w-full h-full bg-[#282c34] font-mono text-sm leading-6 whitespace-pre overflow-hidden pointer-events-none select-none z-0 text-[#abb2bf]"
+            dangerouslySetInnerHTML={{
+              __html: highlightJS(
+                currentCode.endsWith("\n") ? currentCode + " " : currentCode,
+                true,
+              ),
+            }}
+          />
+          <textarea
+            ref={textareaRef}
+            value={currentCode}
+            onChange={(e) => handleCodeChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onScroll={handleScroll}
+            className="absolute inset-0 p-4 m-0 w-full h-full bg-transparent text-transparent caret-[#528bff] font-mono text-sm focus:outline-none focus:ring-0 leading-6 resize-none overflow-auto whitespace-pre tab-calc selection:bg-[#3e4451]/80 z-10"
+            spellCheck="false"
+            placeholder="// Enter your JavaScript code here..."
+          />
+        </div>
 
         {/* Quick shortcut overlay logo */}
-        <div className="absolute bottom-2 left-16 text-[10px] font-mono text-zinc-400 select-none pointer-events-none hidden md:block z-20">
-          Press{" "}
-          <kbd className="bg-zinc-100 px-1 py-0.5 rounded border border-zinc-200 font-bold text-zinc-650">
-            Ctrl + Enter
-          </kbd>{" "}
-          to run tests
+        <div className="absolute bottom-2 left-16 text-[10px] font-mono text-[#5c6370] select-none pointer-events-none hidden md:block z-20 bg-[#21252b]/60 px-2 py-0.5 rounded border border-[#181a1f]">
+          Press <kbd className="font-bold text-[#abb2bf]">Ctrl + Enter</kbd> to
+          run tests
         </div>
 
         {/* Side-by-Side Pattern Progression Upgrade Panel */}
@@ -148,7 +178,7 @@ export function CodeWorkspace({
             </div>
 
             <div className="flex-1 flex flex-col space-y-2 min-h-0 font-sans">
-              <div className="flex items-center justify-between text-[9px] font-mono font-bold text-zinc-550 uppercase tracking-wider">
+              <div className="flex items-center justify-between text-[9px] font-mono font-bold text-zinc-555 uppercase tracking-wider">
                 <span>Step {activeExerciseIndex} Reference Code</span>
                 <button
                   onClick={() => {
@@ -167,16 +197,19 @@ export function CodeWorkspace({
                 </button>
               </div>
 
-              <div className="relative flex-1 flex flex-col min-h-[160px] bg-zinc-950 rounded-lg overflow-hidden border border-zinc-850 shadow-inner">
-                <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900 border-b border-zinc-850 text-[9px] font-mono text-zinc-400">
+              <div className="relative flex-1 flex flex-col min-h-[160px] bg-[#282c34] rounded-lg overflow-hidden border border-[#181a1f] shadow-inner">
+                <div className="flex items-center justify-between px-3 py-1.5 bg-[#21252b] border-b border-[#181a1f] text-[9px] font-mono text-[#abb2bf]">
                   <span>
                     {prevCode ? "✅ REFERENCE CODE" : "DEFAULT TEMPLATE"}
                   </span>
                   <span>JS / READ-ONLY</span>
                 </div>
-                <pre className="flex-1 p-3 font-mono text-[11px] leading-relaxed select-all overflow-auto text-yellow-300 bg-zinc-950">
-                  <code>{prevCode}</code>
-                </pre>
+                <pre
+                  className="flex-1 p-3 font-mono text-[11px] leading-relaxed select-all overflow-auto bg-[#282c34] text-[#abb2bf]"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightJS(prevCode || "", true),
+                  }}
+                />
               </div>
             </div>
           </div>
