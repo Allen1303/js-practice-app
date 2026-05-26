@@ -6,7 +6,7 @@ export function AssertionConsole({
   handleRunTests,
 }) {
   return (
-    <div className="flex-1 flex flex-col bg-white overflow-hidden border-t border-zinc-200 min-h-[140px]">
+    <div className="flex-1 flex flex-col bg-white overflow-hidden border-t border-zinc-200 min-h-[220px]">
       <div className="flex items-center justify-between px-6 py-2.5 bg-zinc-50 border-b border-zinc-200 shrink-0">
         <div className="flex items-center gap-2">
           <Terminal className="h-3.5 w-3.5 text-zinc-505" />

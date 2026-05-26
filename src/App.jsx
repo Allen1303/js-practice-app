@@ -58,9 +58,9 @@ export default function App() {
   const [workspaceHeight, setWorkspaceHeight] = useState(() => {
     try {
       const stored = localStorage.getItem("learnjs_workspace_height");
-      return stored ? parseInt(stored, 10) : 560; // default for 20 lines
+      return stored ? parseInt(stored, 10) : 500; // default for 20 lines
     } catch {
-      return 560;
+      return 500;
     }
   });
 

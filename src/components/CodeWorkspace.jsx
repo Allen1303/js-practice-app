@@ -11,7 +11,7 @@ export function CodeWorkspace({
   handleResetCode,
   prevCode,
   lineNumbers,
-  workspaceHeight = 560,
+  workspaceHeight = 500,
   setWorkspaceHeight,
 }) {
   const handleMouseDown = (e) => {
