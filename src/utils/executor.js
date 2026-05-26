@@ -156,51 +156,6 @@ export async function runExerciseTests(exercise, userCode) {
           const resultsArr = tc.input[1].map((v) => streamer(v));
           actual = resultsArr;
           passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "async-resolve-delay") {
-          const promise = userFunc(tc.input[0], tc.input[1]);
-          if (!(promise instanceof Promise)) {
-            throw new Error("resolveWithDelay must return a Promise instance.");
-          }
-          actual = await promise;
-          passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "async-chain-doubler") {
-          const mockPromise =
-            tc.input[0] === "RESOLVED_5"
-              ? Promise.resolve(5)
-              : Promise.reject(
-                  new Error("Database offline connection exception"),
-                );
-          actual = await userFunc(mockPromise);
-          passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "async-race-fastest") {
-          const delayPromise = (ms, val) =>
-            new Promise((r) => setTimeout(() => r(val), ms));
-          let pA, pB;
-          if (tc.input[0] === "RACE_A_FAST") {
-            pA = delayPromise(5, "Fast Resolution");
-            pB = delayPromise(35, "Slow Resolution");
-          } else {
-            pA = delayPromise(35, "Slow Resolution B");
-            pB = delayPromise(5, "Fast Resolution B");
-          }
-          actual = await userFunc(pA, pB);
-          passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "async-compile-all") {
-          const mixedPromises = [
-            Promise.resolve(100),
-            Promise.reject(new Error("API timeout response")),
-            Promise.resolve(300),
-          ];
-          actual = await userFunc(mixedPromises);
-          passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "async-sequential") {
-          const factories = [
-            () => new Promise((r) => setTimeout(() => r("Task 1"), 8)),
-            () => new Promise((r) => setTimeout(() => r("Task 2"), 4)),
-            () => new Promise((r) => setTimeout(() => r("Task 3"), 12)),
-          ];
-          actual = await userFunc(factories);
-          passed = deepEqual(actual, tc.expected);
         } else if (exercise.id === "oop-simple-book") {
           const book = new userFunc(tc.input[0], tc.input[1]);
           actual = book.getDetails();
@@ -248,6 +203,26 @@ export async function runExerciseTests(exercise, userCode) {
           minStack.pop();
           const m2 = minStack.getMin();
           actual = [m1, m2];
+          passed = deepEqual(actual, tc.expected);
+        } else if (exercise.id === "ds-deep-freeze") {
+          const inputObj = tc.input[0];
+          const returnedObj = userFunc(inputObj);
+          const rootFrozen = Object.isFrozen(returnedObj);
+          const childFrozen = !!(
+            returnedObj &&
+            returnedObj.user &&
+            Object.isFrozen(returnedObj.user) &&
+            returnedObj.user.profile &&
+            Object.isFrozen(returnedObj.user.profile)
+          );
+          actual = [rootFrozen, childFrozen];
+          passed = deepEqual(actual, tc.expected);
+        } else if (exercise.id === "oop-singleton-registry") {
+          const reg1 = new userFunc();
+          const reg2 = new userFunc();
+          reg1.set("apiKey", tc.input[0]);
+          const keyIn2 = reg2.get("apiKey");
+          actual = [reg1 === reg2, keyIn2];
           passed = deepEqual(actual, tc.expected);
         } else if (exercise.id === "map-group-anagrams") {
           const rawResult = userFunc(tc.input[0]);

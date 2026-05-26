@@ -2299,6 +2299,45 @@ class ElectricCar extends Vehicle {
           },
         ],
       },
+      {
+        id: "oop-singleton-registry",
+        title: "Thread-Safe Singleton Registry",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "In professional enterprise architectures, a 'Singleton' is a design pattern that limits instantiation of a class to exactly one single instance. In ES6 classes, we can implement this by caching our instance on a private-facing tracker during instantiation and returning that same instance on subsequent calls.",
+        description:
+          "Let's engineer a shared central configuration registry for our platform credentials!\n\nCreate a Class `Registry` that restricts itself to a single instance.\n- Its constructor should check if a shared instance already exists. If it does, discard the fresh instantiation and return the preexisting instance.\n- Set up an internal hash map field `this._store` (as an object or ES6 Map) on that single instance.\n- Setup a method `set(key, val)` that adds a configuration setting.\n- Setup a method `get(key)` that retrieves a configuration setting.\n- Ensure that all instantiations of `new Registry()` share the exact same internal store state (i.e. modifying fields in instance A updates instance B automatically).",
+        codeTemplate: `class Registry {
+  constructor() {
+    // Implement Singleton caching check to return exactly the same instance reference
+    
+  }
+  set(key, val) {
+    
+  }
+  get(key) {
+    
+  }
+}`,
+        functionName: "Registry",
+        hints: [
+          "Define a static field on the Class: write `if (Registry.instance) { return Registry.instance; }` inside the constructor.",
+          "Cache the instance reference: `Registry.instance = this;` inside the constructor before continuing.",
+          "Initialize the store: `this._store = {};` inside the constructor.",
+          "Write `set(key, val) { this._store[key] = val; }` and `get(key) { return this._store[key]; }`.",
+        ],
+        explanation:
+          "The Singleton pattern ensures resource-heavy registries (like database pools or logging aggregators) are never duplicated needlessly.",
+        testCases: [
+          {
+            id: 1,
+            input: ["super-secret-firebase-api-key"],
+            expected: [true, "super-secret-firebase-api-key"],
+            description:
+              "Verifies that multi-instantiated Registry references match and retrieve shared keys",
+          },
+        ],
+      },
     ],
   },
   {
@@ -3428,6 +3467,36 @@ const updateField = (user, key, val) => ({
           },
         ],
       },
+      {
+        id: "ds-deep-freeze",
+        title: "Immutable Nested Object Guard",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Object-oriented state management in React requires strict immutability. While `Object.freeze(obj)` locks keys on a shallow level, nested objects can still be mutated. A true deep-freeze recursively calls `Object.freeze` on all nested object or array properties.",
+        description:
+          "Let's build a recursive state locking vault!\n\nWrite a function `deepFreeze(obj)` that recursively locks the properties of `obj` (making them immutable).\n\nYour function must:\n1. Call `Object.freeze(obj)` on the target.\n2. Get all key properties of `obj` using `Object.keys()`.\n3. Recursively check if any of the values is an object or array (i.e. `typeof obj[key] === 'object' && obj[key] !== null`). If so, recursively invoke `deepFreeze(obj[key])` on them.\n4. Finally, return the fully frozen parent `obj`.",
+        codeTemplate: `function deepFreeze(obj) {
+  // Recursively freeze nested children object/array properties, then freeze obj
+  
+}`,
+        functionName: "deepFreeze",
+        hints: [
+          "Call Object.freeze(obj) first.",
+          "Iterate over keys: Object.keys(obj).forEach(key => ...).",
+          "If typeof obj[key] === 'object' and it is not null, recursively call deepFreeze(obj[key]).",
+          "Return the modified obj.",
+        ],
+        explanation:
+          "Deep freezing ensures absolute immutability, which acts as a foundational principle in state libraries like Redux.",
+        testCases: [
+          {
+            id: 1,
+            input: [{ user: { profile: { age: 25 } } }],
+            expected: [true, true],
+            description: "Verifies the root and child nested fields are frozen",
+          },
+        ],
+      },
     ],
   },
   {
@@ -3641,6 +3710,43 @@ const freq = words.reduce((acc, word) => ({
             expected: "dog",
             description:
               "Resolves ties in favor of array index priorities inside the targets array",
+          },
+        ],
+      },
+      {
+        id: "algo-array-chunk",
+        title: "Paginated Sub-Sequence Chunker",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "In frontend architecture, pagination has crucial significance. Splitting raw databases arrays into chunked subsections of fixed counts (e.g. 10 items per page) allows high performance grid loading. In JS, this is solved cleanly by sliding and stepping indexes using indices, taking subsections with the array's `.slice()` utility.",
+        description:
+          "Let's construct a paginating array utility!\n\nWrite a function `chunkArray(arr, size)` that splits an array `arr` into nested subarrays of length `size`.\n\n- If `arr` cannot be split evenly, the final chunk will simply contain the remaining trailing elements.\n- Return a single nested array containing these individual chunks in order.",
+        codeTemplate: `function chunkArray(arr, size) {
+  // Split array elements into nested subsets using slice calculations
+  
+}`,
+        functionName: "chunkArray",
+        hints: [
+          "Initialize an empty results list: `let chunks = [];`.",
+          "Write a standard `for` loop that steps forward by `size` on each iterator step: `for (let i = 0; i < arr.length; i += size)`.",
+          "Use `.slice(i, i + size)` to extract the chunk subset of range elements.",
+          "Push that slice directly into the results array.",
+        ],
+        explanation:
+          "Array chunking is a foundational utility used across paginators, batch download managers, and rendering lists.",
+        testCases: [
+          {
+            id: 1,
+            input: [[1, 2, 3, 4, 5], 2],
+            expected: [[1, 2], [3, 4], [5]],
+            description:
+              "Splits five elements into intervals of two, leaving a trailing single item chunk",
+          },
+          {
+            id: 2,
+            input: [["a", "b", "c"], 5],
+            expected: [["a", "b", "c"]],
+            description: "Correctly handles sizes exceeding the array length",
           },
         ],
       },
@@ -3926,6 +4032,61 @@ console.log(bounds); // [[1, 5], [[12, 16]]`,
             input: [[[[9, 10]], [[10, 11]]], [9, 12], 1],
             expected: [[11, 12]],
             description: "Detects gaps nicely in touching busy grids",
+          },
+        ],
+      },
+      {
+        id: "algo-group-and-tally",
+        title: "Multiclass Inventory Group & Aggregate",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Aggregation pipeline models in database systems like PostgreSQL or MongoDB group records and apply reduction operations. In JavaScript, writing high speed custom group-by-count or group-by-sum operations can be elegantly accomplished using `.reduce()` matched with dynamic object initialization.",
+        description:
+          "Let's build a clean analytics reducer!\n\nWrite a function `groupAndTally(items, groupKey, sumKey)` that takes:\n- `items`: an array of transaction/inventory objects (e.g. `[{ category: 'grocery', price: 10 }, { category: 'beverages', price: 5 }, { category: 'grocery', price: 4 }]`)\n- `groupKey`: a string pointing to the property to group by (e.g. `'category'`)\n- `sumKey`: a string pointing to the property whose values we should aggregate (e.g. `'price'`)\n\nYour function must reduce these items to return a single dictionary object mapping each unique group value to the sum of its aggregated numerical values.",
+        codeTemplate: `function groupAndTally(items, groupKey, sumKey) {
+  // Solve aggregate sums categorized by groupKey using ES6 reduce
+  
+}`,
+        functionName: "groupAndTally",
+        hints: [
+          "Call `.reduce()` on the `items` array with an initial value of an empty object `{}`: `items.reduce((acc, item) => { ... }, {})`.",
+          "Extract the grouping label: `const groupVal = item[groupKey];`.",
+          "Extract the numerical value to add: `const numericVal = item[sumKey] || 0;`.",
+          "Check if `acc[groupVal]` exists. If not, set it to 0. Add `numericVal` to it.",
+          "Make sure to return `acc` from your helper callback on each iteration step!",
+        ],
+        explanation:
+          "Dynamic group-by tally aggregates process multi-variable records inside a single, highly-optimized linear O(N) pass.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { category: "A", value: 10 },
+                { category: "B", value: 20 },
+                { category: "A", value: 5 },
+              ],
+              "category",
+              "value",
+            ],
+            expected: { A: 15, B: 20 },
+            description:
+              "Correctly groups item targets by matching Category keys and sums their corresponding values",
+          },
+          {
+            id: 2,
+            input: [
+              [
+                { department: "IT", cost: 100 },
+                { department: "HR", cost: 50 },
+                { department: "IT", cost: 250 },
+              ],
+              "department",
+              "cost",
+            ],
+            expected: { IT: 350, HR: 50 },
+            description:
+              "Groups departments by expense and computes distinct tallies perfectly",
           },
         ],
       },
