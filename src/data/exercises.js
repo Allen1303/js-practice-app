@@ -1709,186 +1709,203 @@ console.log([...uniqueSet]); // [1, 2, 3, 4]`,
     ],
   },
   {
-    id: "async-promises-flow",
-    title: "Promises & Async Control Flow",
+    id: "two-pointer-sliding-window",
+    title: "Two Pointers & Sliding Window",
     shortDescription:
-      "Master asynchronous primitives, promise chaining, race conditions, compile states, and sequential executions.",
+      "Master bidirectional sweeps, fast/slow window iterators, dynamic length window optimizations, and nested multi-pointer configurations.",
     longExplanation:
-      "JavaScript operates on a single-threaded non-blocking event loop. Asynchronous actions (e.g., fetching network databases, writing disk sectors, or delayed timers) return `Promise` objects representing values that will resolve or reject in the future.\n\n- **Promise States**: `pending`, `fulfilled`, or `rejected`.\n- **Modern async/await**: Unlocks synchronous-like visual clarity for background actions: `const data = await promiseVar`.\n- **Error Control**: Use standard `try/catch` around `await` blocks.",
-    codeSnippet: `// Example: standard async operation
-async function fetchScore(userID) {
-  try {
-    const score = await getScoreFromDB(userID);
-    return score + 10;
-  } catch (err) {
-    return 0; // fallback default
+      "Many optimal array and string algorithms can reduce nested O(N^2) space/time solutions to O(N) linear operations by keeping state tracked via pointer indexes.\n\n- **Bidirectional pointers**: Move inward from both left and right edges depending on sum conditions (classic sorted Two Sum).\n- **Fast/slow pointers**: Fast scouts forward, and slow marks bounds for in-place modifications.\n- **Sliding Window**: Represents a contiguous range. Maintain a running sum or collection property, expanding the right wall until the rule breaks, then contracting the left wall to recover compliance.",
+    codeSnippet: `// Example: Find if sorted array has pair summing to target
+function hasPairSum(arr, target) {
+  let left = 0, right = arr.length - 1;
+  while (left < right) {
+    const sum = arr[left] + arr[right];
+    if (sum === target) return true;
+    if (sum < target) left++;
+    else right--;
   }
+  return false;
 }`,
     exercises: [
       {
-        id: "async-resolve-delay",
-        title: "Configurable Delay Resolver",
+        id: "two-sum-sorted",
+        title: "Two Sum - Sorted Input",
         difficulty: "Warm-up",
         conceptContext:
-          "A promise is initialized with `new Promise((resolve, reject) => { ... })`. Modern timers like `setTimeout` can trigger resolutions of this promise after a timeout duration.",
+          "Bidirectional approach takes advantage of a sorted input structure. If the current pointer sum at [left, right] is less than target, increment left; if greater, decrement right. This guarantees O(N) runtime and O(1) memory.",
         description:
-          "Create a basic delay mechanism.\n\nWrite a function `resolveWithDelay(value, delayMs)` that returns a native Promise. This Promise should resolve to the input `value` after waiting specifically `delayMs` milliseconds.",
-        codeTemplate: `function resolveWithDelay(value, delayMs) {
-  // Return a new Promise that resolves with 'value' after 'delayMs' using setTimeout
+          "Find two numbers in a sorted array that sum up to a target value.\n\nWrite a function `twoSumSorted(numbers, target)` that accepts a sorted array of integers `numbers` and a target integer `target`. It must return the 0-based indices of the two elements as a two-item array `[index1, index2]` in ascending order (where index1 < index2).\n\nAssume exactly one unique pair solution exists for all input cases.",
+        codeTemplate: `function twoSumSorted(numbers, target) {
+  // Use a left and right pointer to find the unique indices adding up to target
   
 }`,
-        functionName: "resolveWithDelay",
+        functionName: "twoSumSorted",
         hints: [
-          "Construct and return a new Promise: new Promise((resolve) => { ... }).",
-          "Inside the constructor, call setTimeout with resolve, wrapping value.",
-          "Pass delayMs as the timeout duration parameter of setTimeout.",
+          "Initialize a left pointer at 0 and a right pointer at numbers.length - 1.",
+          "Run a while (left < right) loop, calculating the current sum: numbers[left] + numbers[right].",
+          "If sum strictly matches target, return [left, right]. If sum < target, left++. Otherwise, right--.",
         ],
         explanation:
-          "Timer delays form the basis of timeout handling and debounce rate throttling.",
+          "Bidirectional sweeping on sorted systems eliminates redundant inner loops.",
         testCases: [
           {
             id: 1,
-            input: ["Success", 10],
-            expected: "Success",
-            description: "Resolves correctly with proper string",
+            input: [[2, 7, 11, 15], 9],
+            expected: [0, 1],
+            description: "Identifies primary pair at boundaries",
           },
           {
             id: 2,
-            input: [42, 5],
-            expected: 42,
-            description: "Resolves correctly with numeric payload",
+            input: [[1, 3, 4, 6, 8, 10], 11],
+            expected: [1, 3],
+            description: "Finds correct inner values summing to 11",
           },
         ],
       },
       {
-        id: "async-chain-doubler",
-        title: "Sequential Promise Doubler",
+        id: "remove-duplicates-ptr",
+        title: "In-Place Unique Filter",
         difficulty: "DSA Easy",
         conceptContext:
-          "A Promise can be chained using a success callback via `.then(callback)` or handled using an `async` wrapper with `await`. Returned evaluations inside `.then(...)` automatically wrap in a new resolved Promise.",
+          "Fast/slow pointers are useful for sorting or filtering. The fast pointer iterates to find brand-new unique elements, and the slow elements index marks where to queue them up sequentially. Using standard arrays, we can construct the result array sequentially using this logic.",
         description:
-          "Let's perform continuous mathematical transformations sequentially!\n\nWrite an async function `chainDoubler(promise)` that accepts a Promise resolving to a number. It must await that promise, multiply the resolved value by 2, and return the doubled amount.\n\nIf the input promise encounters an error (rejects), catch the error and return `0` as an absolute default fallback.",
-        codeTemplate: `async function chainDoubler(promise) {
-  // Await the input promise, multiply the resolved number by 2, and handle rejects by returning 0
+          "Remove duplicate numbers from a sorted list.\n\nWrite a function `removeDuplicates(nums)` that takes a sorted array of integers `nums` and returns a new array containing ONLY the unique elements in their original order.\n\nBuild the array by iterating with two pointer indices (slow track index and fast scouting index) to construct the unique array element by element.",
+        codeTemplate: `function removeDuplicates(nums) {
+  // Use slow and fast indicators to build and return a list of unique numbers from the sorted input
   
 }`,
-        functionName: "chainDoubler",
+        functionName: "removeDuplicates",
         hints: [
-          "Declare the function with the async keyword (or chain a .then and .catch).",
-          "Wrap the await block in a try...catch framework to intercept errors.",
-          "In the success path, yield: (await promise) * 2. In the catch path, return 0.",
+          "If the input nums array is empty, return an empty array.",
+          "Initialize a results array with the first element of nums.",
+          "Run a loop with a fast index from 1 to nums.length - 1, checking if nums[fast] is different from the previous unique element.",
+          "If they differ, push the new value to the results and return it at the end.",
         ],
         explanation:
-          "Defensive async chaining prevents failures in individual fetch operations from crashing the parent client.",
+          "Filtering duplicates becomes a linear operation when keeping track of unique transitions.",
         testCases: [
           {
             id: 1,
-            input: ["RESOLVED_5"],
-            expected: 10,
-            description: "Successfully doubles the resolved values",
+            input: [[1, 1, 2]],
+            expected: [1, 2],
+            description: "Deduplicates simple recurring integers",
           },
           {
             id: 2,
-            input: ["REJECTED"],
-            expected: 0,
-            description: "Correctly catches rejections and returns 0",
+            input: [[0, 0, 1, 1, 1, 2, 2, 3, 4, 4]],
+            expected: [0, 1, 2, 3, 4],
+            description: "Collapses multiple duplicate groups elegantly",
           },
         ],
       },
       {
-        id: "async-race-fastest",
-        title: "Speed-based Race Controller",
+        id: "max-subarray-sum-bound",
+        title: "Maximum Bounded Subarray",
         difficulty: "DSA Easy",
         conceptContext:
-          "`Promise.race([p1, p2, ...])` accepts an array of promises and returns a single promise. This promise resolves or rejects the instant any of the inputs settles (either fulfills or rejects).",
+          "Sliding window tracking maintains a contiguous window [left, right] representing elements. As the right pointer expands, add numbers to a running sum. When the sum exceeds the limit, incrementally shrink the window from the left (shifting the left pointer) until the sum is again less than or equal to the limit.",
         description:
-          "Let's build a racing system that returns the fastest signal!\n\nWrite a function `raceFastest(promiseA, promiseB)` that races two promises, returning a Promise that resolves to whoever reports back first.",
-        codeTemplate: `function raceFastest(promiseA, promiseB) {
-  // Use Promise.race() to return the value of the speediest promise
+          "Identify the maximum continuous range within budget.\n\nWrite a function `maxSubarrayLen(nums, limit)` that takes an array of positive integers `nums` and a budget integer `limit`. It must return the length of the longest contiguous subarray whose sum of elements does not exceed the budget `limit`.",
+        codeTemplate: `function maxSubarrayLen(nums, limit) {
+  // Use a sliding window to track the longest contiguous slice of positive numbers summing <= limit
   
 }`,
-        functionName: "raceFastest",
+        functionName: "maxSubarrayLen",
         hints: [
-          "Simply apply the Promise.race utility directly.",
-          "Pass both arguments inside an array: Promise.race([promiseA, promiseB]).",
-          "Make sure you return that resulting raced Promise.",
+          "Initialize running variables: left = 0, currentSum = 0, and maxLen = 0.",
+          "Loop with right pointer from 0 to nums.length - 1, and add nums[right] to currentSum.",
+          "While currentSum > limit, subtract nums[left] from currentSum and increment left.",
+          "Update maxLen using Math.max(maxLen, right - left + 1) during each successful step.",
         ],
         explanation:
-          "Racing allows fetching data from multiple mirrors or adding absolute time thresholds to slow network queries.",
+          "The sliding window technique avoids redundant checks, making operations O(N) instead of O(N^2).",
         testCases: [
           {
             id: 1,
-            input: ["RACE_A_FAST"],
-            expected: "Fast Resolution",
-            description:
-              "Correctly returns the faster resolve value from first promise",
+            input: [[1, 2, 3, 4, 1], 6],
+            expected: 3,
+            description: "Selects length 3 for the sub-range [1, 2, 3]",
           },
           {
             id: 2,
-            input: ["RACE_B_FAST"],
-            expected: "Fast Resolution B",
-            description:
-              "Correctly resolves to the second promise if it is quicker",
+            input: [[8, 2, 4, 1, 3, 5], 9],
+            expected: 4,
+            description: "Extracts length 4 for [2, 4, 1, 3]",
           },
         ],
       },
       {
-        id: "async-compile-all",
-        title: "Graceful Multi-Resolve Compiler",
-        difficulty: "DSA Easy",
+        id: "min-subarray-len-target",
+        title: "Minimal Target Sum Window",
+        difficulty: "DSA Easy-Medium",
         conceptContext:
-          "Standard `Promise.all()` fails completely (rejects immediately) if any single promise rejects. To preserve other resolved data, we can resolve elements safely individually first, or map catch handlers to each promise before aggregation.",
+          "In this dynamic window variation, we expand right to find a valid window (sum >= target). Once valid, try to make it as small as possible by shifting the left pointer inwards while maintaining the valid condition (sum >= target). Maintain the minimum constraint size throughout the execution.",
         description:
-          "Aggregate values from multiple API streams without letting a single failure ruin the stack!\n\nWrite an async function `compileAllResolved(promises)` that takes an array of promises.\n\nIt should wait for all of them to settle, and return an array containing only the values that finished successfully (resolved). Any promises that rejected should be discarded entirely from the output array, rather than halting execution.",
-        codeTemplate: `async function compileAllResolved(promises) {
-  // Use Promise.all() together with custom caught wrappers to assemble only the resolved outcomes
+          "Find the smallest possible contiguous range that matches or exceeds a value threshold.\n\nWrite a function `minSubArrayLen(target, nums)` that takes an array of positive integers `nums` and a target positive integer `target`. It must return the MINIMAL length of a contiguous subarray of which the sum is greater than or equal to `target`. If no such subarray exists under the constraints, return `0`.",
+        codeTemplate: `function minSubArrayLen(target, nums) {
+  // Shift left and right boundaries dynamically to pinpoint the smallest window summing >= target
   
 }`,
-        functionName: "compileAllResolved",
+        functionName: "minSubArrayLen",
         hints: [
-          "Map each promise to a caught version, e.g. p.then(v => ({ success: true, val: v })).catch(e => ({ success: false })).",
-          "Run Promise.all() on these mapped promises to aggregate overall results.",
-          "Filter the resulting objects to retain success outcomes and map back to extract their values.",
+          "Set left = 0, currentSum = 0, and minLen to infinity (or nums.length + 1).",
+          "Expand the window with a right pointer, adding nums[right] to your currentSum.",
+          "As long as currentSum >= target, calculate the window size (right - left + 1), update minLen with the minimum, subtract nums[left] from currentSum, and increment left.",
+          "If minLen remains unchanged, return 0; otherwise, return minLen.",
         ],
         explanation:
-          "Aggregating multiple calls with isolated catchment channels prevents cascading crashes.",
+          "Shrinking a valid window is a classical optimization pattern used in routing and budget-allocation calculations.",
         testCases: [
           {
             id: 1,
-            input: ["MIXED_RESOLVED_SOME_REJECTED"],
-            expected: [100, 300],
+            input: [7, [2, 3, 1, 2, 4, 3]],
+            expected: 2,
+            description: "Finds minimum length 2 for sub-range [4, 3]",
+          },
+          {
+            id: 2,
+            input: [11, [1, 2, 3, 4, 5]],
+            expected: 3,
             description:
-              "Excludes rejected results, keeping only successful resolutions",
+              "Finds minimum length 3 for sub-range [3, 4, 5] (sum 12)",
           },
         ],
       },
       {
-        id: "async-sequential",
-        title: "Strict Sequential Task Chain",
+        id: "three-sum-sorted-target",
+        title: "Symmetric Three-Sum Sweep",
         difficulty: "DSA Medium",
         conceptContext:
-          "Running asynchronous calls in parallel can overwhelm rates limit caps. To execute actions in a strict queue line, use a `for...of` loop with `await` inside, pushing values to an array.",
+          "This exercise is the crown jewel of our multi-pointer system! Sort or iterate an array, freeze an element at index i, and then run the classical twoSumSorted bidirectional two-pointer logic on the sub-range [i + 1, nums.length - 1] looking for the remainder: target - nums[i]. This encapsulates the pattern of Exercise 1 within a progressive outer context.",
         description:
-          "Build a strict order queue execution engine to throttle API requests sequentially.\n\nWrite an async function `executeSequential(taskFactories)` that takes an array of functions (task builders). Each function inside this array returns a Promise when called.\n\nYour task is to execute these functions one-by-one, in precise sequence (waiting for task N to resolve before calling task N+1). Return an array containing all resulting resolved values in their appropriate sequential positions.",
-        codeTemplate: `async function executeSequential(taskFactories) {
-  // Execute each factory in a strict logical queue timeline using a for...of await loop
+          "Find three numbers that sum exactly to a target value.\n\nWrite a function `threeSumSorted(nums, target)` that takes a sorted array of integers `nums` and a target integer `target`. It must locate three separate elements that add up exactly to `target`, and return them as a sorted 3-item array `[num1, num2, num3]`.\n\nAssume there is exactly one solution scenario for all tested outcomes, and that you must build directly upon the bidirectional outer-boundary sweep pattern you perfected in the first exercise.",
+        codeTemplate: `function threeSumSorted(nums, target) {
+  // Freeze the first element with an outer loop, then run bidirectional pointers on the remaining range
   
 }`,
-        functionName: "executeSequential",
+        functionName: "threeSumSorted",
         hints: [
-          "Initialize an empty results array, let res = [].",
-          "Iterate across the factories using: for (const factory of taskFactories) { ... }.",
-          "Inside the iteration, trigger the factory and await its completion: const val = await factory(). Then push to res.",
-          "Return the final array of collected answers.",
+          "Loop through nums using active pointer 'i' from 0 up to nums.length - 3.",
+          "For each fixed nums[i], set targetSum = target - nums[i]. Then set left = i + 1, and right = nums.length - 1.",
+          "Run a while (left < right) loop. If nums[left] + nums[right] matches targetSum, return [nums[i], nums[left], nums[right]].",
+          "Adjust left and right pointers accordingly if the sum is less than or greater than targetSum.",
         ],
         explanation:
-          "Sequential chains keep asynchronous operations in neat ordered series, protecting rate limits.",
+          "Nested pointer frameworks reduce complex three-nesting search solutions from O(N^3) to O(N^2) complexity with perfect memory economy.",
         testCases: [
           {
             id: 1,
-            input: ["SEQUENTIAL_TASKS"],
-            expected: ["Task 1", "Task 2", "Task 3"],
-            description: "Executes and compiles tasks strictly in order",
+            input: [[-4, -1, 1, 2, 8, 12], 9],
+            expected: [-1, 2, 8],
+            description:
+              "Accurately extracts matching triplet [-1, 2, 8] (sum 9)",
+          },
+          {
+            id: 2,
+            input: [[-10, -5, 0, 5, 10, 15, 20], 30],
+            expected: [0, 10, 20],
+            description:
+              "Deconstructs large range triplet successfully [0, 10, 20] (sum 30)",
           },
         ],
       },
@@ -2902,248 +2919,258 @@ const rootNode = { val: 10, left: { val: 5, left: null, right: null }, right: nu
     ],
   },
   {
-    id: "error-handling-defense",
-    title: "Error Handling & Input Defense",
+    id: "stack-queue-dsa",
+    title: "Stacks, Queues & Monotonic Flow",
     shortDescription:
-      "Shield codeblocks against failures, utilize try/catch scopes, and throw custom Exception structures.",
+      "Master Last-In-First-Out (LIFO) stacks, brace matching, directory paths simplification, monotonic trackers, and dynamic Reverse Polish calculators.",
     longExplanation:
-      "Robust platforms anticipate failure. When performing risk-prone operations (like parsing corrupted external JSON, making weak network calls, or handling user numerical bounds), Javascript provides exception handling mechanisms. Throwing errors stops execution instantly, bubble-climbing up the call stack until a `try/catch` block captures the exception and prevents the application from crashing.\n\n- **Mechanism**: `try { ... } catch (error) { ... } finally { ... }`.\n- **Custom Throwing**: `throw new Error('Crucial field missing')` triggers immediate client alerts.",
-    codeSnippet: `// Example: Defensive execution check
-try {
-  const data = JSON.parse("messy_raw_fails");
-} catch (err) {
-  console.warn("Retrying raw file retrieval:", err.message);
-}`,
+      "Linear data structures with strict access constraints are powerful foundational utilities for memory management, nested evaluation scopes, and history tracking.\n\n- **Stack (LIFO)**: Elements enter and leave at the same end. Essential for recursion, brackets validation, and path travel.\n- **Queue (FIFO)**: Elements enter at the tail and leave at the head. Ideal for task throttling and broad graph sweeps.\n- **Monotonic Stack**: Maintain elements in sorted order to answer next-greater/smaller lookup queries in optimal O(N) time.",
+    codeSnippet: `// Example: a simple array-backed LIFO stack
+const stack = [];
+stack.push("A"); // ["A"]
+stack.push("B"); // ["A", "B"]
+const value = stack.pop(); // returns "B", leaving ["A"]`,
     exercises: [
       {
-        id: "safe-json-parse",
-        title: "Safe JSON Parse Safeguard",
+        id: "stack-valid-parentheses",
+        title: "Valid Parentheses Matcher",
         difficulty: "Warm-up",
         conceptContext:
-          "JSON parsing is prone to throwing SyntaxError. Protecting calls inside `try/catch` allows returning a safe fallback value if parsing fails.",
+          "Push opening symbols onto a stack. When encountering a closing symbol, pop from the stack and verify that the popped brace pattern matches perfectly. If there's a mismatch or the stack ends up empty prematurely, the string is invalid.",
         description:
-          "Verify and sanitize data boundaries safely! How it works: Client browsers frequently receive broken or corrupted payload strings from API gateways. Shielding parse processes ensures a bad string doesn't lock the entire dashboard loading screen.\n\nWrite a function `safeJSONParse(str, fallback)` that attempts to parse `str` using `JSON.parse`. If parsing is successful, return the parsed object. If any error is thrown, return the provided `fallback` value instead.",
-        codeTemplate: `function safeJSONParse(str, fallback) {
-  // Wrap JSON.parse inside try/catch block to return fallback on crashes
+          "Verify nesting structure constraints!\n\nWrite a function `isValidParentheses(s)` that takes a string of bracket symbols: `(`, `)`, `[`, `]`, `{`, and `}`. It must evaluate whether the nested brace structure is completely valid.\n\nAn input string is valid if opening brackets are closed by the same type of brackets, and closed in the correct chronological nesting order.",
+        codeTemplate: `function isValidParentheses(s) {
+  // Use a stack to trace opening brackets and match them against closing brackets
   
 }`,
-        functionName: "safeJSONParse",
+        functionName: "isValidParentheses",
         hints: [
-          "Wrap the JSON.parse(str) statement inside a 'try' block.",
-          "Inside 'catch(err)', intercept the failure and return the 'fallback' argument.",
-          "If the try block succeeds, simply return the output.",
+          "Initialize an empty array to serve as your stack.",
+          "Map closing brackets to their matching opening brackets, e.g., ')' maps to '(', etc.",
+          "Iterate over each character: if it's an opening bracket, push it. If it is a closing bracket, pop the top of the stack and compare. If it doesn't match or stack is empty, return false.",
+          "Return true if and only if the stack is completely empty at the end.",
         ],
         explanation:
-          "Catching JSON syntax errors prevents application load crashes from raw server feed anomalies.",
+          "Brace checking forms the underlying parser compilation framework for matching code syntax trees in modern editors.",
         testCases: [
           {
             id: 1,
-            input: ['{"active": true}', {}],
-            expected: { active: true },
-            description: "Extracts valid JSON strings successfully",
+            input: ["()[]{}"],
+            expected: true,
+            description: "Validates fully closed matching sequences",
           },
           {
             id: 2,
-            input: ["invalid_string", { error: true }],
-            expected: { error: true },
-            description: "Returns fallback data smoothly on syntax crash",
-          },
-        ],
-      },
-      {
-        id: "validate-state-transition",
-        title: "Transaction State Machine Auditor",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "State verification checks boundary limits. When values defy rules, `throw new Error('message')` terminates operations cleanly to prevent fraudulent state transitions.",
-        description:
-          "Enforce state machine constraints! How it works: In digital banking channels or flight reservation ledgers, transactional transfers must satisfy security and boundary constraints (like checking against insufficient balances or invalid states) before mutating storage collections.\n\nWrite a function `validateTransaction(account, amount)` that audits transaction requirements:\n- If `amount` is less than or equal to `0`, throw an Error with message `'Invalid amount'`.\n- If `amount` is strictly greater than the `account.balance` parameter, throw an Error with message `'Insufficient funds'`.\n- If valid, subtract `amount` from `account.balance` and return the updated account object.",
-        codeTemplate: `function validateTransaction(account, amount) {
-  // Audit boundary limits, throwing explicit Errors when validations fail
-  
-}`,
-        functionName: "validateTransaction",
-        hints: [
-          "First condition check: if (amount <= 0) throw new Error('Invalid amount');",
-          "Second condition check: if (amount > account.balance) throw new Error('Insufficient funds');",
-          "Update properties: account.balance -= amount;",
-          "Return the updated account object.",
-        ],
-        explanation:
-          "Throwing explicit Errors halts invalid updates, protecting critical application data schemas.",
-        testCases: [
-          {
-            id: 1,
-            input: [{ balance: 100 }, 30],
-            expected: { balance: 70 },
-            description: "Processes valid transaction cleanly",
-          },
-          {
-            id: 2,
-            input: [{ balance: 50 }, 100],
-            expected: "Error: Insufficient funds",
-            description: "Throws error safely when amount exceeds balance",
+            input: ["(]"],
+            expected: false,
+            description: "Rejects unmatched braces",
           },
           {
             id: 3,
-            input: [{ balance: 50 }, -10],
-            expected: "Error: Invalid amount",
-            description: "Throws audit error safely on negative entries",
-          },
-        ],
-      },
-      {
-        id: "safe-division",
-        title: "Safe Division Quotient Calculator",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "Division by zero returns `Infinity` or `-Infinity` in JavaScript, which can corrupt numerical pipelines. We can audit denominators and throw an error to protect math calculations.",
-        description:
-          "Enforce arithmetic boundaries! Write a function `safeDivide(a, b)` that performs division. If `b === 0`, throw an Error with message `'Division by zero error'`. If either `a` or `b` is not a number (typeof is not 'number' or is NaN), throw an Error with message `'Invalid number arguments'`. Otherwise, return the dividend `a / b`.",
-        codeTemplate: `function safeDivide(a, b) {
-  // Check argument types and denominators, throwing descriptive Errors on invalid bounds
-  
-}`,
-        functionName: "safeDivide",
-        hints: [
-          "Check types first: if (typeof a !== 'number' || typeof b !== 'number' || Number.isNaN(a) || Number.isNaN(b)) throw new Error('Invalid number arguments');",
-          "Check for zero denominator: if (b === 0) throw new Error('Division by zero error');",
-          "If both checks pass, return a / b.",
-        ],
-        explanation:
-          "Filtering dividing quotients prevents calculation leak bounds.",
-        testCases: [
-          {
-            id: 1,
-            input: [10, 2],
-            expected: 5,
-            description: "Divides standard integer values correctly",
-          },
-          {
-            id: 2,
-            input: [10, 0],
-            expected: "Error: Division by zero error",
-            description: "Halts and throws correctly for zero divisors",
-          },
-          {
-            id: 3,
-            input: ["apple", 5],
-            expected: "Error: Invalid number arguments",
-            description:
-              "Handles non-numeric parameters defensive auditing safely",
-          },
-        ],
-      },
-      {
-        id: "secure-path-traveler",
-        title: "Descriptive Object Path Traveler",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "Inspecting deeply nested objects like `obj.user.profile.age` can crash scripts with TypeError if any parent property is nullish. We can combine custom loops or try/catch blocks to parse safe structures.",
-        description:
-          "Build robust property retrievers! Write a function `secureGet(obj, path, fallback)` where `obj` is an object, `path` is an array of key strings (e.g. `['user', 'profile', 'age']`), and `fallback` is a default value.\n\nTry to traverse the object keys sequentially according to the path array. If at any step the current property is `null` or `undefined` before reaching the end of the path list, throw an Error with message `'Invalid path reference'`. Wrap your traversal logic in a `try/catch` so that if this or any other error is caught, you return the `fallback` value instead. Otherwise, return the final value retrieved.",
-        codeTemplate: `function secureGet(obj, path, fallback) {
-  // Traverse key lists inside a try/catch scope to securely return fallback on failures
-  
-}`,
-        functionName: "secureGet",
-        hints: [
-          "Implement a try-catch statement.",
-          "Inside try, run a loop over path elements. Keep track of current obj. Let curr = obj;",
-          "For each key: if (curr === null || curr === undefined) throw new Error('Invalid path reference'); curr = curr[key];",
-          "After loop ends, if the final value is undefined/null, throw an error or return final value if it is not nullish. Ensure you return the final value.",
-          "In the catch, return fallback.",
-        ],
-        explanation:
-          "Safely reads deep nested parameters without throwing unhandled TypeErrors into browser execution frames.",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              { user: { profile: { age: 30 } } },
-              ["user", "profile", "age"],
-              18,
-            ],
-            expected: 30,
-            description: "Retrieves valid deeply nested attributes",
-          },
-          {
-            id: 2,
-            input: [{ user: {} }, ["user", "profile", "age"], 18],
-            expected: 18,
-            description: "Returns fallback smoothly on missing properties",
-          },
-          {
-            id: 3,
-            input: [{ user: null }, ["user", "profile"], "Not found"],
-            expected: "Not found",
-            description:
-              "Recovers gracefully when intermediate object coordinates are null",
-          },
-        ],
-      },
-      {
-        id: "safe-wallet-transfer",
-        title: "Transactional Wallet Ledger",
-        difficulty: "DSA Medium",
-        conceptContext:
-          "Complex transactions involve verifying multiple boundary states concurrently. Throwing specific exception strings flags the structural reason for failure and maintains data fidelity.",
-        description:
-          "Construct transaction state validators! Write a function `executeTransfer(walletA, walletB, amount)` that transfers funds from `walletA` to `walletB` (both are objects with `{ balance, status }` properties):\n- If `amount` is less than or equal to `0`, throw an Error with message `'Invalid transfer amount'`.\n- If `walletA.balance` is strictly less than `amount`, throw an Error with message `'Insufficient wallet balance'`.\n- If either `walletA.status` or `walletB.status` is equal to `'frozen'`, throw an Error with message `'Frozen account active'`.\n- Otherwise, subtract `amount` from `walletA.balance`, add `amount` to `walletB.balance`, and return an array containing both balances: `[walletA.balance, walletB.balance]`.",
-        codeTemplate: `function executeTransfer(walletA, walletB, amount) {
-  // Validate amounts and account statuses defensively, throwing specific exception contexts
-  
-}`,
-        functionName: "executeTransfer",
-        hints: [
-          "Validate amount: if (amount <= 0) throw new Error('Invalid transfer amount');",
-          "Check frozen accounts: if (walletA.status === 'frozen' || walletB.status === 'frozen') throw new Error('Frozen account active');",
-          "Check balance bounds: if (walletA.balance < amount) throw new Error('Insufficient wallet balance');",
-          "Apply state adjustments and return [walletA.balance, walletB.balance].",
-        ],
-        explanation:
-          "Rigorous state filters protect account variables and transactional integrity before committing records.",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              { balance: 500, status: "active" },
-              { balance: 100, status: "active" },
-              150,
-            ],
-            expected: [350, 250],
-            description: "Performs standard transfer cleanly",
-          },
-          {
-            id: 2,
-            input: [
-              { balance: 80, status: "active" },
-              { balance: 100, status: "active" },
-              100,
-            ],
-            expected: "Error: Insufficient wallet balance",
-            description: "Flags errors if source account balance is too low",
-          },
-          {
-            id: 3,
-            input: [
-              { balance: 500, status: "frozen" },
-              { balance: 100, status: "active" },
-              50,
-            ],
-            expected: "Error: Frozen account active",
-            description: "Blocks and rejects frozen transactors reliably",
+            input: ["([{}])"],
+            expected: true,
+            description: "Validates deeply nested matching sequence",
           },
           {
             id: 4,
-            input: [
-              { balance: 500, status: "active" },
-              { balance: 100, status: "active" },
-              -20,
-            ],
-            expected: "Error: Invalid transfer amount",
+            input: ["["],
+            expected: false,
+            description: "Rejects unclosed opening bracket list",
+          },
+        ],
+      },
+      {
+        id: "stack-backspace-compare",
+        title: "Backspace String Comparator",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Build raw string representations using a LIFO stack. Instead of complex coordinate slices, iterate over your characters: push standard items onto your stack, and pop items off the stack whenever encountering a backspace character '#' representing erasure.",
+        description:
+          "Compare two typing sequences containing active backspaces.\n\nWrite a function `backspaceCompare(s, t)` that evaluates if the two typing strings `s` and `t` result in the exact same typed word. The character `#` represents a backspace key (erasing the previously typed character if any).\n\nProcess both strings using a stack, build their final states, and compare them for structural match.",
+        codeTemplate: `function backspaceCompare(s, t) {
+  // Process both input strings through helper stacks to rebuild and compare final words
+  
+}`,
+        functionName: "backspaceCompare",
+        hints: [
+          "Create a helper function to compile a character string using a stack: const process = (str) => { ... }.",
+          "Loop through each character: if char !== '#', push it to the stack. If char === '#', pop from stack (if not empty).",
+          "Convert each stack back to a string and check if the processed s equals the processed t.",
+        ],
+        explanation:
+          "The command-stack design pattern handles undo steps and delete registers across user input buffers.",
+        testCases: [
+          {
+            id: 1,
+            input: ["ab#c", "ad#c"],
+            expected: true,
+            description: "Both sequences map to 'ac' after resolving deletions",
+          },
+          {
+            id: 2,
+            input: ["ab##", "c#d#"],
+            expected: true,
             description:
-              "Prevents negative transaction inputs from breaking the bank",
+              "Handles empty strings correctly (both reduce to empty)",
+          },
+          {
+            id: 3,
+            input: ["a#c", "b"],
+            expected: false,
+            description: "Identifies mismatched outcomes: 'c' vs 'b'",
+          },
+        ],
+      },
+      {
+        id: "stack-simplify-path",
+        title: "Unix Directory Path Simplifier",
+        difficulty: "DSA Easy-Medium",
+        conceptContext:
+          "Split the path by '/' to inspect directory movements. Ignore empty or single-dot '.' entries as they represent the current directory. When encountering double-dots '..', pop the last directory off our stack (moving up one parent levels). For anything else, push it onto the stack as a nested folder.",
+        description:
+          "Resolve complex relative paths down to clean canonical Unix files.\n\nWrite a function `simplifyPath(path)` that takes an absolute Unix file path (e.g., `'/home//foo/../bar/'`) and simplifies it to the canonical form.\n\nYour canonical form must start with a single `'/'`, directories must be separated by a single `'/'`, the path must not end with a trailing `'/'`, and it must only contain directory names (excluding current '.' or parent '..' jumps).",
+        codeTemplate: `function simplifyPath(path) {
+  // Split path elements, process directory traversals using a stack, and join them with /
+  
+}`,
+        functionName: "simplifyPath",
+        hints: [
+          "Split the path string by '/' using path.split('/'). This gives a clean array of parts.",
+          "Initialize a directory stack: const stack = [].",
+          "Iterate over parts: if part matches '' or '.', skip it. If part matches '..', pop from stack. Otherwise, push part.",
+          "Join the stack with '/' and prefix with '/' to specify absolute file coordinate: '/' + stack.join('/')",
+        ],
+        explanation:
+          "Operating system shells dynamically normalize messy path lines down to absolute disk directories using directory trees.",
+        testCases: [
+          {
+            id: 1,
+            input: ["/home/"],
+            expected: "/home",
+            description: "Frees trailing slashes cleanly",
+          },
+          {
+            id: 2,
+            input: ["/home//foo/"],
+            expected: "/home/foo",
+            description: "Collapses repeating path slashes",
+          },
+          {
+            id: 3,
+            input: ["/../"],
+            expected: "/",
+            description: "Prevents navigating past root directories",
+          },
+          {
+            id: 4,
+            input: ["/a/./b/../../c/"],
+            expected: "/c",
+            description: "Applies parent folder jumps accurately",
+          },
+        ],
+      },
+      {
+        id: "stack-next-greater",
+        title: "Next Greater Element Tracker",
+        difficulty: "DSA Easy-Medium",
+        conceptContext:
+          "Maintain elements in a monotonic stack (sorted order). For each element, while the stack is not empty and the current element is greater than the element represented by the top of the stack, pop from the stack and map that popped element's next-greater value.",
+        description:
+          "Locate successor values dynamically.\n\nWrite a function `nextGreaterElement(nums)` that accepts an array of integers and returns an array of the same length containing the 'next greater' element for each item.\n\nThe next greater element of a value at index `i` is the first element to its right that is strictly greater than `nums[i]`. If no greater element exists to its right, assign a default value of `-1` for that index coordinate.",
+        codeTemplate: `function nextGreaterElement(nums) {
+  // Use a stack to track pending elements that are looking for their next greater successor
+  
+}`,
+        functionName: "nextGreaterElement",
+        hints: [
+          "Initialize a results array filled with -1 of length nums.length.",
+          "Initialize an empty stack: const stack = [] which will store *indexes*.",
+          "Iterate through nums from index 0 to nums.length - 1.",
+          "Within a loop: while (stack.length > 0 && nums[i] > nums[stack[stack.length - 1]]), pop the top index from the stack, and assign results[poppedIdx] = nums[i].",
+          "Push the current index `i` onto the stack.",
+        ],
+        explanation:
+          "Monotonic stacks pre-solve upcoming threshold values in continuous stream calculations, optimizing O(N^2) checks to O(N).",
+        testCases: [
+          {
+            id: 1,
+            input: [[4, 5, 2, 25]],
+            expected: [5, 25, 25, -1],
+            description: "Matches standard list with scattered greater jumps",
+          },
+          {
+            id: 2,
+            input: [[13, 7, 6, 12]],
+            expected: [-1, 12, 12, -1],
+            description:
+              "Handles falling values and terminal boundaries correctly",
+          },
+          {
+            id: 3,
+            input: [[5, 4, 3, 2, 1]],
+            expected: [-1, -1, -1, -1, -1],
+            description: "Returns -1 for strictly decreasing sequences",
+          },
+        ],
+      },
+      {
+        id: "stack-evaluate-rpn",
+        title: "Reverse Polish Expression Evaluator",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "In Reverse Polish Notation (RPN), operators follow their operands. Iterate tokens: if the token is an integer, push it to our stack. If the token is an operator (+, -, *, /), pop the second operand first (right), then the first operand (left). Apply math, and push results back to evaluate progressively.",
+        description:
+          "Design a stack-based equation calculator!\n\nWrite a function `evalRPN(tokens)` that evaluates an arithmetic expression presented in Reverse Polish Notation. Operators are represented by the strings `'+'`, `'-'`, `'*'`, and `'/'`.\n\nAssume valid input arrays. Division should perform integer division (truncating toward zero, e.g., floating outcomes like `1.5` truncate to `1`, while `-1.5` truncates to `-1`).",
+        codeTemplate: `function evalRPN(tokens) {
+  // Loop through tokens, push numbers, and evaluate binary expressions utilizing popped operands
+  
+}`,
+        functionName: "evalRPN",
+        hints: [
+          "Prepare a stack to hold numerical arguments: const stack = [].",
+          "For each token: if isNaN(Number(token)) is false, push the number representation: stack.push(Number(token)).",
+          "If it is an operator: pop the right operand: const b = stack.pop(), then pop the left operand: const a = stack.pop().",
+          "Evaluate the operator on a and b (e.g. standard +, -, *, or Math.trunc(a / b) for division) and push the answer back to the stack.",
+          "Return the sole remaining element in the stack.",
+        ],
+        explanation:
+          "Compiler engines convert nesting mathematical brace expressions into stack queues to safely execute operations on CPU registers.",
+        testCases: [
+          {
+            id: 1,
+            input: [["2", "1", "+", "3", "*"]],
+            expected: 9,
+            description: "Calculates (2 + 1) * 3 = 9 correctly",
+          },
+          {
+            id: 2,
+            input: [["4", "13", "5", "/", "+"]],
+            expected: 6,
+            description:
+              "Computes 4 + (13 / 5) with zero-truncated division cleanly",
+          },
+          {
+            id: 3,
+            input: [
+              [
+                "10",
+                "6",
+                "9",
+                "3",
+                "+",
+                "-11",
+                "*",
+                "/",
+                "*",
+                "17",
+                "+",
+                "5",
+                "+",
+              ],
+            ],
+            expected: 22,
+            description:
+              "Correctly handles deep compound calculations and negative signs",
           },
         ],
       },
@@ -3151,209 +3178,754 @@ try {
   },
   {
     id: "fcc-basic-algorithms",
-    title: "Basic DSA Scripting",
+    title: "Basic Data Structure",
     shortDescription:
-      "Master classic string, array, and computational routines designed for JavaScript fluency.",
+      "Master modern array methods, bracket notations, object destructuring, and ES6+ collection iterations in JavaScript.",
     longExplanation:
-      "These fundamental algorithmic exercises build essential coding agility. They focus on string splits, slice operations, loops, filtering patterns, and multidimensional array slicing. Regular practice of these basic structures establishes structural flow-control intuition that transfers to advanced software architectures.",
-    codeSnippet: `// Example: String splitting & slicing sequences
-const word = "JavaScript";
-const slice = word.slice(0, 4); // "Java"
-const parts = "reps-reps-reps".split("-"); // ["reps", "reps", "reps"]`,
+      "These exercises build elite collection management skills using modern JavaScript. You will master bracket lookups, in-place list operations (push, shift), non-destructive cloning with the spread operator (`...`), element presence checking using `.includes()` (the clean ES6 successor to `indexOf`), dynamic updates using computed property keys, object destructuring, and key-value scanning with `Object.entries()`.",
+    codeSnippet: `// Example: ES6 Non-destructive update & Computed Properties
+const updateField = (user, key, val) => ({
+  ...user,
+  preferences: { ...user.preferences, [key]: val }
+});`,
     exercises: [
       {
-        id: "fcc-reverse-string",
-        title: "Reverse a String",
+        id: "ds-cart-queue",
+        title: "Shopping Cart Queue Mutator",
         difficulty: "Warm-up",
         conceptContext:
-          "Strings are immutable, but we can reverse them by splitting them into an array of characters, reversing the array, and joining them back: `str.split('').reverse().join('')`.",
+          "In modern JavaScript, we write functions with robust defaults: `function manageCart(cart = [], ...)` (ES6 Default Parameters). To add or remove items, use in-place methods like `push()` (add to end), `unshift()` (add to start), `pop()` (remove from end), and `shift()` (remove from start).",
         description:
-          "Write a function `reverseString(str)` that reverses the provided string argument and returns the reversed string outcome.",
-        codeTemplate: `function reverseString(str) {
-  // Split, reverse sequence, and join elements back
+          "Write a function `manageCartQueue(cart = [], action, item)` that takes a `cart` array, an `action` string ('push', 'unshift', 'pop', or 'shift'), and an optional `item` string.\n\n- If the action is `'push'`, add the item to the end of the cart and return the cart.\n- If the action is `'unshift'`, add the item to the start of the cart and return the cart.\n- If the action is `'pop'`, remove the last item from the cart and return the cart.\n- If the action is `'shift'`, remove the first item from the cart and return the cart.\n\nYour code must mutate the original array in-place and return the updated array, leveraging ES6 parameters where possible.",
+        codeTemplate: `function manageCartQueue(cart = [], action, item) {
+  // Mutate cart ordering leveraging push, pop, shift, and unshift
   
 }`,
-        functionName: "reverseString",
+        functionName: "manageCartQueue",
         hints: [
-          "Convert your string into an array of letters using split: const arr = str.split('');.",
-          "Invoke the array method 'reverse()' to reverse the array in place: arr.reverse();.",
-          "Merge the characters back together in a single string with join: return arr.join('');.",
+          "Use ES6 default parameters to ensure `cart` is safely initialized to an empty array.",
+          "Check the action string using a clean switch statement or dynamic if-else conditions.",
+          "Invoke the corresponding method: `cart.push(item)`, `cart.unshift(item)`, `cart.pop()`, or `cart.shift()`, then return the updated cart.",
         ],
         explanation:
-          "Employs split, reverse, and join array adapters to reverse characters.",
+          "Deepens your baseline knowledge of array order modifiers, using ES6 default parameter safeguards.",
         testCases: [
           {
             id: 1,
-            input: ["hello"],
-            expected: "olleh",
-            description: "Reverses simple lowercase string",
+            input: [["laptop", "mouse"], "push", "keyboard"],
+            expected: ["laptop", "mouse", "keyboard"],
+            description: "Pushes item to end of cart",
           },
           {
             id: 2,
-            input: ["Howdy"],
-            expected: "ydwoH",
-            description: "Reverses camel/capitalized strings",
-          },
-        ],
-      },
-      {
-        id: "fcc-confirm-ending",
-        title: "Confirm the Suffix Ending",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "Verify the tail section of words. While ES6 provides `.endsWith()`, you can implement custom index slices: `str.slice(negativeOffset) === target`.",
-        description:
-          "Write a function `confirmEnding(str, target)` that checks if a string ends with the specified target substring without utilizing ES6 `endsWith()`.",
-        codeTemplate: `function confirmEnding(str, target) {
-  // Use negative index slicing to capture tail pieces of the string
-  
-}`,
-        functionName: "confirmEnding",
-        hints: [
-          "Find target length: const len = target.length;.",
-          "Slice the end of str using negative length index: const endSlice = str.slice(-len);.",
-          "Return if endSlice matches target strictly: return endSlice === target;.",
-        ],
-        explanation:
-          "Safely monitors suffix conditions from string offsets using negative parameters inside slice operations.",
-        testCases: [
-          {
-            id: 1,
-            input: ["Bastian", "n"],
-            expected: true,
-            description: "Matches trailing letter 'n' successfully",
-          },
-          {
-            id: 2,
-            input: ["Congratulation", "on"],
-            expected: true,
-            description: "Matches trailing multi-character 'on'",
+            input: [["laptop", "mouse"], "unshift", "charger"],
+            expected: ["charger", "laptop", "mouse"],
+            description: "Unshifts item to beginning of cart",
           },
           {
             id: 3,
-            input: ["Connor", "n"],
-            expected: false,
-            description: "Identifies mismatches at the end of strings",
+            input: [["laptop", "mouse"], "pop"],
+            expected: ["laptop"],
+            description: "Pops last item out of cart",
+          },
+          {
+            id: 4,
+            input: [["laptop", "mouse"], "shift"],
+            expected: ["mouse"],
+            description: "Shifts first item out of cart",
           },
         ],
       },
       {
-        id: "fcc-repeat-string",
-        title: "Repeat String Repeat String",
+        id: "ds-catalog-splicer",
+        title: "Store Catalog Splicer & Cloner",
         difficulty: "DSA Easy",
         conceptContext:
-          "Using loop accumulation to clone text patterns without standard prototype utilities: `let out = ''; out += str`.",
+          "Sometimes we need to insert elements midpoint. Modify arrays in-place using `splice(index, deleteCount, ...newItems)`. To avoid side-effects elsewhere, copy the mutated output immediately into a brand new array utilizing the ES6 Spread Operator (`[...]`).",
         description:
-          "Write a function `repeatStringNumTimes(str, num)` that repeats a given string `str` exactly `num` times. Return an empty string if `num` is negative or zero, and do not use standard `String.prototype.repeat()`.",
-        codeTemplate: `function repeatStringNumTimes(str, num) {
-  // Accumulate the string patterns iteratively with loops or conditions
+          "Let's perform a bulk replacement operation on our store catalog lists!\n\nWrite a function `updateCatalog(catalog, startIndex, deleteCount, newItems)` that modifies the original `catalog` array in-place: removes `deleteCount` elements starting at index `startIndex` and inserts the contents of the `newItems` array at that location.\n\nFinally, return a brand new shallow copy of the modified catalog using the ES6 Spread Operator (`...`).",
+        codeTemplate: `function updateCatalog(catalog, startIndex, deleteCount, newItems) {
+  // Splice new items into catalog, then clone and return using spread operator
   
 }`,
-        functionName: "repeatStringNumTimes",
+        functionName: "updateCatalog",
         hints: [
-          "If num is <= 0, return an empty string immediately: return '';.",
-          "Declare an accumulator string accumulator = '';.",
-          "Use a for loop running 'num' times, adding 'str' to 'accumulator' in each iteration.",
-          "Return the resulting accumulator string.",
+          "Call splice on catalog: catalog.splice(startIndex, deleteCount, ...newItems);.",
+          "The '...' spread syntax inside splice argument unpacks the entire `newItems` array elements inline.",
+          "To copy the array and return, spread it inside brackets: return [...catalog]; to avoid mutating references elsewhere.",
         ],
         explanation:
-          "Constructs custom repetitive text templates using accumulator variables.",
+          "Utilizes splice combined with ES6 spread operations to insert custom sections and return fresh shallow copies.",
         testCases: [
           {
             id: 1,
-            input: ["abc", 3],
-            expected: "abcabcabc",
-            description: "Repeats string 3 times",
-          },
-          {
-            id: 2,
-            input: ["*", 8],
-            expected: "********",
-            description: "Repeats single punctuation characters accurately",
-          },
-          {
-            id: 3,
-            input: ["abc", -2],
-            expected: "",
-            description: "Returns empty bounds on negative indices",
-          },
-        ],
-      },
-      {
-        id: "fcc-truncate-string",
-        title: "Truncate a String",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "Limit strings to max length thresholds, appending visual truncation markers to denote overflows: `str.slice(0, num) + '...'`.",
-        description:
-          "Write a function `truncateString(str, num)` that truncates a string if its length is strictly greater than `num`, appending `'...'` at the end. If not, return the unmodified string.",
-        codeTemplate: `function truncateString(str, num) {
-  // Slice characters cleanly to stay within constraints and attach suffix ellipses
-  
-}`,
-        functionName: "truncateString",
-        hints: [
-          "Check string length: if (str.length > num).",
-          "If true, retrieve slice from 0 to num: str.slice(0, num) and concatenate '...'.",
-          "Otherwise, return the string as-is without any modification.",
-        ],
-        explanation:
-          "Enforces max-length boundaries on user inputs, formatting preview text segments.",
-        testCases: [
-          {
-            id: 1,
-            input: ["A-tisket a-tasket A green and yellow basket", 8],
-            expected: "A-tisket...",
-            description: "Truncates longer sentences properly",
-          },
-          {
-            id: 2,
-            input: ["Absolutely Longer", 20],
-            expected: "Absolutely Longer",
+            input: [["shirt", "pants", "hat"], 1, 1, ["shoes", "socks"]],
+            expected: ["shirt", "shoes", "socks", "hat"],
             description:
-              "Ignores truncation when length is below threshold limit",
+              "Splices index 1, replaces pants with shoes and socks correctly",
+          },
+          {
+            id: 2,
+            input: [["apple", "banana"], 0, 2, ["orange"]],
+            expected: ["orange"],
+            description: "Overwrites entire catalog correctly",
           },
         ],
       },
       {
-        id: "fcc-chunky-monkey",
-        title: "Chunky Monkey Array Split",
+        id: "ds-shelf-finder",
+        title: "Multi-Dimensional Warehouse Locator",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Modern JavaScript champions elegant boolean checking over complex indexing equations. Instead of utilizing older patterns like `array.indexOf(item) !== -1`, we use the cleaner ES6 method `array.includes(item)` which returns a clean boolean.",
+        description:
+          "In our warehouse, products are organized across multiple rows of shelves, styled as a 2D multi-dimensional array `shelves` (e.g. `[['apples', 'pears'], ['bananas'], ['lemons']]`). We need to scan our inventory and report which shelf indices contain a target product.\n\nWrite a function `findProductShelves(shelves, target)` that iterates over the outer `shelves` array and checks if the inner shelf contains the `target` product using `includes()`. Return a new array with all matching shelf indices.",
+        codeTemplate: `function findProductShelves(shelves, target) {
+  // Loop shelves and use the ES6 includes() method to locate shelf numbers containing target product
+  
+}`,
+        functionName: "findProductShelves",
+        hints: [
+          "Initialize an empty results index list or use modern array aggregators.",
+          "Iterate over shelves. You can use standard loops or modern loops like `for (let i = 0; i < shelves.length; i++)`.",
+          "For each inner shelf array, check if it contains the target product using `shelves[i].includes(target)` of ES6 instead of `indexOf`.",
+          "If the condition is met, push the current index `i` into the matching array.",
+        ],
+        explanation:
+          "Combines looping logic with ES6 includes() boolean presence filters.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [["apples", "pears"], ["bananas"], ["apples", "oranges"]],
+              "apples",
+            ],
+            expected: [0, 2],
+            description: "Identifies apple shelf coordinates",
+          },
+          {
+            id: 2,
+            input: [[["jeans", "t-shirt"], ["shoes"]], "hat"],
+            expected: [],
+            description: "Returns empty list when item is absent from shelves",
+          },
+        ],
+      },
+      {
+        id: "ds-profile-updater",
+        title: "Nested User Preference Registrar",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Object keys map properties. In ES6, we can update keys dynamically using Computed Property Names: `[targetKey]: newValue`. To check if property keys exist, use `.hasOwnProperty()` (or ES2022 `Object.hasOwn()`), and delete obsolete objects properties using the `delete` keyword.",
+        description:
+          "Let's manage registered user profile metadata! Each user has a profile of user details mapping a nested `preferences` object.\n\nWrite a function `manageUserProfile(profile, targetKey, newValue, purgeKey)` that:\n\n1. Adds or updates a property `targetKey` with value `newValue` inside the nested `profile.preferences` object (use dynamic bracket notation `profile.preferences[targetKey] = newValue`).\n2. Checks if an outdated property `purgeKey` is present inside `profile.preferences` using `.hasOwnProperty()`. If present, delete it using the `delete` keyword.\n3. Returns the modified complete `profile` object.",
+        codeTemplate: `function manageUserProfile(profile, targetKey, newValue, purgeKey) {
+  // Modify targetKey using brackets, check and delete purgeKey in profile.preferences
+  
+}`,
+        functionName: "manageUserProfile",
+        hints: [
+          "Access the inner preference using brackets: `profile.preferences[targetKey] = newValue;`.",
+          "Check presence using hasOwnProperty: `if (profile.preferences.hasOwnProperty(purgeKey))`.",
+          "If present, delete: `delete profile.preferences[purgeKey];`.",
+          "Return the modified parent profile object.",
+        ],
+        explanation:
+          "Validates object mutations and key property checks using dynamic key entries.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              {
+                id: 101,
+                username: "alex",
+                preferences: { theme: "light", newsletter: true },
+              },
+              "theme",
+              "dark",
+              "newsletter",
+            ],
+            expected: {
+              id: 101,
+              username: "alex",
+              preferences: { theme: "dark" },
+            },
+            description:
+              "Updates theme preference to dark and deletes the newsletter key successfully",
+          },
+          {
+            id: 2,
+            input: [
+              { id: 102, username: "sam", preferences: { fontSize: 14 } },
+              "colorScheme",
+              "high-contrast",
+              "language",
+            ],
+            expected: {
+              id: 102,
+              username: "sam",
+              preferences: { fontSize: 14, colorScheme: "high-contrast" },
+            },
+            description:
+              "Adds colorScheme safely and leaves structural profile parts intact without errors",
+          },
+        ],
+      },
+      {
+        id: "ds-inventory-auditor",
+        title: "Iterative Category Stock Auditor",
         difficulty: "DSA Medium",
         conceptContext:
-          "Slice arrays to partition sequential numbers into smaller buckets of fixed sizes: `arr.slice(start, start + size)`.",
+          "Instead of old-school `for...in` loops which run the risk of scanning prototype chain keys, modern JavaScript leverages `Object.entries(obj)` which returns an array of `[key, value]` pairs, allowing us to utilize array destructuring and functional iterators.",
         description:
-          "Write a function `chunkArrayInGroups(arr, size)` that splits an array into nested subarrays, where each subarray has a length equal to `size` (or smaller for the leftover final chunk).",
-        codeTemplate: `function chunkArrayInGroups(arr, size) {
-  // Partition original arrays into smaller uniform arrays using step index slices
+          "To achieve complete data structures mastery, let's build an e-commerce inventory reporting auditor using modern ES6+ object entries techniques!\n\nWrite a function `auditStockGaps(inventory, minThreshold)` that audits a nested store `inventory` object (where categories map product names to their custom current stock counts). Your auditor must:\n\n1. Iterate through categories (keys) inside `inventory` using modern object iteration blocks.\n2. In each active category, collect all item keys whose values (stock) are strictly less than `minThreshold` and push them into a single `lowStockItems` flat list.\n3. Using `Object.keys()`, extract a list of categories that contain *one or more* low-stock items and store them inside an array named `flaggedCategories`.\n\nReturn a report object formatted precisely as follows:\n```javascript\n{\n  lowStockItems: [ ...all low stocked item names... ],\n  flaggedCategories: [ ...audited categories containing low items... ]\n}\n```",
+        codeTemplate: `function auditStockGaps(inventory, minThreshold) {
+  // Scan inventory categories using ES6 iterations, compile lowStockItems and flaggedCategories
   
 }`,
-        functionName: "chunkArrayInGroups",
+        functionName: "auditStockGaps",
         hints: [
-          "Declare an empty results array: const groups = [];.",
-          "Initialize loop index starting at 0, incrementing by 'size' each step: for (let i = 0; i < arr.length; i += size).",
-          "Push slices onto groups: groups.push(arr.slice(i, i + size));.",
-          "Return the resulting groups array.",
+          "Initialize lowStockItems = [] and flaggedCategories = [].",
+          "Convert inventory to pairs using `Object.entries(inventory)`. Loop them: `for (const [category, products] of Object.entries(inventory)) { ... }`.",
+          "Inside, loop products also using `Object.entries(products)`: `for (const [product, stock] of Object.entries(products)) { ... }`.",
+          "Using array destructuring is cleaner! If `stock < minThreshold`, push `product` into `lowStockItems`.",
+          "If any product inside the category was under the threshold, push `category` into `flaggedCategories`.",
         ],
         explanation:
-          "Chunks arrays into modular nested arrays, perfect for grid layouts or pagination.",
+          "Integrates nested dictionary iteration using ES6 Object.entries() and destructuring.",
         testCases: [
           {
             id: 1,
-            input: [["a", "b", "c", "d"], 2],
-            expected: [
-              ["a", "b"],
-              ["c", "d"],
+            input: [
+              {
+                grocery: { apples: 12, bananas: 3 },
+                beverages: { milk: 1, juice: 10 },
+              },
+              5,
             ],
-            description: "Dismantles even letter arrays into buckets of two",
+            expected: {
+              lowStockItems: ["bananas", "milk"],
+              flaggedCategories: ["grocery", "beverages"],
+            },
+            description:
+              "Correctly groups bananas and milk under the min threshold, flagging both categories",
           },
           {
             id: 2,
-            input: [[0, 1, 2, 3, 4, 5], 4],
-            expected: [
-              [0, 1, 2, 3],
-              [4, 5],
+            input: [
+              {
+                apparel: { shirts: 20 },
+                accessories: { sunglasses: 0 },
+              },
+              1,
             ],
-            description: "Handles overflowing remainder chunks beautifully",
+            expected: {
+              lowStockItems: ["sunglasses"],
+              flaggedCategories: ["accessories"],
+            },
+            description:
+              "Audits accessory list properly while discarding ample stock items from other categories",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "basic-algorithm-scripting",
+    title: "Basic Algorithm Scripting",
+    shortDescription:
+      "Solve standard frequency scans, word counters, and target checkers using declarative, functional ES6+ routines.",
+    longExplanation:
+      "This entry-level section explores modern procedural and declarative algorithm design in JavaScript. You will master string spreads, regex cleansing, frequency mapping with `.reduce()`, alphabetical and multi-variable descending sort recipes, and targeted array filtering. Practicing these patterns establishes the fluent intuition required for modern functional data pipelines.",
+    codeSnippet: `// Example: Modern ES6 word frequency counts with reduce
+const words = "apple banana apple".split(" ");
+const freq = words.reduce((acc, word) => ({
+  ...acc,
+  [word]: (acc[word] || 0) + 1
+}), {});`,
+    exercises: [
+      {
+        id: "count-char-occurrence",
+        title: "Character Speed Scanner",
+        difficulty: "Warm-up",
+        conceptContext:
+          "In modern ES6+, we can avoid verbose for-loops by spreading a string into a character array `[...str]` and filtering it: `const matches = [...str].filter(char => ...)`.",
+        description:
+          "Write a function `countCharOccurrence(str, char)` that counts how many times a given single character `char` appears in the string `str`. Your implementation MUST be case-insensitive and should showcase elegant, blockless ES6 arrow function syntax.",
+        codeTemplate: `function countCharOccurrence(str, char) {
+  // Count specific letters inside input sentences (case-insensitive)
+  
+}`,
+        functionName: "countCharOccurrence",
+        hints: [
+          "Convert your string into a character array using the modern ES6 spread operator: `[...str]`.",
+          "Use the `.filter()` array helper with an arrow function to compare characters in a case-insensitive manner (e.g. converting both to lowercase).",
+          "Return the length of the filtered array.",
+        ],
+        explanation:
+          "Employs ES6 string spreading combined with modern array filters to replace traditional imperative loops.",
+        testCases: [
+          {
+            id: 1,
+            input: ["AbcdA", "a"],
+            expected: 2,
+            description: "Counts case-insensitive characters properly",
+          },
+          {
+            id: 2,
+            input: ["hello", "l"],
+            expected: 2,
+            description: "Tracks double repeating letters",
+          },
+          {
+            id: 3,
+            input: ["abc", "z"],
+            expected: 0,
+            description: "Handles cases with zero occurrences gracefully",
+          },
+        ],
+      },
+      {
+        id: "build-frequency-map",
+        title: "Sentence Word Frequency Map",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Instead of declaring an empty object variable and mutating it inside a manual loop, ES6+ advocates utilizing the `.reduce()` method to accumulate and build up our frequency map cleanly.",
+        description:
+          "Let's expand letter scans to full sentence word counting!\n\nWrite a function `buildFrequencyMap(sentence)` that takes a sentence string, splits it by spaces, and returns an object containing the lowercase count of each word. Make sure to remove any common trailing punctuation like commas, periods, exclamation points, and question marks `[, . ! ?]` beforehand so words parse cleanly, and implement it using ES6 `.reduce()`.",
+        codeTemplate: `function buildFrequencyMap(sentence) {
+  // Split words by space, strip basic punctuation, and map frequencies
+  
+}`,
+        functionName: "buildFrequencyMap",
+        hints: [
+          "Clean trailing punctuation elements using regex: `sentence.replace(/[.,!?]/g, '')`.",
+          "Convert the cleaned string to lowercase and split it by spaces to isolate individual words in an array.",
+          "Call `.reduce((map, word) => { ... }, {})` to accumulate counts into a fresh lookup object, keeping your function purely functional.",
+        ],
+        explanation:
+          "Translates primitive lists into a hashed frequency lookup table utilizing ES6 reduce aggregators.",
+        testCases: [
+          {
+            id: 1,
+            input: ["apple banana, apple! BANANA."],
+            expected: { apple: 2, banana: 2 },
+            description: "Strips punctuation and lowercases words correctly",
+          },
+          {
+            id: 2,
+            input: ["hello hello world"],
+            expected: { hello: 2, world: 1 },
+            description: "Understands simple spaced sentences correctly",
+          },
+        ],
+      },
+      {
+        id: "filter-high-frequency-words",
+        title: "Top-Tier Keyword Selector",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Combine `Object.keys()` with the `.filter()` and `.sort()` array methods to easily chain object property filtering. Chaining these methods is an essential skill in contemporary JavaScript development.",
+        description:
+          "Now let's filter our dynamic frequency outputs!\n\nWrite a function `filterHighFrequencyWords(sentence, threshold)` that calculates word frequencies in a sentence (ignoring punctuation and casings) and returns an array of unique words that appear at least `threshold` times. This output array MUST be sorted alphabetically using modern array chaining.",
+        codeTemplate: `function filterHighFrequencyWords(sentence, threshold) {
+  // 1. Build frequency map
+  // 2. Filter keys that meet or exceed the threshold
+  // 3. Return the filtered words array sorted alphabetically
+  
+}`,
+        functionName: "filterHighFrequencyWords",
+        hints: [
+          "First compute word frequencies identical to your buildFrequencyMap routine or call it.",
+          "Extract all dictionary keys into an array using ES6 `Object.keys(freq)`.",
+          "Perform a `.filter(word => freq[word] >= threshold)` on these keys.",
+          "Invoke `.sort()` on the resulting list to ensure alphabetized ordering, utilizing succinct method chaining.",
+        ],
+        explanation:
+          "Integrates dictionary mapping with functional filtering and alphabetical array sorting.",
+        testCases: [
+          {
+            id: 1,
+            input: ["the dog chased the cat and the dog", 2],
+            expected: ["dog", "the"],
+            description:
+              "Filters words and returns them in perfect alphabetical order",
+          },
+          {
+            id: 2,
+            input: ["sweet sour sweet sweet salty", 3],
+            expected: ["sweet"],
+            description: "Extracts single high-frequency exceptions correctly",
+          },
+        ],
+      },
+      {
+        id: "find-most-frequent-k-words",
+        title: "Highly Popular Topic Sorter",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Declarative multi-criteria sorting is a primary pattern in modern web apps. We compare values descending (`freq[b] - freq[a]`) and gracefully default to an alphabetical compare (`a.localeCompare(b)`) inside a single arrow function comparator.",
+        description:
+          "Let's expand on our frequency sorters!\n\nWrite a function `findMostFrequentKWords(sentence, k)` that processes the sentence, counts individual word occurrences (lowercased without punctuation), and returns an array of the top `k` most frequent words. Sort the output in descending order of frequency. If multiple words have the exact same frequency, sort those words in alphabetical order.",
+        codeTemplate: `function findMostFrequentKWords(sentence, k) {
+  // Extract top k elements sorted by count descending, then alphabetically on count ties
+  
+}`,
+        functionName: "findMostFrequentKWords",
+        hints: [
+          "Compile word frequency counts just like prior steps.",
+          "Extract the unique keys list, then call `.sort((a, b) => ...)` with a custom comparison arrow function.",
+          "Compare the counts: `freq[b] !== freq[a] ? freq[b] - freq[a] : a.localeCompare(b)`.",
+          "Slice the sorted keys array from 0 to k using `.slice(0, k)`.",
+        ],
+        explanation:
+          "Combines frequency mapping with multi-criteria custom sorting formulas used in analytics engines.",
+        testCases: [
+          {
+            id: 1,
+            input: ["banana apple banana cherry apple banana orange", 2],
+            expected: ["banana", "apple"],
+            description: "Returns top 2 popular items correctly",
+          },
+          {
+            id: 2,
+            input: ["b a c b a c", 2],
+            expected: ["a", "b"],
+            description:
+              "Resolves alphabetical tie-breakers beautifully on identical match counts",
+          },
+        ],
+      },
+      {
+        id: "frequent-subsegment-analyzer",
+        title: "Target Subsegment Search Matcher",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Let's culminate this module by selecting from a list of predefined targets using ES6 array query methods. Use `.reduce()` to track the target with the highest occurrence count, defaulting to `null` if no targets are found in the string.",
+        description:
+          "To complete the frequency progression, let's match frequency indexes against a pre-selected blacklist or category list of search keywords!\n\nWrite a function `frequentSubsegmentAnalyzer(sentence, targets)` that counts word occurrences in `sentence` (case-insensitive, ignoring punctuation) and returns the word from the `targets` array that has the absolute highest frequency count in `sentence`.\n\n- If none of the words in `targets` appear in the sentence at all, return `null`.\n- If there is a tie between multiple targets, return the matching target word that appears *earlier/first* in the `targets` array.",
+        codeTemplate: `function frequentSubsegmentAnalyzer(sentence, targets) {
+  // Match frequency table results against targeted list search queries
+  
+}`,
+        functionName: "frequentSubsegmentAnalyzer",
+        hints: [
+          "Map word frequency counts from sentence first.",
+          "Use `.reduce()` on the `targets` array to choose the word with the highest occurrence count.",
+          "When comparing, check if `freq[curr] > freq[acc]`. If both are equal or curr is not in freq, retain the earlier target.",
+          "Verify if your final computed high score is greater than 0; if not, return `null`.",
+        ],
+        explanation:
+          "Demonstrates practical document analyzer matches, intersecting freeform input grids with target reference datasets.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              "The quick clever fox jumped over the lazy sleeping fox",
+              ["fox", "lazy", "dog"],
+            ],
+            expected: "fox",
+            description:
+              "Selects target word with highest frequency successfully",
+          },
+          {
+            id: 2,
+            input: ["hello world", ["cat", "dog"]],
+            expected: null,
+            description:
+              "Returns null when zero target criteria matches are found",
+          },
+          {
+            id: 3,
+            input: ["cat dog mouse", ["dog", "cat"]],
+            expected: "dog",
+            description:
+              "Resolves ties in favor of array index priorities inside the targets array",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "intermediate-algorithm-scripting",
+    title: "Intermediate Algorithm Scripting",
+    shortDescription:
+      "Progress through intermediate DSA problems covering interval scheduling, overlapping ranges, and timeline searches.",
+    longExplanation:
+      "This structural module coordinates multidimensional schedule structures through sorted range intervals `[start, end]`. Learn to group serial lists, merge temporal overlaps, insert calendar slots, and parse time boundaries dynamically.",
+    codeSnippet: `// Example: standard interval sorting
+const bounds = [[12, 16], [1, 5]];
+bounds.sort((a, b) => a[0] - b[0]);
+console.log(bounds); // [[1, 5], [[12, 16]]`,
+    exercises: [
+      {
+        id: "find-continuous-ranges",
+        title: "Continuous Integer Range Compactor",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Coordinate adjacent indexes inside sorted systems. Compare adjacent cell variables: `nums[i] - nums[i-1] === 1`. Group continuous items into range brackets `[start, end]`.",
+        description:
+          "Write a function `findContinuousRanges(nums)` that takes a sorted array of unique integers and groups adjacent sequential numbers together, returning them as a list of interval coordinate tuples `[start, end]`.",
+        codeTemplate: `function findContinuousRanges(nums) {
+  // Pack adjacent sequences into interval bounds [start, end]
+  
+}`,
+        functionName: "findContinuousRanges",
+        hints: [
+          "If nums array is empty, return an empty array [] immediately.",
+          "Initialize a results range array. Track a start = nums[0] and prev = nums[0].",
+          "Loop index from 1 to nums.length: if nums[i] is adjacent (nums[i] === prev + 1), update prev. If not (break in range), push [start, prev] and reset start = nums[i] and prev = nums[i].",
+          "After the loop, push the remaining interval [start, prev].",
+        ],
+        explanation:
+          "Compacts continuous sequences into concise intervals, typical of compression routines.",
+        testCases: [
+          {
+            id: 1,
+            input: [[1, 2, 3, 5, 6, 8]],
+            expected: [
+              [1, 3],
+              [5, 6],
+              [8, 8],
+            ],
+            description:
+              "Packs linear values into three separate compact groups",
+          },
+          {
+            id: 2,
+            input: [[10, 11, 12, 13]],
+            expected: [[10, 13]],
+            description:
+              "Squeezes standard continuous spans into a single block",
+          },
+          {
+            id: 3,
+            input: [[]],
+            expected: [],
+            description: "Correctly handles empty arrays",
+          },
+        ],
+      },
+      {
+        id: "merge-overlapping-intervals",
+        title: "Timeline Overlaps Merger",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Building on the interval data structures. To merge coordinate spans, sort them by starting index: `intervals.sort((a, b) => a[0] - b[0])`. Loop intervals, checking if current start overlaps previous end: `currStart <= prevEnd`.",
+        description:
+          "Now that we can represent integer intervals, let's learn how to merge them when they overlap!\n\nWrite a function `mergeOverlappingIntervals(intervals)` that takes an array of arbitrary nested interval pairs `[start, end]`. It should sort them by start times and merge all overlapping boundaries, returning a new list of consolidated, sorted disjoint intervals.",
+        codeTemplate: `function mergeOverlappingIntervals(intervals) {
+  // Sort by start coordinates, then loop and merge overlapping boundaries
+  
+}`,
+        functionName: "mergeOverlappingIntervals",
+        hints: [
+          "If the input has 1 or 0 intervals, return it immediately.",
+          "Sort intervals ascending by start value: intervals.sort((a, b) => a[0] - b[0]).",
+          "Initialize merged = [intervals[0]]. Loop over remaining intervals: check if current starts <= the end of the last item in merged. If yes, merge end values (update merged[last][1] = Math.max(end, currEnd)). If no, push new interval.",
+        ],
+        explanation:
+          "Standard greedy-scheduler interval merger, consolidating sparse time grids.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                [1, 3],
+                [8, 10],
+                [2, 6],
+                [15, 18],
+              ],
+            ],
+            expected: [
+              [1, 6],
+              [8, 10],
+              [15, 18],
+            ],
+            description:
+              "Merges overlapping intervals and leaves independent bounds untouched",
+          },
+          {
+            id: 2,
+            input: [
+              [
+                [1, 4],
+                [4, 5],
+              ],
+            ],
+            expected: [[1, 5]],
+            description:
+              "Merges intervals with touching boundary numbers together",
+          },
+        ],
+      },
+      {
+        id: "insert-and-merge-interval",
+        title: "Live Event Timeline Inserter",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Build upon your merging logic! To insert a single slot into pre-sorted intervals, either append it and run your full sorting/merging routine, or walk the array inserting it in O(N) linear time and merging overlapping ranges dynamically.",
+        description:
+          "Let's apply our interval merging rules to handle live calendar additions!\n\nWrite a function `insertAndMergeInterval(intervals, newInterval)` that takes a list of pre-sorted, non-overlapping intervals, inserts a `newInterval` tuple into the correct position, and merges any overlapping bounds, returning the updated sorted disjoint intervals array.",
+        codeTemplate: `function insertAndMergeInterval(intervals, newInterval) {
+  // Insert a new event interval into sorted timetables and resolve merge overlaps
+  
+}`,
+        functionName: "insertAndMergeInterval",
+        hints: [
+          "You can push newInterval onto intervals list.",
+          "Then, invoke your mergeOverlappingIntervals function to sort and resolve overlapping ranges efficiently.",
+          "Ensure your code is clean and handles situations where the list begins empty.",
+        ],
+        explanation:
+          "Implements event insertions inside live calendars without breaking disjoint bounds rules.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                [1, 3],
+                [6, 9],
+              ],
+              [2, 5],
+            ],
+            expected: [
+              [1, 5],
+              [6, 9],
+            ],
+            description:
+              "Inserts overlap bounds, joining two segments together",
+          },
+          {
+            id: 2,
+            input: [
+              [
+                [1, 2],
+                [3, 5],
+                [6, 7],
+                [8, 10],
+              ],
+              [4, 8],
+            ],
+            expected: [
+              [1, 2],
+              [3, 10],
+            ],
+            description:
+              "Fuses multiple intervals together upon crossing midpoints",
+          },
+        ],
+      },
+      {
+        id: "find-interval-intersection",
+        title: "Coordinated Free Time Finder",
+        difficulty: "DSA Medium",
+        conceptContext:
+          "Rather than merging ranges, let's find the intersecting areas between two datasets! Use a two-pointer approach, checking if `listA[i]` and `listB[j]` overlap (i.e. `start = Math.max(aStart, bStart)` and `end = Math.min(aEnd, bEnd)`). If `start <= end`, an intersection overlaps! Increment pointers based on who ends first.",
+        description:
+          "Let's extract overlapping segments between two separate timetables!\n\nWrite a function `findIntervalIntersection(listA, listB)` that takes two separate lists of disjoint, sorted intervals, detects all overlapping ranges, and returns a new array of intersection intervals.",
+        codeTemplate: `function findIntervalIntersection(listA, listB) {
+  // Traverse both sorted timetables simultaneously and record intersections
+  
+}`,
+        functionName: "findIntervalIntersection",
+        hints: [
+          "Initialize pointers i = 0, j = 0 and results = [].",
+          "Ensure pointers are in bounds (i < listA.length && j < listB.length).",
+          "Calculate overlap bounds: start = Math.max(listA[i][0], listB[j][0]), end = Math.min(listA[i][1], listB[j][1]).",
+          "If (start <= end), push [start, end] into results.",
+          "Increment pointer (if listA[i][1] < listB[j][1], i++; else j++;).",
+        ],
+        explanation:
+          "Simultaneous linear scans identifying meeting times across discrete schedules.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                [0, 2],
+                [5, 10],
+              ],
+              [
+                [1, 5],
+                [8, 12],
+              ],
+            ],
+            expected: [
+              [1, 2],
+              [5, 5],
+              [8, 10],
+            ],
+            description:
+              "Extracts intersection segments including point intersections",
+          },
+          {
+            id: 2,
+            input: [
+              [[1, 10]],
+              [
+                [2, 3],
+                [5, 7],
+              ],
+            ],
+            expected: [
+              [2, 3],
+              [5, 7],
+            ],
+            description:
+              "Identifies multiple intersections occurring inside a broad master interval",
+          },
+        ],
+      },
+      {
+        id: "schedule-free-slots",
+        title: "Ultimate Team Sync Calendar Finder",
+        difficulty: "DSA Hard",
+        conceptContext:
+          "Outstanding progress! To find common free slots across several people, first flatten and merge everyone's busy intervals into a single timeline using `mergeOverlappingIntervals` logic. Then, scan the gaps in this merged checklist that occur within standard `workingHours`, retaining any slots that span at least `minDuration` units.",
+        description:
+          "To achieve complete mastery, let's build a real calendar scheduler!\n\nWrite a function `scheduleFreeSlots(schedules, workingHours, minDuration)` that takes:\n- `schedules`: an array of individual calendars, where each calendar is a list of busy interval tuples `[start, end]` (e.g., `[[[12, 13], [14, 15]], [[12, 14]]]`)\n- `workingHours`: a tuple representing the start and end of the boundary day `[dayStart, dayEnd]` (e.g., `[9, 17]`)\n- `minDuration`: the minimum duration needed to schedule a free slot\n\nYour task is to merge everyone's busy intervals, look for gaps inside `workingHours`, and return a list of free interval slots that are at least `minDuration` long.",
+        codeTemplate: `function scheduleFreeSlots(schedules, workingHours, minDuration) {
+  // 1. Flatten and merge busy schedules of all members using mergeOverlappingIntervals logic
+  // 2. Walk through gaps inside active workingHours bounds
+  // 3. Filter open segments meeting the minDuration requirement
+  
+}`,
+        functionName: "scheduleFreeSlots",
+        hints: [
+          "Collect all busy intervals of all people into one flat array.",
+          "Sort and merge these busy intervals using your mergeOverlappingIntervals logic.",
+          "Scan the gaps between these busy intervals inside the workingHours boundary [dayStart, dayEnd]. Track current = dayStart; loop sorted merged events: if current < event.start and event.start - current >= minDuration, push [current, event.start]; update current = Math.max(current, event.end).",
+          "If current < dayEnd and dayEnd - current >= minDuration, push [current, dayEnd].",
+        ],
+        explanation:
+          "The ultimate peak of real-world calendar management systems, coordinating multiple schedule streams using interval merging.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                [
+                  [12, 13],
+                  [14, 15],
+                ],
+                [[12, 14]],
+              ],
+              [9, 17],
+              1,
+            ],
+            expected: [
+              [9, 12],
+              [15, 17],
+            ],
+            description:
+              "Coordinates multiple busy calendar timelines and extracts available slots",
+          },
+          {
+            id: 2,
+            input: [[[[9, 10]], [[10, 11]]], [9, 12], 1],
+            expected: [[11, 12]],
+            description: "Detects gaps nicely in touching busy grids",
           },
         ],
       },
