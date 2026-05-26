@@ -1,457 +1,139 @@
-import { useState, useEffect, useMemo } from "react";
-import { AnimatePresence } from "motion/react";
-import { CONCEPTS } from "./data/exercises.js";
-import {
-  KNOWLEDGE_MAP_CATEGORIES,
-  KNOWLEDGE_MAP_TOPICS,
-} from "./data/knowledgeMap.js";
-import { runExerciseTests } from "./utils/executor.js";
-import { triggerOfflineDownload } from "./utils/exporter.js";
+import { Terminal, Play, Check, XCircle } from "lucide-react";
 
-// Import modular sub-components
-import { Header } from "./components/Header.jsx";
-import { ConceptSelector } from "./components/ConceptSelector.jsx";
-import { ExerciseNavigator } from "./components/ExerciseNavigator.jsx";
-import { TheoryPanel } from "./components/TheoryPanel.jsx";
-import { ProblemGoalPanel } from "./components/ProblemGoalPanel.jsx";
-import { CodeWorkspace } from "./components/CodeWorkspace.jsx";
-import { AssertionConsole } from "./components/AssertionConsole.jsx";
-import { Roadmap } from "./components/Roadmap.jsx";
-import { MasteryCelebration } from "./components/MasteryCelebration.jsx";
-
-import { CheckCircle, Code, BookOpen } from "lucide-react";
-
-export default function App() {
-  // Navigation / Active Selection State
-  const [activeConceptId, setActiveConceptId] = useState(CONCEPTS[0].id);
-  const [activeExerciseIndex, setActiveExerciseIndex] = useState(0);
-  const [journeyPreviewIdx, setJourneyPreviewIdx] = useState(0);
-  const [showPrevReference, setShowPrevReference] = useState(false);
-
-  // Sync journey preview index when active exercise changes
-  useEffect(() => {
-    setJourneyPreviewIdx(activeExerciseIndex);
-  }, [activeExerciseIndex, activeConceptId]);
-
-  // Left side Tab selection ("theory" | "problem")
-  const [leftTab, setLeftTab] = useState("problem");
-
-  // User source code dictionary
-  const [userCodes, setUserCodes] = useState({});
-
-  // Solved exercise tracking
-  const [solvedExercises, setSolvedExercises] = useState({});
-
-  // Active testing states
-  const [testResults, setTestResults] = useState(null);
-  const [isRunningTests, setIsRunningTests] = useState(false);
-  const [activeHintsCount, setActiveHintsCount] = useState(0);
-
-  // Knowledge Map / Curriculum view states
-  const [viewMode, setViewMode] = useState("sandbox"); // "sandbox" | "knowledge"
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("all");
-  const [completedTopics, setCompletedTopics] = useState({});
-  const [expandedTopicId, setExpandedTopicId] = useState(null);
-
-  // Adjustable workspace height state with localStorage auto-saving
-  const [workspaceHeight, setWorkspaceHeight] = useState(() => {
-    try {
-      const stored = localStorage.getItem("learnjs_workspace_height");
-      return stored ? parseInt(stored, 10) : 500; // default for 20 lines
-    } catch {
-      return 500;
-    }
-  });
-
-  const saveWorkspaceHeight = (h) => {
-    setWorkspaceHeight(h);
-    try {
-      localStorage.setItem("learnjs_workspace_height", h.toString());
-    } catch (e) {
-      console.warn("Storage write failed", e);
-    }
-  };
-
-  // Trigger browser download for the offline practice suite
-  const handleExportToJS = () => {
-    triggerOfflineDownload();
-  };
-
-  // Load and apply persistent progress from localStorage
-  useEffect(() => {
-    try {
-      const defaultTemplates = {};
-      CONCEPTS.forEach((c) => {
-        c.exercises.forEach((e) => {
-          defaultTemplates[e.id] = e.codeTemplate;
-        });
-      });
-
-      const storedCodes = localStorage.getItem("learnjs_play_codes");
-      if (storedCodes) {
-        setUserCodes({ ...defaultTemplates, ...JSON.parse(storedCodes) });
-      } else {
-        setUserCodes(defaultTemplates);
-      }
-
-      const storedProgress = localStorage.getItem("learnjs_play_progress");
-      if (storedProgress) {
-        setSolvedExercises(JSON.parse(storedProgress));
-      }
-
-      const storedTopics = localStorage.getItem("learnjs_covered_topics");
-      if (storedTopics) {
-        setCompletedTopics(JSON.parse(storedTopics));
-      }
-    } catch (e) {
-      console.error("Error reading localStorage", e);
-    }
-  }, []);
-
-  const toggleTopicProgress = (topicId) => {
-    const updated = {
-      ...completedTopics,
-      [topicId]: !completedTopics[topicId],
-    };
-    setCompletedTopics(updated);
-    try {
-      localStorage.setItem("learnjs_covered_topics", JSON.stringify(updated));
-    } catch (e) {
-      console.warn("Storage write failed", e);
-    }
-  };
-
-  const clearAllMarkers = () => {
-    if (confirm("Reset all custom syllabus checkbox markers?")) {
-      setCompletedTopics({});
-      localStorage.removeItem("learnjs_covered_topics");
-    }
-  };
-
-  // Save changes to localStorage on state changes
-  const saveCodesToStorage = (updatedCodes) => {
-    setUserCodes(updatedCodes);
-    try {
-      localStorage.setItem("learnjs_play_codes", JSON.stringify(updatedCodes));
-    } catch (e) {
-      console.warn("Storage write failed", e);
-    }
-  };
-
-  const saveProgressToStorage = (updatedProgress) => {
-    setSolvedExercises(updatedProgress);
-    try {
-      localStorage.setItem(
-        "learnjs_play_progress",
-        JSON.stringify(updatedProgress),
-      );
-    } catch (e) {
-      console.warn("Storage write failed", e);
-    }
-  };
-
-  // Select active values
-  const activeConcept =
-    CONCEPTS.find((c) => c.id === activeConceptId) || CONCEPTS[0];
-  const activeExercise =
-    activeConcept.exercises[activeExerciseIndex] || activeConcept.exercises[0];
-  const currentCode =
-    userCodes[activeExercise.id] ?? activeExercise.codeTemplate;
-  const prevExercise =
-    activeExerciseIndex > 0
-      ? activeConcept.exercises[activeExerciseIndex - 1]
-      : null;
-  const prevCode = prevExercise
-    ? (userCodes[prevExercise.id] ?? prevExercise.codeTemplate)
-    : "";
-
-  // Reset hint count whenever switching exercises
-  useEffect(() => {
-    setActiveHintsCount(0);
-    setTestResults(null);
-  }, [activeConceptId, activeExerciseIndex]);
-
-  // Handle source edits
-  const handleCodeChange = (val) => {
-    const updated = { ...userCodes, [activeExercise.id]: val };
-    saveCodesToStorage(updated);
-  };
-
-  // Reset template action
-  const handleResetCode = () => {
-    if (
-      confirm(
-        "Are you sure you want to reset this exercise to its default starter code? Any changes will be overwritten.",
-      )
-    ) {
-      const updated = {
-        ...userCodes,
-        [activeExercise.id]: activeExercise.codeTemplate,
-      };
-      saveCodesToStorage(updated);
-      setTestResults(null);
-    }
-  };
-
-  // Evaluate execution tests
-  const handleRunTests = async () => {
-    setIsRunningTests(true);
-    setTestResults(null);
-
-    // Simulate slight lag to make testing feel organic and rewarding
-    await new Promise((resolve) => setTimeout(resolve, 350));
-
-    try {
-      const results = await runExerciseTests(activeExercise, currentCode);
-      setTestResults(results);
-
-      const allPassed =
-        results.length > 0 && results.every((res) => res.passed);
-      if (allPassed) {
-        const updatedProgress = {
-          ...solvedExercises,
-          [activeExercise.id]: true,
-        };
-        saveProgressToStorage(updatedProgress);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsRunningTests(false);
-    }
-  };
-
-  // Calculate stats
-  const totalExercisesCount = CONCEPTS.reduce(
-    (sum, c) => sum + c.exercises.length,
-    0,
-  );
-  const totalSolvedCount = Object.keys(solvedExercises).filter(
-    (id) => solvedExercises[id],
-  ).length;
-
-  const currentConceptSolvedCount = activeConcept.exercises.filter(
-    (e) => solvedExercises[e.id],
-  ).length;
-  const isConceptMastered =
-    currentConceptSolvedCount === activeConcept.exercises.length;
-
-  const currentExerciseStatus = solvedExercises[activeExercise.id];
-
-  // Incremental Hint Reveal
-  const handleRevealHint = () => {
-    if (activeHintsCount < activeExercise.hints.length) {
-      setActiveHintsCount(activeHintsCount + 1);
-    }
-  };
-
-  // Keyboard shortcut to run: Cmd+Enter or Ctrl+Enter
-  const handleKeyDown = (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-      e.preventDefault();
-      handleRunTests();
-    }
-  };
-
-  // Jump straight from syllabus topic to corresponding code practice exercise
-  const jumpToExercise = (exerciseId) => {
-    for (const concept of CONCEPTS) {
-      const idx = concept.exercises.findIndex((e) => e.id === exerciseId);
-      if (idx !== -1) {
-        setActiveConceptId(concept.id);
-        setActiveExerciseIndex(idx);
-        setViewMode("sandbox");
-        setLeftTab("problem");
-        return;
-      }
-    }
-  };
-
-  // Curriculum stats calculations
-  const totalTopicsCount = KNOWLEDGE_MAP_TOPICS.length;
-  const completedTopicsCount = Object.keys(completedTopics).filter(
-    (id) => completedTopics[id],
-  ).length;
-  const completionRatePercent =
-    totalTopicsCount > 0
-      ? Math.round((completedTopicsCount / totalTopicsCount) * 100)
-      : 0;
-
-  // Line wrapping logic for custom editor lines
-  const lineCount = currentCode.split("\n").length;
-  const lineNumbers = Array.from(
-    { length: Math.max(lineCount, 20) },
-    (_, i) => i + 1,
-  );
-
+export function AssertionConsole({
+  testResults,
+  isRunningTests,
+  handleRunTests,
+}) {
   return (
-    <div className="h-screen max-h-screen overflow-hidden bg-zinc-50 text-zinc-900 flex flex-col font-sans selection:bg-yellow-200 selection:text-zinc-900 md:h-screen md:max-h-screen md:overflow-hidden">
-      {/* Universal Sticky Header Component */}
-      <Header
-        totalSolvedCount={totalSolvedCount}
-        totalExercisesCount={totalExercisesCount}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        handleExportToJS={handleExportToJS}
-      />
+    <div className="flex-1 flex flex-col bg-white overflow-hidden border-t border-zinc-200 min-h-[220px]">
+      <div className="flex items-center justify-between px-6 py-2.5 bg-zinc-50 border-b border-zinc-200 shrink-0">
+        <div className="flex items-center gap-2">
+          <Terminal className="h-3.5 w-3.5 text-zinc-505" />
+          <span className="text-xs font-mono font-bold uppercase tracking-wide text-zinc-705">
+            Assertion Engine Output
+          </span>
+        </div>
 
-      {/* Primary Content View Switch */}
-      {viewMode === "sandbox" ? (
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 min-w-0">
-          {/* Chapter & Concept Navigation Column */}
-          <ConceptSelector
-            concepts={CONCEPTS}
-            solvedExercises={solvedExercises}
-            activeConceptId={activeConceptId}
-            setActiveConceptId={setActiveConceptId}
-            setActiveExerciseIndex={setActiveExerciseIndex}
-            setLeftTab={setLeftTab}
-          />
+        <button
+          onClick={handleRunTests}
+          disabled={isRunningTests}
+          className="py-1.5 px-5 text-xs font-bold font-mono text-zinc-950 bg-[#F7DF1E] hover:bg-[#edd012] border border-zinc-300 active:translate-y-0.5 transition-all select-none rounded-lg flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+        >
+          {isRunningTests ? (
+            <>
+              <div className="h-3 w-3 border-2 border-t-transparent border-zinc-950 rounded-full animate-spin" />
+              Evaluating...
+            </>
+          ) : (
+            <>
+              <Play className="h-3 w-3 fill-current" />
+              Run Code
+            </>
+          )}
+        </button>
+      </div>
 
-          {/* Core Sandbox Working Panels split */}
-          <section className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 min-w-0">
-            {/* Left Column: Learning Materials / Guidelines Tabbed View */}
-            <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col bg-white overflow-y-auto min-h-0 min-w-0">
-              {/* Top Selector ribbon for individual puzzle repetition status */}
-              <ExerciseNavigator
-                activeConcept={activeConcept}
-                activeExerciseIndex={activeExerciseIndex}
-                setActiveExerciseIndex={setActiveExerciseIndex}
-                setLeftTab={setLeftTab}
-                solvedExercises={solvedExercises}
-                currentConceptSolvedCount={currentConceptSolvedCount}
-              />
-
-              {/* Guide/Goal Selection controls */}
-              <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-1 shrink-0 select-none">
-                <button
-                  onClick={() => setLeftTab("problem")}
-                  className={`flex-1 py-1.5 px-4 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                    leftTab === "problem"
-                      ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
-                >
-                  <Code className="h-3.5 w-3.5" />
-                  Repetitive Problem Goal
-                </button>
-
-                <button
-                  onClick={() => setLeftTab("theory")}
-                  className={`flex-1 py-1.5 px-4 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                    leftTab === "theory"
-                      ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
-                >
-                  <BookOpen className="h-3.5 w-3.5" />
-                  Learn {activeConcept.title}
-                </button>
+      {/* Console logs */}
+      <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-zinc-50/40">
+        {!testResults ? (
+          <div className="h-full flex flex-col items-center justify-center text-zinc-400 space-y-1.5 text-xs font-mono">
+            <Terminal className="h-6 w-6 text-zinc-305" />
+            <span>No output. Click 'Run Code' to execute assertions.</span>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {/* General Summary strip */}
+            <div className="p-3 rounded-xl flex items-center justify-between border text-xs font-mono bg-white border-zinc-200 shadow-sm">
+              <span className="text-zinc-550 font-bold uppercase">
+                Suite Results:
+              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-emerald-705 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200">
+                  Passed: {testResults.filter((r) => r.passed).length}
+                </span>
+                <span className="text-rose-705 bg-rose-50 px-2 py-0.5 rounded font-bold border border-rose-200">
+                  Failed: {testResults.filter((r) => !r.passed).length}
+                </span>
               </div>
+            </div>
 
-              {/* Dynamic View Panel (Theory manual / active exercise problem) */}
-              <div className="p-6 flex-1 flex flex-col justify-between overflow-y-auto min-h-0">
-                <AnimatePresence mode="wait">
-                  {leftTab === "theory" ? (
-                    <TheoryPanel
-                      activeConcept={activeConcept}
-                      activeExerciseIndex={activeExerciseIndex}
-                      setActiveExerciseIndex={setActiveExerciseIndex}
-                      setLeftTab={setLeftTab}
-                    />
-                  ) : (
-                    <ProblemGoalPanel
-                      activeConcept={activeConcept}
-                      activeExerciseIndex={activeExerciseIndex}
-                      setActiveExerciseIndex={setActiveExerciseIndex}
-                      setLeftTab={setLeftTab}
-                      activeExercise={activeExercise}
-                      solvedExercises={solvedExercises}
-                      activeHintsCount={activeHintsCount}
-                      setActiveHintsCount={setActiveHintsCount}
-                      handleRevealHint={handleRevealHint}
-                      journeyPreviewIdx={journeyPreviewIdx}
-                      setJourneyPreviewIdx={setJourneyPreviewIdx}
-                    />
-                  )}
-                </AnimatePresence>
+            {/* Individual outcomes */}
+            <div className="space-y-2">
+              {testResults.map((result, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded-xl border text-xs font-mono transition-all ${
+                    result.passed
+                      ? "bg-white border-zinc-200 hover:bg-zinc-50"
+                      : "bg-red-50/40 border-red-200 hover:bg-red-50"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                      {result.passed ? (
+                        <div className="h-4 w-4 rounded bg-[#F7DF1E] flex items-center justify-center border border-zinc-350">
+                          <Check className="h-3.5 w-3.5 text-zinc-950 font-bold" />
+                        </div>
+                      ) : (
+                        <XCircle className="h-4 w-4 text-rose-505 shrink-0" />
+                      )}
+                      <span className="font-bold text-zinc-850">
+                        {result.description}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold ${
+                        result.passed
+                          ? "text-zinc-800 bg-[#F7DF1E]/30"
+                          : "text-rose-705 bg-rose-100"
+                      }`}
+                    >
+                      {result.passed ? "PASS" : "FAIL"}
+                    </span>
+                  </div>
 
-                {/* Exercise Solved Milestone Card */}
-                {currentExerciseStatus && (
-                  <div className="mt-8 bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md border border-zinc-800">
-                    <div className="h-8 w-8 rounded-lg bg-[#F7DF1E] flex items-center justify-center shrink-0">
-                      <CheckCircle className="h-4.5 w-4.5 text-zinc-950" />
+                  {/* Data comparison rows */}
+                  <div className="mt-2.5 text-[11px] grid grid-cols-1 md:grid-cols-3 gap-3 text-zinc-650 pt-2 border-t border-zinc-200/65">
+                    <div>
+                      <span className="text-zinc-400 font-bold block text-[9px] uppercase tracking-wider">
+                        Params:
+                      </span>
+                      <code className="text-zinc-805 block truncate font-mono">
+                        {result.input}
+                      </code>
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#F7DF1E]">
-                        Repetition Completed!
-                      </h4>
-                      <p className="text-xs text-zinc-300 font-sans">
-                        You solved this repetition. Switch to the next to keep
-                        building muscle!
-                      </p>
+                      <span className="text-zinc-400 font-bold block text-[9px] uppercase tracking-wider">
+                        Expected:
+                      </span>
+                      <code className="text-zinc-805 block truncate font-mono">
+                        {result.expected}
+                      </code>
+                    </div>
+                    <div>
+                      <span className="text-zinc-400 font-bold block text-[9px] uppercase tracking-wider">
+                        Output / Return:
+                      </span>
+                      {result.error ? (
+                        <code className="text-rose-600 block font-bold leading-relaxed whitespace-pre-line font-mono">
+                          {result.error}
+                        </code>
+                      ) : (
+                        <code
+                          className={`${result.passed ? "text-[#a38b00]" : "text-rose-600"} block truncate font-mono`}
+                        >
+                          {result.actual}
+                        </code>
+                      )}
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
-
-            {/* Right Column: Code Editor workspace & Live assertion outputs */}
-            <div className="flex-1 flex flex-col overflow-hidden bg-white min-h-0 min-w-0">
-              <CodeWorkspace
-                currentCode={currentCode}
-                handleCodeChange={handleCodeChange}
-                handleKeyDown={handleKeyDown}
-                activeExerciseIndex={activeExerciseIndex}
-                showPrevReference={showPrevReference}
-                setShowPrevReference={setShowPrevReference}
-                prevExercise={prevExercise}
-                handleResetCode={handleResetCode}
-                prevCode={prevCode}
-                lineNumbers={lineNumbers}
-                workspaceHeight={workspaceHeight}
-                setWorkspaceHeight={saveWorkspaceHeight}
-              />
-
-              <AssertionConsole
-                testResults={testResults}
-                isRunningTests={isRunningTests}
-                handleRunTests={handleRunTests}
-              />
-            </div>
-          </section>
-        </main>
-      ) : (
-        /* Isolated Curriculum Topics Map / Syllabus Roadmap View */
-        <Roadmap
-          knowledgeMapCategories={KNOWLEDGE_MAP_CATEGORIES}
-          knowledgeMapTopics={KNOWLEDGE_MAP_TOPICS}
-          completedTopics={completedTopics}
-          completedTopicsCount={completedTopicsCount}
-          totalTopicsCount={totalTopicsCount}
-          completionRatePercent={completionRatePercent}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          selectedCategoryFilter={selectedCategoryFilter}
-          setSelectedCategoryFilter={setSelectedCategoryFilter}
-          expandedTopicId={expandedTopicId}
-          setExpandedTopicId={setExpandedTopicId}
-          toggleTopicProgress={toggleTopicProgress}
-          jumpToExercise={jumpToExercise}
-          clearAllMarkers={clearAllMarkers}
-        />
-      )}
-
-      {/* Dynamic Animated Mastery Celebration Dialog Overlay */}
-      <MasteryCelebration
-        isConceptMastered={isConceptMastered}
-        activeConcept={activeConcept}
-        activeConceptId={activeConceptId}
-        setActiveConceptId={setActiveConceptId}
-        setActiveExerciseIndex={setActiveExerciseIndex}
-        concepts={CONCEPTS}
-      />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
