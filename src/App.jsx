@@ -18,8 +18,9 @@ import { CodeWorkspace } from "./components/CodeWorkspace.jsx";
 import { AssertionConsole } from "./components/AssertionConsole.jsx";
 import { Roadmap } from "./components/Roadmap.jsx";
 import { MasteryCelebration } from "./components/MasteryCelebration.jsx";
+import { ES6CheatSheet } from "./components/ES6CheatSheet.jsx";
 
-import { CheckCircle, Code, BookOpen } from "lucide-react";
+import { CheckCircle, Code, BookOpen, Sparkles } from "lucide-react";
 
 export default function App() {
   // Navigation / Active Selection State
@@ -324,33 +325,45 @@ export default function App() {
               />
 
               {/* Guide/Goal Selection controls */}
-              <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-1 shrink-0 select-none">
+              <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-1 shrink-0 select-none overflow-x-auto">
                 <button
                   onClick={() => setLeftTab("problem")}
-                  className={`flex-1 py-1.5 px-4 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+                  className={`flex-1 min-w-[120px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                     leftTab === "problem"
                       ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
                       : "text-zinc-500 hover:text-zinc-950"
                   }`}
                 >
-                  <Code className="h-3.5 w-3.5" />
-                  Repetitive Problem Goal
+                  <Code className="h-3.5 w-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">Problem Goal</span>
                 </button>
 
                 <button
                   onClick={() => setLeftTab("theory")}
-                  className={`flex-1 py-1.5 px-4 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+                  className={`flex-1 min-w-[120px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                     leftTab === "theory"
                       ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
                       : "text-zinc-500 hover:text-zinc-950"
                   }`}
                 >
-                  <BookOpen className="h-3.5 w-3.5" />
-                  Learn {activeConcept.title}
+                  <BookOpen className="h-3.5 w-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">Learn Theory</span>
+                </button>
+
+                <button
+                  onClick={() => setLeftTab("es6")}
+                  className={`flex-1 min-w-[125px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                    leftTab === "es6"
+                      ? "bg-white text-zinc-950 border border-[#F7DF1E] shadow-sm font-extrabold"
+                      : "text-zinc-500 hover:text-zinc-950"
+                  }`}
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-104" />
+                  <span className="whitespace-nowrap">ES6 Cheatsheet</span>
                 </button>
               </div>
 
-              {/* Dynamic View Panel (Theory manual / active exercise problem) */}
+              {/* Dynamic View Panel (Theory manual / active exercise problem / ES6 cheatsheet) */}
               <div className="p-6 flex-1 flex flex-col justify-between overflow-y-auto min-h-0">
                 <AnimatePresence mode="wait">
                   {leftTab === "theory" ? (
@@ -359,6 +372,15 @@ export default function App() {
                       activeExerciseIndex={activeExerciseIndex}
                       setActiveExerciseIndex={setActiveExerciseIndex}
                       setLeftTab={setLeftTab}
+                    />
+                  ) : leftTab === "es6" ? (
+                    <ES6CheatSheet
+                      onSelectConcept={(conceptId) => {
+                        setActiveConceptId(conceptId);
+                        setActiveExerciseIndex(0);
+                        setLeftTab("theory");
+                      }}
+                      currActiveConceptId={activeConceptId}
                     />
                   ) : (
                     <ProblemGoalPanel

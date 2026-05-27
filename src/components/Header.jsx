@@ -22,7 +22,9 @@ export function Header({
           </span>
           <h1 className="text-xl font-bold tracking-tight text-zinc-900 flex items-center gap-2">
             LearnJS{" "}
-            <span className="text-zinc-400 font-normal">DSA Sandbox</span>
+            <span className="text-xs font-mono font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-md bg-[#F7DF1E]/15 border border-[#edd012] text-amber-850">
+              ES6+ PRO
+            </span>
           </h1>
         </div>
       </div>
