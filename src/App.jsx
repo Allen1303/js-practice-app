@@ -5,8 +5,7 @@ import {
   KNOWLEDGE_MAP_CATEGORIES,
   KNOWLEDGE_MAP_TOPICS,
 } from "./data/knowledgeMap.js";
-import { runExerciseTests } from "./utils/executor.js";
-import { triggerOfflineDownload } from "./utils/exporter.js";
+import { runExerciseTests, runCustomEvaluation } from "./utils/executor.js";
 
 // Import modular sub-components
 import { Header } from "./components/Header.jsx";
@@ -19,8 +18,16 @@ import { AssertionConsole } from "./components/AssertionConsole.jsx";
 import { Roadmap } from "./components/Roadmap.jsx";
 import { MasteryCelebration } from "./components/MasteryCelebration.jsx";
 import { ES6CheatSheet } from "./components/ES6CheatSheet.jsx";
+import { NotesPanel } from "./components/NotesPanel.jsx";
 
-import { CheckCircle, Code, BookOpen, Sparkles } from "lucide-react";
+import {
+  CheckCircle,
+  Code,
+  BookOpen,
+  Sparkles,
+  Edit3,
+  RotateCcw,
+} from "lucide-react";
 
 export default function App() {
   // Navigation / Active Selection State
@@ -74,11 +81,6 @@ export default function App() {
     }
   };
 
-  // Trigger browser download for the offline practice suite
-  const handleExportToJS = () => {
-    triggerOfflineDownload();
-  };
-
   // Load and apply persistent progress from localStorage
   useEffect(() => {
     try {
@@ -127,6 +129,46 @@ export default function App() {
     if (confirm("Reset all custom syllabus checkbox markers?")) {
       setCompletedTopics({});
       localStorage.removeItem("learnjs_covered_topics");
+    }
+  };
+
+  const handleResetFullWorkspace = () => {
+    if (
+      confirm(
+        "⚠️ CRITICAL RESET ⚠️\n\nThis action will completely delete all of your:\n- Solved progress indicators\n- Custom modified solutions\n- Checklist markers on the Roadmap\n- Interactive Notebook notes\n\nAre you sure you want to delete everything and start fresh?",
+      )
+    ) {
+      if (
+        confirm(
+          "Confirm one final time: This cannot be undone. Are you absolutely sure?",
+        )
+      ) {
+        try {
+          localStorage.removeItem("learnjs_play_codes");
+          localStorage.removeItem("learnjs_play_progress");
+          localStorage.removeItem("learnjs_covered_topics");
+          localStorage.removeItem("learnjs_play_notes");
+
+          setSolvedExercises({});
+          setCompletedTopics({});
+
+          const defaultTemplates = {};
+          CONCEPTS.forEach((c) => {
+            c.exercises.forEach((e) => {
+              defaultTemplates[e.id] = e.codeTemplate;
+            });
+          });
+          setUserCodes(defaultTemplates);
+          setTestResults(null);
+
+          alert(
+            "Reset successful. All states restored to pristine default conditions.",
+          );
+          window.location.reload();
+        } catch (err) {
+          alert("Error resetting profile: " + err.message);
+        }
+      }
     }
   };
 
@@ -204,11 +246,13 @@ export default function App() {
     await new Promise((resolve) => setTimeout(resolve, 350));
 
     try {
-      const results = await runExerciseTests(activeExercise, currentCode);
-      setTestResults(results);
+      const evaluation = await runExerciseTests(activeExercise, currentCode);
+      setTestResults(evaluation);
 
       const allPassed =
-        results.length > 0 && results.every((res) => res.passed);
+        evaluation.results &&
+        evaluation.results.length > 0 &&
+        evaluation.results.every((res) => res.passed);
       if (allPassed) {
         const updatedProgress = {
           ...solvedExercises,
@@ -294,7 +338,7 @@ export default function App() {
         totalExercisesCount={totalExercisesCount}
         viewMode={viewMode}
         setViewMode={setViewMode}
-        handleExportToJS={handleExportToJS}
+        handleResetFullWorkspace={handleResetFullWorkspace}
       />
 
       {/* Primary Content View Switch */}
@@ -352,14 +396,26 @@ export default function App() {
 
                 <button
                   onClick={() => setLeftTab("es6")}
-                  className={`flex-1 min-w-[125px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                  className={`flex-1 min-w-[115px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
                     leftTab === "es6"
                       ? "bg-white text-zinc-950 border border-[#F7DF1E] shadow-sm font-extrabold"
                       : "text-zinc-500 hover:text-zinc-950"
                   }`}
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-104" />
-                  <span className="whitespace-nowrap">ES6 Cheatsheet</span>
+                  <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-100" />
+                  <span className="whitespace-nowrap">ES6 Sheets</span>
+                </button>
+
+                <button
+                  onClick={() => setLeftTab("notes")}
+                  className={`flex-1 min-w-[110px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                    leftTab === "notes"
+                      ? "bg-white text-zinc-950 border border-[#EDD012] shadow-sm font-extrabold"
+                      : "text-zinc-500 hover:text-zinc-950"
+                  }`}
+                >
+                  <Edit3 className="h-3.5 w-3.5 text-[#F7DF1E] shrink-0" />
+                  <span className="whitespace-nowrap">My Notes</span>
                 </button>
               </div>
 
@@ -381,6 +437,11 @@ export default function App() {
                         setLeftTab("theory");
                       }}
                       currActiveConceptId={activeConceptId}
+                    />
+                  ) : leftTab === "notes" ? (
+                    <NotesPanel
+                      activeExercise={activeExercise}
+                      activeConcept={activeConcept}
                     />
                   ) : (
                     <ProblemGoalPanel
@@ -437,6 +498,8 @@ export default function App() {
               />
 
               <AssertionConsole
+                activeExercise={activeExercise}
+                currentCode={currentCode}
                 testResults={testResults}
                 isRunningTests={isRunningTests}
                 handleRunTests={handleRunTests}

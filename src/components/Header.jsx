@@ -1,11 +1,11 @@
-import { Trophy, Download, Code, BookMarked } from "lucide-react";
+import { Trophy, Code, BookMarked, RotateCcw } from "lucide-react";
 
 export function Header({
   totalSolvedCount,
   totalExercisesCount,
   viewMode,
   setViewMode,
-  handleExportToJS,
+  handleResetFullWorkspace,
 }) {
   return (
     <header className="border-b border-zinc-200 bg-white sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
@@ -57,16 +57,15 @@ export function Header({
       </div>
 
       {/* Header CTA Tools */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-        {/* Highly Visible Offline Export Trigger */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto">
+        {/* Subtle low-profile Reset Progress Button */}
         <button
-          id="btn_export_offline"
-          onClick={handleExportToJS}
-          title="Download fully annotated offline JS training playground package for VS Code / Node.js"
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-[#F7DF1E] hover:bg-[#edd012] border border-zinc-350 rounded-xl cursor-pointer hover:shadow-md active:scale-[0.98] transition-all text-xs font-bold text-zinc-900"
+          onClick={handleResetFullWorkspace}
+          title="Completely reset sandbox progress, written codes, syllabus indicators, and notebook comments to initial state"
+          className="flex items-center justify-center gap-2 px-3 py-2 text-zinc-500 hover:text-rose-600 bg-white hover:bg-rose-50/50 border border-zinc-250 hover:border-rose-250 rounded-xl cursor-pointer hover:shadow-sm active:scale-[0.98] transition-all text-xs font-bold"
         >
-          <Download className="h-4 w-4 text-zinc-850" /> Export Offline JS
-          Playground (.js)
+          <RotateCcw className="h-3.5 w-3.5" />
+          <span className="inline">Reset All</span>
         </button>
 
         {/* Global Level Indicator using bright Yellow styles */}
