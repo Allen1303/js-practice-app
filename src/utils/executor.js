@@ -59,21 +59,72 @@ export function formatValue(val) {
 
 export async function runExerciseTests(exercise, userCode) {
   const results = [];
+  const consoleLogs = [];
+  let currentTestCaseId = null;
+
+  const customConsole = {
+    log: (...args) => {
+      const formatted = args
+        .map((a) => {
+          if (a === undefined) return "undefined";
+          if (a === null) return "null";
+          try {
+            return typeof a === "object"
+              ? JSON.stringify(a, null, 2)
+              : String(a);
+          } catch {
+            return String(a);
+          }
+        })
+        .join(" ");
+      consoleLogs.push({
+        testId: currentTestCaseId,
+        type: "log",
+        text: formatted,
+      });
+    },
+    error: (...args) => {
+      const formatted = args
+        .map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a)))
+        .join(" ");
+      consoleLogs.push({
+        testId: currentTestCaseId,
+        type: "error",
+        text: formatted,
+      });
+    },
+    warn: (...args) => {
+      const formatted = args
+        .map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a)))
+        .join(" ");
+      consoleLogs.push({
+        testId: currentTestCaseId,
+        type: "warn",
+        text: formatted,
+      });
+    },
+  };
 
   try {
-    // Compile functions cleanly without TS compiler noise
-    const compiledFunction = new Function(`
+    // Compile functions cleanly with shadowed console variable
+    const compiledFunction = new Function(
+      "console",
+      `
       ${userCode}
       if (typeof ${exercise.functionName} === 'undefined') {
         throw new Error("Function '${exercise.functionName}' is not defined. Please check your function name.");
       }
       return ${exercise.functionName};
-    `);
+    `,
+    );
 
-    const userFunc = compiledFunction();
+    // Initialization run
+    currentTestCaseId = null; // represents pre-test file level execution
+    const userFunc = compiledFunction(customConsole);
 
     // Run each case
     for (const tc of exercise.testCases) {
+      currentTestCaseId = tc.id;
       try {
         let actual;
         let passed = false;
@@ -245,113 +296,91 @@ export async function runExerciseTests(exercise, userCode) {
             .build();
           actual = built;
           passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "map-group-anagrams") {
-          const rawResult = userFunc(tc.input[0]);
-          if (Array.isArray(rawResult)) {
-            const sortedInner = rawResult.map((grp) =>
-              Array.isArray(grp) ? [...grp].sort() : grp,
-            );
-            sortedInner.sort((a, b) => a.join(",").localeCompare(b.join(",")));
-            actual = sortedInner;
-          } else {
-            actual = rawResult;
+        } else if (exercise.id === "map-weakmap-cache") {
+          let callCount = 0;
+          const original = (obj) => {
+            callCount++;
+            return (obj.val || 0) * 2;
+          };
+          const memoized = userFunc(original);
+          const o1 = { val: 5 };
+          const first = memoized(o1);
+          const second = memoized(o1);
+          actual = first;
+          passed = first === 10 && second === 10 && callCount === 1;
+        } else if (exercise.id === "localstorage-mock-tracker") {
+          const store = {};
+          const mockStorage = {
+            setItem: (k, v) => {
+              store[k] = v;
+            },
+            getItem: (k) => store[k] || null,
+            removeItem: (k) => {
+              delete store[k];
+            },
+          };
+          userFunc(mockStorage, { id: 101, name: "Ali" });
+          const savedStr = store["user_profile"];
+          const reloaded = userFunc(mockStorage, null);
+          actual = [typeof savedStr, reloaded];
+          passed =
+            savedStr &&
+            typeof savedStr === "string" &&
+            deepEqual(reloaded, { id: 101, name: "Ali" });
+        } else if (exercise.id === "promisify-callback") {
+          const legacyFn = (arg, cb) => {
+            if (arg === "fail") cb(new Error("Failed"));
+            else cb(null, arg + "!");
+          };
+          const promised = userFunc(legacyFn);
+          try {
+            const res = await promised(tc.input[0]);
+            actual = res;
+          } catch (err) {
+            actual = "Error: " + err.message;
           }
-          const expectedSorted = tc.expected.map((grp) => [...grp].sort());
-          expectedSorted.sort((a, b) => a.join(",").localeCompare(b.join(",")));
-          passed = deepEqual(actual, expectedSorted);
-        } else if (exercise.id === "recursion-binary-search") {
-          actual = userFunc(
-            tc.input[0],
-            tc.input[1],
-            0,
-            tc.input[0].length - 1,
+          passed = actual === tc.expected;
+        } else if (exercise.id === "promise-all-safe") {
+          const promises = tc.input[0].map((item) => {
+            if (item.fail) return Promise.reject(new Error(item.val));
+            return Promise.resolve(item.val);
+          });
+          const res = await userFunc(promises);
+          actual = res.map((o) =>
+            o.status === "fulfilled"
+              ? { status: "fulfilled", value: o.value }
+              : {
+                  status: "rejected",
+                  reason: o.reason?.message || o.error || o.reason,
+                },
           );
-          passed = actual === tc.expected;
-        } else if (exercise.id === "recursion-generate-permutations") {
-          const rawResult = userFunc(tc.input[0]);
-          actual = Array.isArray(rawResult) ? [...rawResult].sort() : rawResult;
-          const expectedSorted = [...tc.expected].sort();
-          passed = deepEqual(actual, expectedSorted);
-        } else if (exercise.id === "list-reverse") {
-          const buildList = (arr) => {
-            if (!arr || arr.length === 0) return null;
-            const head = { val: arr[0], next: null };
-            let curr = head;
-            for (let i = 1; i < arr.length; i++) {
-              curr.next = { val: arr[i], next: null };
-              curr = curr.next;
-            }
-            return head;
-          };
-          const listHead = buildList(tc.input[0]);
-          const resultHead = userFunc(listHead);
-          const listToArray = (head) => {
-            const res = [];
-            let curr = head;
-            const seen = new Set();
-            while (curr && !seen.has(curr)) {
-              seen.add(curr);
-              res.push(curr.val);
-              curr = curr.next;
-            }
-            return res;
-          };
-          actual = listToArray(resultHead);
           passed = deepEqual(actual, tc.expected);
-        } else if (exercise.id === "list-has-cycle") {
-          const buildListWithCycle = (arr, cyclePos) => {
-            if (!arr || arr.length === 0) return null;
-            const nodes = arr.map((v) => ({ val: v, next: null }));
-            for (let i = 0; i < nodes.length - 1; i++) {
-              nodes[i].next = nodes[i + 1];
-            }
-            if (cyclePos >= 0 && cyclePos < nodes.length) {
-              nodes[nodes.length - 1].next = nodes[cyclePos];
-            }
-            return nodes[0];
+        } else if (exercise.id === "async-fetch-json") {
+          const mockFetch = (id) => {
+            if (id === 999) return Promise.reject(new Error("Not Found"));
+            return Promise.resolve({ username: "john_doe" });
           };
-          const listHead = buildListWithCycle(tc.input[0], tc.input[1]);
-          actual = userFunc(listHead);
+          actual = await userFunc(tc.input[0], mockFetch);
           passed = actual === tc.expected;
-        } else if (
-          exercise.id === "tree-max-depth" ||
-          exercise.id === "tree-is-valid-bst"
-        ) {
-          const buildTree = (obj) => {
-            if (!obj) return null;
-            return {
-              val: obj.val,
-              left: buildTree(obj.left),
-              right: buildTree(obj.right),
-            };
+        } else if (exercise.id === "auto-retry-promise") {
+          let callCount = 0;
+          const mockFn = () => {
+            callCount++;
+            if (callCount < tc.input[0])
+              return Promise.reject(new Error("Fail"));
+            return Promise.resolve("Success");
           };
-          const rootNode = buildTree(tc.input[0]);
-          actual = userFunc(rootNode);
-          passed = actual === tc.expected;
-        } else if (exercise.id === "tree-lowest-common-ancestor") {
-          const buildTree = (obj) => {
-            if (!obj) return null;
-            return {
-              val: obj.val,
-              left: buildTree(obj.left),
-              right: buildTree(obj.right),
-            };
-          };
-          const rootNode = buildTree(tc.input[0]);
-          const findNode = (root, val) => {
-            if (!root) return null;
-            if (root.val === val) return root;
-            return findNode(root.left, val) || findNode(root.right, val);
-          };
-          const pNode = findNode(rootNode, tc.input[1]);
-          const qNode = findNode(rootNode, tc.input[2]);
-          const result = userFunc(rootNode, pNode, qNode);
-          actual = result ? result.val : null;
+          try {
+            actual = await userFunc(mockFn, tc.input[1]);
+          } catch (err) {
+            actual = "Error: " + err.message;
+          }
           passed = actual === tc.expected;
         } else {
           // Normal pure function execution
           const inputClones = JSON.parse(JSON.stringify(tc.input));
-          actual = userFunc(...inputClones);
+          const result = userFunc(...inputClones);
+          actual = result instanceof Promise ? await result : result;
           passed = deepEqual(actual, tc.expected);
         }
 
@@ -405,5 +434,318 @@ export async function runExerciseTests(exercise, userCode) {
     });
   }
 
-  return results;
+  return { results, consoleLogs };
+}
+
+export async function runCustomEvaluation(exercise, userCode, rawArgumentsStr) {
+  const consoleLogs = [];
+  const customConsole = {
+    log: (...args) => {
+      const formatted = args
+        .map((a) => {
+          if (a === undefined) return "undefined";
+          if (a === null) return "null";
+          try {
+            return typeof a === "object"
+              ? JSON.stringify(a, null, 2)
+              : String(a);
+          } catch {
+            return String(a);
+          }
+        })
+        .join(" ");
+      consoleLogs.push({ type: "log", text: formatted });
+    },
+    error: (...args) => {
+      const formatted = args
+        .map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a)))
+        .join(" ");
+      consoleLogs.push({ type: "error", text: formatted });
+    },
+    warn: (...args) => {
+      const formatted = args
+        .map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a)))
+        .join(" ");
+      consoleLogs.push({ type: "warn", text: formatted });
+    },
+  };
+
+  let parsedArgs = [];
+  try {
+    if (rawArgumentsStr.trim() !== "") {
+      const parseFunction = new Function(`return [ ${rawArgumentsStr} ];`);
+      parsedArgs = parseFunction();
+    }
+  } catch (parseErr) {
+    return {
+      success: false,
+      error:
+        'Arguments syntax is invalid.\nExample of valid inputs:\n  For lists: [4, 5, 2], 2\n  For matrices: [[1, 2], [3, 4]]\n  For strings: "hello", "world"\n\nDetails: ' +
+        parseErr.message,
+      consoleLogs: [],
+    };
+  }
+
+  try {
+    const compiledFunction = new Function(
+      "console",
+      `
+      ${userCode}
+      if (typeof ${exercise.functionName} === 'undefined') {
+        throw new Error("Function '${exercise.functionName}' is not defined. Please check your function name.");
+      }
+      return ${exercise.functionName};
+    `,
+    );
+
+    const userFunc = compiledFunction(customConsole);
+    const inputClones = JSON.parse(JSON.stringify(parsedArgs));
+
+    let resultValue;
+
+    if (exercise.id === "closure-counter") {
+      const counter = userFunc(inputClones[0]);
+      if (
+        !counter ||
+        typeof counter.increment !== "function" ||
+        typeof counter.decrement !== "function" ||
+        typeof counter.getValue !== "function"
+      ) {
+        throw new Error(
+          "Returned object must contain increment(), decrement(), and getValue() methods.",
+        );
+      }
+      const inc = counter.increment();
+      const dec = counter.decrement();
+      const val = counter.getValue();
+      resultValue = {
+        incrementOutput: inc,
+        decrementOutput: dec,
+        finalValue: val,
+      };
+    } else if (exercise.id === "closure-multiplier") {
+      const scaler = userFunc(inputClones[0]);
+      if (typeof scaler !== "function") {
+        throw new Error("createScaler must return an inner function closure.");
+      }
+      resultValue = scaler(inputClones[1]);
+    } else if (exercise.id === "closure-auth") {
+      const mgr = userFunc();
+      if (
+        !mgr ||
+        typeof mgr.setToken !== "function" ||
+        typeof mgr.hasToken !== "function" ||
+        typeof mgr.clearToken !== "function"
+      ) {
+        throw new Error(
+          "Returned object must contain setToken(), hasToken(), and clearToken() methods.",
+        );
+      }
+      mgr.setToken(inputClones[0]);
+      const hasBefore = mgr.hasToken();
+      mgr.clearToken();
+      const hasAfter = mgr.hasToken();
+      resultValue = {
+        hasTokenBeforeClear: hasBefore,
+        hasTokenAfterClear: hasAfter,
+      };
+    } else if (exercise.id === "closure-memoize") {
+      let callCount = 0;
+      const original = (x) => {
+        callCount++;
+        return x * 2;
+      };
+      const memoized = userFunc(original);
+      if (typeof memoized !== "function") {
+        throw new Error("memoizeCalculation must return a wrapped function.");
+      }
+      const first = memoized(inputClones[0] ?? 5);
+      const second = memoized(inputClones[0] ?? 5);
+      resultValue = {
+        firstCallOutput: first,
+        secondCallOutput: second,
+        underlyingExecutions: callCount,
+      };
+    } else if (exercise.id === "closure-stream") {
+      const streamer = userFunc(inputClones[0]);
+      if (typeof streamer !== "function") {
+        throw new Error(
+          "createAverageStreamer must return a streamer function.",
+        );
+      }
+      const vals = inputClones[1] || [10, 20, 30];
+      const streamHistoryList = vals.map((v) => streamer(v));
+      resultValue = { streamerHistoryList };
+    } else if (exercise.id === "oop-simple-book") {
+      const book = new userFunc(inputClones[0], inputClones[1]);
+      resultValue = book.getDetails();
+    } else if (exercise.id === "oop-secure-account") {
+      const account = new userFunc(inputClones[0], inputClones[1]);
+      const before = account.balance;
+      account.balance = before + (inputClones[2] ?? 500);
+      const after = account.balance;
+      resultValue = { initialBalance: before, balanceAfterDeposit: after };
+    } else if (exercise.id === "oop-vector") {
+      const v1 = new userFunc(
+        inputClones[0]?.[0] ?? 1,
+        inputClones[0]?.[1] ?? 2,
+      );
+      const v2 = new userFunc(
+        inputClones[1]?.[0] ?? 3,
+        inputClones[1]?.[1] ?? 4,
+      );
+      const sumResult = v1.add(v2);
+      resultValue = sumResult ? { x: sumResult.x, y: sumResult.y } : null;
+    } else if (exercise.id === "oop-inherited-vehicle") {
+      const electricCar = new userFunc(
+        inputClones[0],
+        inputClones[1],
+        inputClones[2],
+      );
+      resultValue = electricCar.description;
+    } else if (exercise.id === "oop-min-stack") {
+      const minStack = new userFunc();
+      const pValues = inputClones[0] || [4, 9, 2, 7];
+      pValues.forEach((v) => minStack.push(v));
+      const m1 = minStack.getMin();
+      minStack.pop();
+      const m2 = minStack.getMin();
+      resultValue = {
+        elementsPushed: pValues,
+        initialMin: m1,
+        minAfterOnePop: m2,
+      };
+    } else if (exercise.id === "ds-deep-freeze") {
+      const returnedObj = userFunc(
+        inputClones[0] || { val: 1, user: { profile: { name: "Bob" } } },
+      );
+      const rootFrozen = Object.isFrozen(returnedObj);
+      const childFrozen = !!(
+        returnedObj &&
+        returnedObj.user &&
+        Object.isFrozen(returnedObj.user) &&
+        returnedObj.user.profile &&
+        Object.isFrozen(returnedObj.user.profile)
+      );
+      resultValue = {
+        rootFrozen,
+        nestedPropertiesFrozen: childFrozen,
+        result: returnedObj,
+      };
+    } else if (exercise.id === "oop-singleton-registry") {
+      const reg1 = new userFunc();
+      const reg2 = new userFunc();
+      reg1.set("apiKey", inputClones[0] ?? "SECRET_TOKEN");
+      const keyIn2 = reg2.get("apiKey");
+      resultValue = {
+        areSingletonsSameInstance: reg1 === reg2,
+        retrievedKeyFromSecondInstance: keyIn2,
+      };
+    } else if (exercise.id === "oop-stateful-pubsub") {
+      const emitter = new userFunc();
+      let received = [];
+      const sub = emitter.subscribe(inputClones[0], (data) => {
+        received.push(data);
+      });
+      emitter.publish(inputClones[0], inputClones[1]);
+      sub.unsubscribe();
+      resultValue = { eventSubscribed: inputClones[0], receivedData: received };
+    } else if (exercise.id === "oop-builder-pattern") {
+      const builder = new userFunc();
+      const built = builder
+        .from(inputClones[0])
+        .select(inputClones[1])
+        .where(inputClones[2])
+        .limit(inputClones[3])
+        .build();
+      resultValue = built;
+    } else if (exercise.id === "map-weakmap-cache") {
+      let callCount = 0;
+      const original = (obj) => {
+        callCount++;
+        return (obj.val || 0) * 2;
+      };
+      const memoized = userFunc(original);
+      const o1 = { val: inputClones[0] ?? 10 };
+      const first = memoized(o1);
+      const second = memoized(o1);
+      resultValue = {
+        firstCallOutput: first,
+        secondCallOutput: second,
+        underlyingExecutions: callCount,
+      };
+    } else if (exercise.id === "localstorage-mock-tracker") {
+      const store = {};
+      const mockStorage = {
+        setItem: (k, v) => {
+          store[k] = v;
+        },
+        getItem: (k) => store[k] || null,
+        removeItem: (k) => {
+          delete store[k];
+        },
+      };
+      userFunc(mockStorage, inputClones[0]);
+      const reloaded = userFunc(mockStorage, null);
+      resultValue = {
+        simulatedStorageContents: store,
+        retrievedDataOnReload: reloaded,
+      };
+    } else if (exercise.id === "promisify-callback") {
+      const legacyFn = (arg, cb) => {
+        if (arg === "fail") cb(new Error("Failed"));
+        else cb(null, arg + "!");
+      };
+      const promised = userFunc(legacyFn);
+      const res = await promised(inputClones[0]);
+      resultValue = res;
+    } else if (exercise.id === "promise-all-safe") {
+      const promises = (inputClones[0] || []).map((item) => {
+        if (item.fail) return Promise.reject(new Error(item.val));
+        return Promise.resolve(item.val);
+      });
+      const res = await userFunc(promises);
+      resultValue = res.map((o) =>
+        o.status === "fulfilled"
+          ? { status: "fulfilled", value: o.value }
+          : {
+              status: "rejected",
+              reason: o.reason?.message || o.error || o.reason,
+            },
+      );
+    } else if (exercise.id === "async-fetch-json") {
+      const mockFetch = (id) => {
+        if (id === 999) return Promise.reject(new Error("Not Found"));
+        return Promise.resolve({ username: "john_doe" });
+      };
+      resultValue = await userFunc(inputClones[0], mockFetch);
+    } else if (exercise.id === "auto-retry-promise") {
+      let callCount = 0;
+      const mockFn = () => {
+        callCount++;
+        if (callCount < inputClones[0])
+          return Promise.reject(new Error("Fail"));
+        return Promise.resolve("Success");
+      };
+      resultValue = await userFunc(mockFn, inputClones[1]);
+    } else {
+      const evalResult = userFunc(...inputClones);
+      resultValue =
+        evalResult instanceof Promise ? await evalResult : evalResult;
+    }
+
+    return {
+      success: true,
+      result: formatValue(resultValue),
+      consoleLogs,
+      error: null,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      result: null,
+      consoleLogs,
+      error: err.message || String(err),
+    };
+  }
 }
