@@ -19,6 +19,7 @@ import { Roadmap } from "./components/Roadmap.jsx";
 import { MasteryCelebration } from "./components/MasteryCelebration.jsx";
 import { ES6CheatSheet } from "./components/ES6CheatSheet.jsx";
 import { NotesPanel } from "./components/NotesPanel.jsx";
+import { VisualSandbox } from "./components/VisualSandbox.jsx";
 
 import {
   CheckCircle,
@@ -417,6 +418,28 @@ export default function App() {
                   <Edit3 className="h-3.5 w-3.5 text-[#F7DF1E] shrink-0" />
                   <span className="whitespace-nowrap">My Notes</span>
                 </button>
+
+                <button
+                  onClick={() => setLeftTab("visualizer")}
+                  className={`flex-1 min-w-[125px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer relative ${
+                    leftTab === "visualizer"
+                      ? "bg-white text-zinc-950 border border-purple-300 shadow-sm font-extrabold"
+                      : "text-zinc-500 hover:text-zinc-950"
+                  }`}
+                >
+                  <Sparkles
+                    className={`h-3.5 w-3.5 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`}
+                  />
+                  <span className="whitespace-nowrap flex items-center gap-1.5">
+                    Visual Sandbox
+                    {activeExerciseIndex ===
+                      activeConcept.exercises.length - 1 && (
+                      <span className="h-2 w-2 rounded-full bg-purple-500 relative flex shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                      </span>
+                    )}
+                  </span>
+                </button>
               </div>
 
               {/* Dynamic View Panel (Theory manual / active exercise problem / ES6 cheatsheet) */}
@@ -442,6 +465,12 @@ export default function App() {
                     <NotesPanel
                       activeExercise={activeExercise}
                       activeConcept={activeConcept}
+                    />
+                  ) : leftTab === "visualizer" ? (
+                    <VisualSandbox
+                      activeConcept={activeConcept}
+                      activeExercise={activeExercise}
+                      solvedExercises={solvedExercises}
                     />
                   ) : (
                     <ProblemGoalPanel

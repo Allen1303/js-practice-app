@@ -3,15 +3,15 @@ export const CONCEPTS = [
     id: "map-callbacks",
     title: ".map() Callback Transform",
     shortDescription:
-      "Construct new arrays by transforming every element safely using map callbacks.",
+      "Learn how to transform every item in an array to create a brand new list.",
     longExplanation:
-      "The `.map()` array method is the cornerstone of immutable mutations in JavaScript. It creates a brand new array filled with the output values returned by your callback function, executed sequentially on each element in order.\n\n- **Immutable Paradigm**: Always returns a new array. Never modifies the original list arrays.\n- **Direct Mapping**: Standard mapping takes three callback parameters: `elements.map((element, index, originalArray) => { ... })`.",
-    codeSnippet: `// Example: Standard immutable conversion
-const numbers = [1, 2, 3, 4];
-const squared = numbers.map(x => x ** 2);
+      "The `.map()` method is like a machine that takes an array and runs a function on every item inside it, one by one. It then gives you a brand-new array with all the updated values.\n\n- **Never Changes the Original**: The original array stays exactly the same. You always get a clean, new list back.\n- **Optional Info**: Inside your function, you can optionally access not just the current item, but also its position index and the entire original array.",
+    codeSnippet: `// Example: Modern string sanitization using array mapping
+const rawTags = ["  JavaScript ", " es6  ", " React  js "];
+const cleanTags = rawTags.map(tag => tag.trim().toUpperCase());
 
-console.log(squared); // [1, 4, 9, 16]
-console.log(numbers); // [1, 2, 3, 4] (remains unmodified)`,
+console.log(cleanTags); // ["JAVASCRIPT", "ES6", "REACT  JS"]
+console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains unmodified)`,
     exercises: [
       {
         id: "map-trim-upper",
@@ -203,15 +203,15 @@ console.log(numbers); // [1, 2, 3, 4] (remains unmodified)`,
     id: "filter-callbacks",
     title: ".filter() Selection Controls",
     shortDescription:
-      "Sift through arrays, preserving only elements that pass absolute procedural criteria tests.",
+      "Keep only the items in an array that match a specific condition or rule.",
     longExplanation:
-      "The `.filter()` method checks arrays, constructing a brand new output list containing ONLY the elements that satisfy a truthy boolean assertion criteria checked in your callback function.\n\n- **Immutable Pruning**: Does not delete array items from the original array. Returns a clean subset array directly.\n- **Truth Assertion**: Callback must evaluate to a truthy boolean value (`true` or `false`) to keep or reject items.",
-    codeSnippet: `// Example: Clean odd numbers out of lists
-const series = [1, 2, 3, 4, 5];
-const evens = series.filter(num => num % 2 === 0);
+      "The `.filter()` method lets you screen an array and pick out only the elements you want. It runs a test function on each item: if the item passes the test (returns `true`), it gets added to the new array. If not, it is left behind.\n\n- **Keeps the Original Safe**: Just like `.map()`, it won't change your original array. It just returns a fresh, smaller list.\n- **The True/False Rule**: Your helper function must return either `true` (to keep the item) or `false` (to throw it out).",
+    codeSnippet: `// Example: Filtering temperature readings to keep only active states
+const readings = [15, -3, 0, 22, -10, 8];
+const validReadings = readings.filter(temp => temp >= 0);
 
-console.log(evens); // [2, 4]
-console.log(series); // [1, 2, 3, 4, 5] (remains unmodified)`,
+console.log(validReadings); // [15, 0, 22, 8]
+console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
     exercises: [
       {
         id: "filter-positives",
@@ -391,14 +391,15 @@ console.log(series); // [1, 2, 3, 4, 5] (remains unmodified)`,
     id: "reduce-callbacks",
     title: ".reduce() Aggregation Models",
     shortDescription:
-      "Aggregate, collapse, or reshape entire arrays into a single resulting data structure.",
+      "Combine all the items in an array down into a single value, object, or total.",
     longExplanation:
-      "The `.reduce()` method is JavaScript's most powerful array operator. It computes arrays downwards into a single result variable—which can be a single number, a string, a clean dictionary object, or a brand new array!\n\n- **Accumulator Context**: Keeps passing a running state: `.reduce((accumulator, currValue) => { ... }, initialValue)`.\n- **Unlocking Solutions**: Almost all array manipulation patterns can be rewritten using `.reduce()` directly.",
-    codeSnippet: `// Example: Computing running totals
-const costs = [10, 20, 30];
-const totalSum = costs.reduce((sum, item) => sum + item, 0);
+      "The `.reduce()` method is incredibly versatile. It lets you loop through an array and build up a single result step-by-step. This result can be a number (like a sum), a string, a brand-new object, or even another array!\n\n- **The Accumulator (Running Total)**: Think of the accumulator as a basket. As you visit each item, you update what's in the basket and pass it to the next step.\n- **Starting Value**: You always decide what the basket starts with (e.g., `0` for a sum, or `[]` for a list).",
+    codeSnippet: `// Example: Calculating product aggregation with an initial factor
+const multiplier = 10;
+const dimensions = [2, 3, 4];
+const totalProduct = dimensions.reduce((product, value) => product * value, multiplier);
 
-console.log(totalSum); // 60`,
+console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
     exercises: [
       {
         id: "reduce-multiplier",
@@ -553,17 +554,20 @@ console.log(totalSum); // 60`,
     id: "object-dictionaries",
     title: "Object Key-Value Maps",
     shortDescription:
-      "Design high speed O(1) hash maps, dictionary catalogs, and lookup directory tables.",
+      "Use JavaScript objects as custom dictionaries to lookup information instantly.",
     longExplanation:
-      "JavaScript objects serve as instant Key-Value stores under the hood. While simple nested arrays run in sluggish square O(N²) quadratic calculations, Object indexing unlocks extreme linear O(N) lookup operations.\n\n- **Property Lookup**: Check properties in constant runtime: `if (key in myMap) { ... }` or `myMap[key] !== undefined`.",
-    codeSnippet: `// Example: O(1) attribute indexing comparison
-const accounts = {
-  101: { name: 'Adam' },
-  152: { name: 'Beth' }
-};
+      "Standard arrays are great, but finding an item in a huge list can be slow because you might have to scan the whole array. JavaScript objects let you store things as key-value pairs (like a word and its definition) so you can find them instantly.\n\n- **Instant Lookups**: Checking if a key exists is super fast using the `in` keyword (e.g., `'username' in user`).\n- **Smart Caching**: You can save results in an object as you calculate them, so you never have to do the same work twice.",
+    codeSnippet: `// Example: Object key checks and default settings merging
+const defaultSettings = { theme: 'light', zoom: 100 };
+const userProfile = { theme: 'dark' };
 
-if (152 in accounts) {
-  console.log(accounts[152].name); // Beth
+const mergedConfig = { ...defaultSettings, ...userProfile };
+console.log(mergedConfig); // { theme: "dark", zoom: 100 }
+
+// Checking for key existence in O(1) time
+const key = 'zoom';
+if (key in mergedConfig) {
+  console.log(\`Setting '\${key}' exists with value:\`, mergedConfig[key]); // 100
 }`,
     exercises: [
       {
@@ -743,17 +747,21 @@ if (152 in accounts) {
     id: "closures-scoping",
     title: "Closures & Modular Scope",
     shortDescription:
-      "Master lexical scoping, private encapsulation, and self-contained function state stores.",
+      "Create functions that remember variables from where they were first defined.",
     longExplanation:
-      "Closures are formed whenever an inner function retains access to variables declared in its outer parent scope, even after that parent function finishes executing.\n\n- **Encapsulation**: Create truly private states that cannot be accessed or modified directly from the outside.\n- **State Retention**: Perfect for writing stateful widgets, modular custom hook caches, and data stream pipelines.",
-    codeSnippet: `// Example: Private variable closure
-function createGreeter(greeting) {
-  return function(name) {
-    return \`\${greeting}, \${name}!\`;
+      "A closure happens when an inner function remembers and has access to the variables of its outer function, even after the outer function has finished running. Think of it as a function with 'memory'.\n\n- **Private Data (Secret Bags)**: You can hide variables inside a function so that external code cannot touch or mess with them.\n- **Custom Factories**: You can write a function that creates other functions with customized pre-saved settings.",
+    codeSnippet: `// Example: Private state retention using closures
+function createCounter(stepValue) {
+  let count = 0; // Private state variable
+  return function() {
+    count += stepValue;
+    return count;
   };
 }
-const sayHello = createGreeter("Hello");
-console.log(sayHello("Emma")); // "Hello, Emma!"`,
+
+const incrementByTwo = createCounter(2);
+console.log(incrementByTwo()); // 2
+console.log(incrementByTwo()); // 4 (remembers and persists private 'count')`,
     exercises: [
       {
         id: "closure-counter",
@@ -914,14 +922,15 @@ console.log(sayHello("Emma")); // "Hello, Emma!"`,
     id: "string-parsing",
     title: "String Parsing & Formatting",
     shortDescription:
-      "Sift, slice, segment, and reconstruct strings cleanly utilizing core JS string utilities.",
+      "Split, search, clean, and rebuild string text in JavaScript easily.",
     longExplanation:
-      "JavaScript strings are immutable sequences of UTF-16 character pieces. Processing templates, cleaning up user inputs, parsing CSV logs, or handling data transfers requires strong mastery of string manipulation tools.\n\n- **Direct Inspections**: Look up parts with `slice()`, `split()`, `join()`, and `replace()` operations.",
-    codeSnippet: `// Example: String manipulation transformations
-const file = "image.png";
-const extension = file.slice(file.lastIndexOf("."));
+      "In JavaScript, you cannot change a string directly—once created, it is set in stone. To modify text, you use helper methods to create fresh, updated strings. Mastering these text tools is essential for cleaning up dirty user inputs or parsing raw data.\n\n- **Slicing and Splitting**: Use `.split()` to cut text into chunks, `.join()` to glue elements together, `.slice()` to grab specific segments, and `.trim()` to sweep away clumsy spaces.",
+    codeSnippet: `// Example: Text formatting and index slicing
+const fullName = "Sarah Connor";
+const [firstName, lastName] = fullName.split(" ");
+const initialGreeting = firstName + " " + lastName.slice(0, 1) + ".";
 
-console.log(extension); // ".png"`,
+console.log(initialGreeting); // "Sarah C."`,
     exercises: [
       {
         id: "string-html-tag",
@@ -1105,14 +1114,14 @@ console.log(extension); // ".png"`,
     id: "array-search-verification",
     title: "Array Search & Checks",
     shortDescription:
-      "Inspect, locate, and assert conditions across array collections using high-reusability ES6 search operators.",
+      "Find specific elements and verify check status rules in list arrays.",
     longExplanation:
-      "Looking up items inside arrays is a highly frequent operational requirement. Instead of running heavy manual indexing loops, modern JavaScript provides clean high-performance built-in search methods.\n\n- **`.find()`**: Returns the *first* element that passes a validation predicate.\n- **`.some()`**: Returns true if *at least one* element holds true.\n- **`.every()`**: Returns true only if *all* elements satisfy assertions.",
-    codeSnippet: `// Example: Swift target lookup validation
-const profiles = [{ id: 1, active: true }, { id: 2, active: false }];
-const activeUser = profiles.find(p => p.active);
+      "Searching through lists is a fundamental task. Instead of writing long and repetitive loop lines, JavaScript gives you built-in methods to query your data directly and elegantly.\n\n- **`.find()`**: Grabs the very first item that matches your custom search rule.\n- **`.some()`**: Returns `true` if at least one item matches your rule, and immediately stops searching.\n- **`.every()`**: Checks if *every single* item in the array passes your rule, returning `false` the moment one fails.",
+    codeSnippet: `// Example: Finding the first matching element in a collection
+const logs = [-5, -2, 4, -1, 10];
+const firstPositiveLog = logs.find(num => num > 0);
 
-console.log(activeUser.id); // 1`,
+console.log(firstPositiveLog); // 4`,
     exercises: [
       {
         id: "search-find-positive",
@@ -1299,14 +1308,19 @@ console.log(activeUser.id); // 1`,
     id: "optional-chaining-coalescing",
     title: "Optional Chaining & Nullish Coalescing",
     shortDescription:
-      "Query deeply nested attributes and protect setups fallback values utilizing ?. and ?? operators safely.",
+      "Safely query nested object fields and provide default fallbacks without crashing.",
     longExplanation:
-      'Deeply nested objects can throw nasty errors if parent nodes are missing (`Cannot read properties of undefined`). JavaScript handles this using:\n\n- **Optional Chaining (`?.`)**: Instantly aborts lookups and yields `undefined` instead of throwing: `user?.profile?.avatar`.\n- **Nullish Coalescing (`??`)**: Yields right-hand fallback ONLY if left-hand value is strictly `null` or `undefined` (preserving empty strings `""` or `0`).',
-    codeSnippet: `// Example: Guarding configuration variables
-const theme = { darkMode: false, settings: null };
-const isDark = theme.settings?.enhancedDark ?? true;
+      "When working with objects that have nested layers, your app can crash if you try to read a property from something that does not exist. JavaScript has two modern operators to protect your code:\n\n- **Optional Chaining (`?.`)**: Safely inspects nested fields. If any part of the path is missing, it immediately stops and returns `undefined` instead of throwing a screen-freezing error.\n- **Nullish Coalescing (`??`)**: Lets you provide a fallback default value only when a field is strictly missing (`null` or `undefined`). This keeps legitimate values like `false` or `0` intact!",
+    codeSnippet: `// Example: Safely crawling nested objects with fallback values
+const user = {
+  name: "Leo",
+  profile: {
+    address: null // nested address layer is empty
+  }
+};
 
-console.log(isDark); // true`,
+const coordinates = user?.profile?.address?.coordinates ?? "No coordinate profile found";
+console.log(coordinates); // "No coordinate profile found"`,
     exercises: [
       {
         id: "safe-nested-attr",
@@ -1502,15 +1516,15 @@ console.log(isDark); // true`,
     id: "set-unique-collections",
     title: "Unique Collections with Sets",
     shortDescription:
-      "Formulate mathematics set groupings, filter distinct elements, and audit unique listings swiftly in O(1).",
+      "Store lists of unique values and eliminate duplicate records effortlessly.",
     longExplanation:
-      "A JavaScript `Set` is an ES6 native collection type containing only entirely distinct elements (duplicates are completely ignored automatically).\n\n- **O(1) Membership Testing**: Checking exists via `mySet.has(x)` runs in blazing constant O(1) time.\n- **Quick Deduplication**: Double filter list arrays down instantly: `[...new Set(myArray)]`.",
-    codeSnippet: `// Example: Complete arrays deduplication
+      "A `Set` is a built-in object in JavaScript that acts like an array, but with one special rule: it can **never** hold duplicate values. If you try to add an item that is already there, the Set will simply ignore it!\n\n- **Super-Fast Checks**: Unlike arrays, which must search from start to finish, a Set can instantly tell you if it contains an item using `mySet.has(value)`.\n- **Quick deduplication**: You can clean all duplicates out of an array in a single line of code: `[...new Set(myArray)]`.",
+    codeSnippet: `// Example: Complete array deduplication and size queries
 const duplicates = [1, 2, 2, 3, 1, 4];
 const uniqueSet = new Set(duplicates);
 
 console.log(uniqueSet.has(2)); // true
-console.log([...uniqueSet]); // [1, 2, 3, 4]`,
+console.log([...uniqueSet]);   // [1, 2, 3, 4]`,
     exercises: [
       {
         id: "set-deduplicate-list",
@@ -1710,202 +1724,211 @@ console.log([...uniqueSet]); // [1, 2, 3, 4]`,
   },
   {
     id: "two-pointer-sliding-window",
-    title: "Two Pointers & Sliding Window",
+    title: "Promises & Delay Timers",
     shortDescription:
-      "Master bidirectional sweeps, fast/slow window iterators, dynamic length window optimizations, and nested multi-pointer configurations.",
+      "Manage asynchronous delays, callbacks, and parallel timers using ES6 Promises.",
     longExplanation:
-      "Many optimal array and string algorithms can reduce nested O(N^2) space/time solutions to O(N) linear operations by keeping state tracked via pointer indexes.\n\n- **Bidirectional pointers**: Move inward from both left and right edges depending on sum conditions (classic sorted Two Sum).\n- **Fast/slow pointers**: Fast scouts forward, and slow marks bounds for in-place modifications.\n- **Sliding Window**: Represents a contiguous range. Maintain a running sum or collection property, expanding the right wall until the rule breaks, then contracting the left wall to recover compliance.",
-    codeSnippet: `// Example: Find if sorted array has pair summing to target
-function hasPairSum(arr, target) {
-  let left = 0, right = arr.length - 1;
-  while (left < right) {
-    const sum = arr[left] + arr[right];
-    if (sum === target) return true;
-    if (sum < target) left++;
-    else right--;
-  }
-  return false;
-}`,
+      "Unlike synchronous operations that block standard execution, modern JavaScript handles delays and network callbacks using Promises.\n\n- **Promises**: Represents a container for a value that is either resolved now, in the future, or never.\n- **Async / Await**: Clean syntax that pauses line completion until your Promise resolves, cleanly wrapping async procedures in sequential structures.",
+    codeSnippet: `// Example: Timed delay Promise resolving custom values
+const delayWithResult = (value, ms) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(value), ms);
+  });
+};
+
+delayWithResult("Hello prompt resolved!", 1000)
+  .then(word => console.log(word)); // "Hello prompt resolved!" after 1 second`,
     exercises: [
       {
-        id: "two-sum-sorted",
-        title: "Two Sum - Sorted Input",
+        id: "delay-resolve",
+        title: "Timed Delay Promise",
         difficulty: "Warm-up",
         conceptContext:
-          "Bidirectional approach takes advantage of a sorted input structure. If the current pointer sum at [left, right] is less than target, increment left; if greater, decrement right. This guarantees O(N) runtime and O(1) memory.",
+          "Use new Promise((resolve) => { ... }) combined with setTimeout to delay code execution.",
         description:
-          "Find two numbers in a sorted array that sum up to a target value.\n\nWrite a function `twoSumSorted(numbers, target)` that accepts a sorted array of integers `numbers` and a target integer `target`. It must return the 0-based indices of the two elements as a two-item array `[index1, index2]` in ascending order (where index1 < index2).\n\nAssume exactly one unique pair solution exists for all input cases.",
-        codeTemplate: `function twoSumSorted(numbers, target) {
-  // Use a left and right pointer to find the unique indices adding up to target
+          "Write a function `delayResolve(value, ms)` that returns a Promise. The Promise should resolve with the given `value` after `ms` milliseconds.",
+        codeTemplate: `function delayResolve(value, ms) {
+  // Return a new Promise resolving with the given value after ms milliseconds
   
 }`,
-        functionName: "twoSumSorted",
+        functionName: "delayResolve",
         hints: [
-          "Initialize a left pointer at 0 and a right pointer at numbers.length - 1.",
-          "Run a while (left < right) loop, calculating the current sum: numbers[left] + numbers[right].",
-          "If sum strictly matches target, return [left, right]. If sum < target, left++. Otherwise, right--.",
+          "Return a new Promise: return new Promise((resolve) => { ... })",
+          "Register a setTimeout inside: setTimeout(() => resolve(value), ms)",
+          "The Promise resolves with the value argument.",
         ],
         explanation:
-          "Bidirectional sweeping on sorted systems eliminates redundant inner loops.",
+          "Delays execution safely, providing standard promise foundations.",
         testCases: [
           {
             id: 1,
-            input: [[2, 7, 11, 15], 9],
-            expected: [0, 1],
-            description: "Identifies primary pair at boundaries",
+            input: ["Success", 10],
+            expected: "Success",
+            description: "Resolves with Success",
           },
           {
             id: 2,
-            input: [[1, 3, 4, 6, 8, 10], 11],
-            expected: [1, 3],
-            description: "Finds correct inner values summing to 11",
+            input: [42, 5],
+            expected: 42,
+            description: "Resolves with number 42",
           },
         ],
       },
       {
-        id: "remove-duplicates-ptr",
-        title: "In-Place Unique Filter",
+        id: "promisify-callback",
+        title: "Promisify Callback API",
         difficulty: "DSA Easy",
         conceptContext:
-          "Fast/slow pointers are useful for sorting or filtering. The fast pointer iterates to find brand-new unique elements, and the slow elements index marks where to queue them up sequentially. Using standard arrays, we can construct the result array sequentially using this logic.",
+          "Bridge legacy error-first callbacks with modern Promise patterns.",
         description:
-          "Remove duplicate numbers from a sorted list.\n\nWrite a function `removeDuplicates(nums)` that takes a sorted array of integers `nums` and returns a new array containing ONLY the unique elements in their original order.\n\nBuild the array by iterating with two pointer indices (slow track index and fast scouting index) to construct the unique array element by element.",
-        codeTemplate: `function removeDuplicates(nums) {
-  // Use slow and fast indicators to build and return a list of unique numbers from the sorted input
+          "Write a function `promisify(fn)` that takes a function `fn(arg, callback)` where callback has the signature `(error, result)`. Your function should return another function that accepts `arg` and returns a Promise. That Promise resolves with the result or rejects with the error.",
+        codeTemplate: `function promisify(fn) {
+  // Return a function accepting arg and returning a Promise wrapping callback behavior
   
 }`,
-        functionName: "removeDuplicates",
+        functionName: "promisify",
         hints: [
-          "If the input nums array is empty, return an empty array.",
-          "Initialize a results array with the first element of nums.",
-          "Run a loop with a fast index from 1 to nums.length - 1, checking if nums[fast] is different from the previous unique element.",
-          "If they differ, push the new value to the results and return it at the end.",
+          "Return an inner function: return function(arg) { ... }",
+          "Return a new Promise inside: return new Promise((resolve, reject) => { ... })",
+          "Execute the callback: fn(arg, (err, res) => { if (err) reject(err); else resolve(res); })",
         ],
         explanation:
-          "Filtering duplicates becomes a linear operation when keeping track of unique transitions.",
+          "Converts callback interfaces into chainable Promises, enabling compatibility with async/await.",
         testCases: [
           {
             id: 1,
-            input: [[1, 1, 2]],
-            expected: [1, 2],
-            description: "Deduplicates simple recurring integers",
+            input: ["hello"],
+            expected: "hello!",
+            description: "Resolves callback string on success",
           },
           {
             id: 2,
-            input: [[0, 0, 1, 1, 1, 2, 2, 3, 4, 4]],
-            expected: [0, 1, 2, 3, 4],
-            description: "Collapses multiple duplicate groups elegantly",
+            input: ["fail"],
+            expected: "Error: Failed",
+            description: "Rejects callback with Node-style error",
           },
         ],
       },
       {
-        id: "max-subarray-sum-bound",
-        title: "Maximum Bounded Subarray",
+        id: "promise-all-safe",
+        title: "Safe Promise.all Settler",
         difficulty: "DSA Easy",
         conceptContext:
-          "Sliding window tracking maintains a contiguous window [left, right] representing elements. As the right pointer expands, add numbers to a running sum. When the sum exceeds the limit, incrementally shrink the window from the left (shifting the left pointer) until the sum is again less than or equal to the limit.",
+          "Emulate Promise.allSettled behavior to evaluate multiple promises without crashing on single fails.",
         description:
-          "Identify the maximum continuous range within budget.\n\nWrite a function `maxSubarrayLen(nums, limit)` that takes an array of positive integers `nums` and a budget integer `limit`. It must return the length of the longest contiguous subarray whose sum of elements does not exceed the budget `limit`.",
-        codeTemplate: `function maxSubarrayLen(nums, limit) {
-  // Use a sliding window to track the longest contiguous slice of positive numbers summing <= limit
+          "Write a function `allSafe(promises)` that accepts an array of Promises and returns a Promise resolving to an array of objects representing their outcomes. Each outcome object must have the shape `{ status: 'fulfilled', value: ... }` on success, or `{ status: 'rejected', reason: ... }` on rejection. Use Promise.all underneath inside standard .then() / .catch() maps.",
+        codeTemplate: `function allSafe(promises) {
+  // Wrap each promise to self-catch and return unified status object, then feed to Promise.all
   
 }`,
-        functionName: "maxSubarrayLen",
+        functionName: "allSafe",
         hints: [
-          "Initialize running variables: left = 0, currentSum = 0, and maxLen = 0.",
-          "Loop with right pointer from 0 to nums.length - 1, and add nums[right] to currentSum.",
-          "While currentSum > limit, subtract nums[left] from currentSum and increment left.",
-          "Update maxLen using Math.max(maxLen, right - left + 1) during each successful step.",
+          "Map the promises array: promises.map(p => p.then(val => ({ status: 'fulfilled', value: val })).catch(err => ({ status: 'rejected', reason: err.message })))",
+          "Pass this mapped array of self-safeguarded promises directly to Promise.all()",
         ],
         explanation:
-          "The sliding window technique avoids redundant checks, making operations O(N) instead of O(N^2).",
+          "Executes promises concurrently while preventing single failures from discarding valid adjacent resolutions.",
         testCases: [
           {
             id: 1,
-            input: [[1, 2, 3, 4, 1], 6],
-            expected: 3,
-            description: "Selects length 3 for the sub-range [1, 2, 3]",
+            input: [
+              [
+                { val: "A", fail: false },
+                { val: "B", fail: false },
+              ],
+            ],
+            expected: [
+              { status: "fulfilled", value: "A" },
+              { status: "fulfilled", value: "B" },
+            ],
+            description: "Resolves all inputs gracefully",
           },
           {
             id: 2,
-            input: [[8, 2, 4, 1, 3, 5], 9],
-            expected: 4,
-            description: "Extracts length 4 for [2, 4, 1, 3]",
-          },
-        ],
-      },
-      {
-        id: "min-subarray-len-target",
-        title: "Minimal Target Sum Window",
-        difficulty: "DSA Easy-Medium",
-        conceptContext:
-          "In this dynamic window variation, we expand right to find a valid window (sum >= target). Once valid, try to make it as small as possible by shifting the left pointer inwards while maintaining the valid condition (sum >= target). Maintain the minimum constraint size throughout the execution.",
-        description:
-          "Find the smallest possible contiguous range that matches or exceeds a value threshold.\n\nWrite a function `minSubArrayLen(target, nums)` that takes an array of positive integers `nums` and a target positive integer `target`. It must return the MINIMAL length of a contiguous subarray of which the sum is greater than or equal to `target`. If no such subarray exists under the constraints, return `0`.",
-        codeTemplate: `function minSubArrayLen(target, nums) {
-  // Shift left and right boundaries dynamically to pinpoint the smallest window summing >= target
-  
-}`,
-        functionName: "minSubArrayLen",
-        hints: [
-          "Set left = 0, currentSum = 0, and minLen to infinity (or nums.length + 1).",
-          "Expand the window with a right pointer, adding nums[right] to your currentSum.",
-          "As long as currentSum >= target, calculate the window size (right - left + 1), update minLen with the minimum, subtract nums[left] from currentSum, and increment left.",
-          "If minLen remains unchanged, return 0; otherwise, return minLen.",
-        ],
-        explanation:
-          "Shrinking a valid window is a classical optimization pattern used in routing and budget-allocation calculations.",
-        testCases: [
-          {
-            id: 1,
-            input: [7, [2, 3, 1, 2, 4, 3]],
-            expected: 2,
-            description: "Finds minimum length 2 for sub-range [4, 3]",
-          },
-          {
-            id: 2,
-            input: [11, [1, 2, 3, 4, 5]],
-            expected: 3,
+            input: [
+              [
+                { val: "A", fail: false },
+                { val: "boom", fail: true },
+              ],
+            ],
+            expected: [
+              { status: "fulfilled", value: "A" },
+              { status: "rejected", reason: "boom" },
+            ],
             description:
-              "Finds minimum length 3 for sub-range [3, 4, 5] (sum 12)",
+              "Captures partial error while preserving other resolutions",
           },
         ],
       },
       {
-        id: "three-sum-sorted-target",
-        title: "Symmetric Three-Sum Sweep",
+        id: "async-fetch-json",
+        title: "Mock API User Fetcher",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Use async/await with try/catch to invoke mock fetch calls safely.",
+        description:
+          "Write an `async` function `fetchUserData(userId, mockFetch)` that calls `mockFetch(userId)` (which returns a Promise resolving to a user object: `{ username }`). Your function should return the uppercase representation of `username`. If the request fails or throws an error, catch the exception cleanly and return `'GUEST'`. Assume mockFetch is provided to you.",
+        codeTemplate: `async function fetchUserData(userId, mockFetch) {
+  // Fetch user data inside a try/catch block, returning uppercase username or fallbacks
+  
+}`,
+        functionName: "fetchUserData",
+        hints: [
+          "Wrap your execution path in try { ... } catch (err) { ... }",
+          "Await the fetch result: const data = await mockFetch(userId)",
+          "Return the uppercase name target: return data.username.toUpperCase()",
+          "On catch block failure, return the fallback string 'GUEST'",
+        ],
+        explanation:
+          "Secures external API requests under reliable try-catch boundary systems.",
+        testCases: [
+          {
+            id: 1,
+            input: [123],
+            expected: "JOHN_DOE",
+            description: "Successfully parses username to uppercase",
+          },
+          {
+            id: 2,
+            input: [999],
+            expected: "GUEST",
+            description: "Swallows API error and returns fallback string GUEST",
+          },
+        ],
+      },
+      {
+        id: "auto-retry-promise",
+        title: "Auto-Retry Executor",
         difficulty: "DSA Medium",
         conceptContext:
-          "This exercise is the crown jewel of our multi-pointer system! Sort or iterate an array, freeze an element at index i, and then run the classical twoSumSorted bidirectional two-pointer logic on the sub-range [i + 1, nums.length - 1] looking for the remainder: target - nums[i]. This encapsulates the pattern of Exercise 1 within a progressive outer context.",
+          "Combine loops or recursion with async execution to implement resilient auto-retries.",
         description:
-          "Find three numbers that sum exactly to a target value.\n\nWrite a function `threeSumSorted(nums, target)` that takes a sorted array of integers `nums` and a target integer `target`. It must locate three separate elements that add up exactly to `target`, and return them as a sorted 3-item array `[num1, num2, num3]`.\n\nAssume there is exactly one solution scenario for all tested outcomes, and that you must build directly upon the bidirectional outer-boundary sweep pattern you perfected in the first exercise.",
-        codeTemplate: `function threeSumSorted(nums, target) {
-  // Freeze the first element with an outer loop, then run bidirectional pointers on the remaining range
+          "Write an `async` function `retryPromise(fn, maxRetries)` that takes an async function `fn` (which returns a Promise) and tries executing it. If it rejects or fails, retry execution up to `maxRetries` times. If it succeeds at any attempt, return the resolved value. If all attempts fail, reject with the final error from the last execution.",
+        codeTemplate: `async function retryPromise(fn, maxRetries) {
+  // Loop up to maxRetries times, awaiting fn() execution and recovering on failures
   
 }`,
-        functionName: "threeSumSorted",
+        functionName: "retryPromise",
         hints: [
-          "Loop through nums using active pointer 'i' from 0 up to nums.length - 3.",
-          "For each fixed nums[i], set targetSum = target - nums[i]. Then set left = i + 1, and right = nums.length - 1.",
-          "Run a while (left < right) loop. If nums[left] + nums[right] matches targetSum, return [nums[i], nums[left], nums[right]].",
-          "Adjust left and right pointers accordingly if the sum is less than or greater than targetSum.",
+          "Use a standard for loop from 1 to maxRetries",
+          "Inside a try...catch block, await fn() and return the result instantly if it resolves",
+          "On loop termination (all attempts exhausted), throw or let the final error reject",
         ],
         explanation:
-          "Nested pointer frameworks reduce complex three-nesting search solutions from O(N^3) to O(N^2) complexity with perfect memory economy.",
+          "Provides robust network request recovery sequences across transient offline phases.",
         testCases: [
           {
             id: 1,
-            input: [[-4, -1, 1, 2, 8, 12], 9],
-            expected: [-1, 2, 8],
-            description:
-              "Accurately extracts matching triplet [-1, 2, 8] (sum 9)",
+            input: [3, 5],
+            expected: "Success",
+            description: "Succeeds on the third attempt under budget limit 5",
           },
           {
             id: 2,
-            input: [[-10, -5, 0, 5, 10, 15, 20], 30],
-            expected: [0, 10, 20],
+            input: [4, 2],
+            expected: "Error: Fail",
             description:
-              "Deconstructs large range triplet successfully [0, 10, 20] (sum 30)",
+              "Rejects with final error if exhausted maxRetries limit 2",
           },
         ],
       },
@@ -1915,16 +1938,16 @@ function hasPairSum(arr, target) {
     id: "spread-destructuring-unpack",
     title: "ES6 Rest, Spread & Unpacking",
     shortDescription:
-      "Master variable extraction, parameters collection, default values fallback, and object combination keys.",
+      "Unpack fields easily and copy or combine objects and arrays.",
     longExplanation:
-      "Modern JavaScript (ES6+) introduced the Spread operator (`...` to spread values out of arrays or objects) and Rest operator (`...` to assemble loose inputs into clean arrays), alongside structural Destructuring assignment to extract dictionary variables instantly.\n\n- **Destructure Obj**: `const { name, age = 18 } = user`\n- **Destructure Array**: `const [first, ...remainder] = numbers`\n- **Shallow Clone & Merge**: `const updated = { ...original, active: true }`",
-    codeSnippet: `// Example: destructuring in function arguments
-const details = { name: "Aria", score: 98, level: 4 };
+      "JavaScript has powerful shortcuts to help you pull values out of objects or arrays and glue details together with minimal code.\n\n- **Destructuring**: Pull out specific values from an object or array and save them directly as variables in one clean line (e.g., `const { name, age } = user`).\n- **Spread (`...`)**: Scatter the contents of an object or array into a new one. This is perfect for copying or combining lists and settings without changing the originals.",
+    codeSnippet: `// Example: Object destructuring assignment with default fallbacks
+const coordinates = { x: 10, y: 25 };
+const { x, y, z = 0 } = coordinates;
 
-function printScore({ name, score, rank = "Pro" }) {
-  console.log(\`\${name} is \${rank} with \${score} pts\`);
-}
-printScore(details); // Aria is Pro with 98 pts`,
+console.log(x); // 10
+console.log(y); // 25
+console.log(z); // 0 (fallback default applied because z was undefined)`,
     exercises: [
       {
         id: "coords-extractor",
@@ -2109,19 +2132,23 @@ printScore(details); // Aria is Pro with 98 pts`,
     id: "oop-classes-prototype",
     title: "Class Blueprint Specs",
     shortDescription:
-      "Configure constructor classes, encapsulation getters, protective setter properties, inheritance subclasses, and local states stack engines.",
+      "Build structural templates to create objects with custom data and actions.",
     longExplanation:
-      "JavaScript uses prototype-based OOP underneath, but ES6 introduced the native `class` construct to formulate structured object blueprints. Using classes, constructors, methods, and encapsulation ensures state and behaviors are logically bundled.\n\n- **Create Class**: `class User { constructor(n) { this.name = n; } }`\n- **Inherit Parent**: `class Member extends User { constructor(n) { super(n); } }`",
-    codeSnippet: `// Example: Standard Object Class structure
-class CounterUnit {
-  constructor(start = 0) {
-    this.value = start;
+      "Classes are blueprints for creating objects with matching shapes and actions. Instead of manually writing individual objects, you construct a template class so you can easily instantiate hundreds of matching instances.\n\n- **The Constructor**: A special function that runs once when you create a new object (using the `new` keyword) to set up initial variables.\n- **Subclasses and Inheritance**: Create specialized blueprints that inherit all properties and actions from a parent template (using the `extends` keyword).",
+    codeSnippet: `// Example: Standard class constructor and method blueprints
+class MemberProfile {
+  constructor(username, status) {
+    this.username = username;
+    this.status = status;
   }
-  tick() {
-    this.value++;
-    return this.value;
+  
+  getDetails() {
+    return \`\${this.username} is \${this.status}\`;
   }
-}`,
+}
+
+const user = new MemberProfile("Alice", "online");
+console.log(user.getDetails()); // "Alice is online"`,
     exercises: [
       {
         id: "oop-simple-book",
@@ -2440,40 +2467,39 @@ class ElectricCar extends Vehicle {
   },
   {
     id: "es6-maps-collections",
-    title: "ES6 Map Collections vs. Objects",
+    title: "ES6 Map & WeakMap Collections",
     shortDescription:
-      "Master Key-Value pairing with native Map objects, preserving insertion order and enabling size lookups in O(1).",
+      "Master Map and WeakMap collections for advanced key-value pairing and private metadata.",
     longExplanation:
-      "Native ES6 `Map` collections solve limitations of standard objects when used as hash maps. In Objects, keys must be strings or symbols, and the prototype chain can lead to key collisions. An ES6 `Map` allows keys of any data type (including objects and functions), maintains insertion order of keys, and provides the size of the collection in an instant O(1) `.size` lookup.\n\n- **Map Methods**: `.set(key, val)`, `.get(key)`, `.has(key)`, `.delete(key)`, and `.clear()`.\n- **Performance Advantage**: More performant for frequent key-value additions and removals in DSA.",
-    codeSnippet: `// Example: standard ES6 Map collection
-const cache = new Map();
-cache.set("userId_101", { name: "Aria" });
-cache.set({ tempId: 1 }, "Active");
+      "While traditional JavaScript Objects map keys to values, they are limited to string or symbol keys and are subject to prototype pollution.\n\n- **ES6 Map**: Allows *any* value (numbers, objects, or functions) to serve as keys, remembers insertion order, and tracks count via `.size`.\n- **ES6 WeakMap**: Keys must be objects and are held weakly, allowing garbage-collection reclaiming memory when objects are dereferenced.",
+    codeSnippet: `// Example: Creating and manipulating ES6 Map collections
+const tally = new Map();
+tally.set("apples", 3);
+tally.set("banana", (tally.get("banana") || 0) + 1);
 
-console.log(cache.size); // 2
-console.log(cache.has("userId_101")); // true`,
+console.log(tally.get("apples")); // 3
+console.log(tally.has("oranges")); // false`,
     exercises: [
       {
         id: "map-frequency-counter",
-        title: "Deduplicated Frequency Counter Map",
+        title: "Clean Dictionary Word Indexer",
         difficulty: "DSA Easy",
         conceptContext:
-          "Instead of standard objects, using `new Map()` allows storing count records safely. We check existence with `map.has(key)` and retrieve counts with `map.get(key)`.",
+          "Build safe lookup profiles using ES6 Maps without risk of prototype pollution.",
         description:
-          "Let's build a clean item occurrences tally using Map collections! How it works In real-world data telemetry, counting high-speed sensor inputs or indexing client session requests requires highly optimized hash maps with minimal prototype pollution risk.\n\nWrite a function `frequencyMap(arr)` that loops through an array, computes the count of each item, and returns a native ES6 `Map` object mapping items to their frequencies.",
+          "Write a function `frequencyMap(arr)` that tallies occurrences of strings inside an array. It should return an ES6 `Map` mapping each unique element to its total frequency count.",
         codeTemplate: `function frequencyMap(arr) {
-  // Use a native ES6 Map to build counts of elements
+  // Return an ES6 Map counting element frequencies
   
 }`,
         functionName: "frequencyMap",
         hints: [
           "Initialize: const counts = new Map();",
-          "For each element, check if map has it: const currentCount = counts.has(item) ? counts.get(item) : 0;",
-          "Update the Map: counts.set(item, currentCount + 1);",
-          "Return the Map instance.",
+          "Loop over elements. Use map.has(item) ? map.get(item) : 0 to fetch count",
+          "Increment and write back using counts.set(item, currentCount + 1)",
         ],
         explanation:
-          "Native Maps bypass prototype key collisions, storing frequency profiles cleanly and safely in O(N).",
+          "Maintains unique key counts cleanly without colliding on inherited Object prototype keys.",
         testCases: [
           {
             id: 1,
@@ -2482,151 +2508,152 @@ console.log(cache.has("userId_101")); // true`,
               ["apple", 2],
               ["banana", 1],
             ]),
-            description: "Tallies fruit strings frequency into a Map",
+            description: "Tally frequency of fruit strings in Map",
           },
         ],
       },
       {
-        id: "map-isomorphic-strings",
-        title: "Isomorphic String Pattern Matcher",
+        id: "map-object-keys",
+        title: "Object Memory Mapping Store",
         difficulty: "DSA Easy",
-        conceptContext:
-          "Isomorphic strings s and t means each character in s maps uniquely to t and vice versa. Two separate Maps can maintain bidirectional character translations: `mapS.get(charS) === charT`.",
+        conceptContext: "Use objects directly as unique keys in an ES6 Map.",
         description:
-          "Verify design symmetry in patterns! How it works: In compiling dialects or validating URL pattern templates into server route mappings, bidirectional dictionary mappings assure consistency between distinct language tokens.\n\nWrite a function `isIsomorphic(s, t)` that checks if strings `s` and `t` are isomorphic by utilizing Map collections. Each unique character in `s` must map to exactly one character in `t` without collision, and vice versa.",
-        codeTemplate: `function isIsomorphic(s, t) {
-  // Use two Map collections to check bidirectional character mapping consistency
+          "Write a function `trackSessionStates(sessions, statuses)` that takes an array of session objects and an array of status strings of equal length. Map each object directly to its corresponding status inside an ES6 `Map`. Return the completed Map.",
+        codeTemplate: `function trackSessionStates(sessions, statuses) {
+  // Map sessions objects to corresponding statuses inside a single ES6 Map
   
 }`,
-        functionName: "isIsomorphic",
+        functionName: "trackSessionStates",
         hints: [
-          "If s.length !== t.length, return false immediately.",
-          "Maintain two Maps: const mapST = new Map(); and const mapTS = new Map();.",
-          "For char cS = s[i] and cT = t[i]: check if mapST has cS and mapST.get(cS) !== cT, or mapTS has cT and mapTS.get(cT) !== cS.",
-          "If mismatched, return false. Otherwise path set them into their respective Maps, returning true on loop completion.",
+          "Create a new Map: const map = new Map();",
+          "Iterate over sessions using a for loop or forEach index mapping sessions[i] directly to statuses[i]",
+          "Set connections: map.set(sessions[i], statuses[i])",
         ],
         explanation:
-          "Two-way map indexing prevents cross-mapping collisions, asserting isomorphic properties in O(N) runtime.",
+          "Demonstrates object reference keys in ES6 Maps, preserving identity boundaries.",
         testCases: [
           {
             id: 1,
-            input: ["egg", "add"],
-            expected: true,
-            description: "egg and add are isomorphic (e->a, g->d)",
-          },
-          {
-            id: 2,
-            input: ["foo", "bar"],
-            expected: false,
-            description: "foo and bar mismatch since o map to both a and r",
+            input: [
+              [{ id: 1 }, { id: 2 }],
+              ["active", "idle"],
+            ],
+            expected: new Map([
+              [{ id: 1 }, "active"],
+              [{ id: 2 }, "idle"],
+            ]),
+            description: "Map session objects to statuses",
           },
         ],
       },
       {
-        id: "map-longest-substring",
-        title: "Longest Unique Substring",
+        id: "map-iterator-sum",
+        title: "Map Inventory Synchronizer",
         difficulty: "DSA Easy",
         conceptContext:
-          "A sliding window algorithm can be optimized using a Map to store each character's most recent index. This allows the left pointer to jump directly without sliding one by one: `map.set(char, currentIndex)`.",
+          "Iterate across Map entries using .entries() or standard loops to merge inventory maps.",
         description:
-          "Write a function `longestUniqueSubstring(s)` that finds the length of the longest substring of characters without any repeating characters using a native Map.",
-        codeTemplate: `function longestUniqueSubstring(s) {
-  // Use sliding window with a Map to track character positions
+          "Write a function `mergeInventoryMaps(mapA, mapB)` that merges two ES6 Map objects, where keys are item names and values are stock quantities. Return a new Map mapping item names to the combined sum of stock quantities.",
+        codeTemplate: `function mergeInventoryMaps(mapA, mapB) {
+  // Create a combined Map summing values from mapA and mapB
   
 }`,
-        functionName: "longestUniqueSubstring",
+        functionName: "mergeInventoryMaps",
         hints: [
-          "Maintain maxLength = 0 and a start = 0 pointer.",
-          "Keep a seenChars = new Map() which maps character -> its index.",
-          "For each char at index i, if it's already in the Map and its index is >= start, update start = seenChars.get(char) + 1.",
-          "Set seenChars.set(char, i) and calculate maxLength = Math.max(maxLength, i - start + 1).",
+          "Create a copy from mapA: const merged = new Map(mapA);",
+          "Loop over entries in mapB: for (const [key, val] of mapB.entries())",
+          "Check if merged already has the key. If yes, add val to it; otherwise set key to val",
         ],
         explanation:
-          "Saves characters with their exact indexes inside a Map to update the sliding glass boundaries instantly in O(N).",
+          "Uses native Map iteration capabilities to merge entries efficiently.",
         testCases: [
           {
             id: 1,
-            input: ["abcabcbb"],
-            expected: 3,
-            description: 'Finds length 3 for the unique substring "abc"',
-          },
-          {
-            id: 2,
-            input: ["bbbbb"],
-            expected: 1,
-            description: "Finds length 1 for repeating single characters",
-          },
-          {
-            id: 3,
-            input: ["pwwkew"],
-            expected: 3,
-            description: "Handles sliding checks correctly",
+            input: [
+              new Map([
+                ["apples", 5],
+                ["pears", 3],
+              ]),
+              new Map([
+                ["pears", 10],
+                ["oranges", 2],
+              ]),
+            ],
+            expected: new Map([
+              ["apples", 5],
+              ["pears", 13],
+              ["oranges", 2],
+            ]),
+            description: "Sum matching inventory keys",
           },
         ],
       },
       {
-        id: "map-group-anagrams",
-        title: "Categorized Group Anagrams",
+        id: "map-grouping-keys",
+        title: "Relational Data Grouping Map",
         difficulty: "DSA Easy",
         conceptContext:
-          "To group strings that have the same characters, sort the characters of each string to use as a signature key in a Map: `map.set(sortedKey, [group])`.",
+          "Use Map to group array elements by a shared object property.",
         description:
-          "Write a function `groupAnagrams(strs)` that groups an array of strings into sub-arrays of anagrams. An anagram is a word formed by rearranging the letters of another.",
-        codeTemplate: `function groupAnagrams(strs) {
-  // Map sorted letters signature key to groups listing
+          "Write a function `bulkGroupUsersByRole(users)` that takes an array of user objects: `{ username, role }`. Return an ES6 Map where keys are roles and values are arrays of usernames that have that role.",
+        codeTemplate: `function bulkGroupUsersByRole(users) {
+  // Group users into array bucket arrays by their role string
   
 }`,
-        functionName: "groupAnagrams",
+        functionName: "bulkGroupUsersByRole",
         hints: [
-          "Initialize an empty new Map().",
-          "For each word, split its characters, sort them, and join them back to construct a key.",
-          "Check if the map has the key; if not, set it to []. Then push the original word onto that group.",
-          "Return Array.from(map.values()).",
+          "Create private map: const map = new Map();",
+          "Iterate over users. Extract role and username",
+          "If map doesn't have the role bucket, create it: map.set(role, []). Then push username.",
         ],
         explanation:
-          "Leverages a Map to bucket matching character sets in O(N * K log K) time.",
+          "Enables relational grouping models using Map collections.",
         testCases: [
           {
             id: 1,
-            input: [["eat", "tea", "tan", "ate", "nat", "bat"]],
-            expected: [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]],
-            description: "Matches grouped anagram combinations securely",
+            input: [
+              [
+                { username: "ali", role: "admin" },
+                { username: "bo", role: "user" },
+                { username: "cat", role: "admin" },
+              ],
+            ],
+            expected: new Map([
+              ["admin", ["ali", "cat"]],
+              ["user", ["bo"]],
+            ]),
+            description:
+              "Correctly groups usernames into corresponding role buckets",
           },
         ],
       },
       {
-        id: "map-subarray-sum",
-        title: "Subarray Cumulative Target Sum",
+        id: "map-weakmap-cache",
+        title: "WeakMap Metadata Cache Manager",
         difficulty: "DSA Medium",
         conceptContext:
-          "We can find continuous subarrays summing to k by tracking running prefix sums in a Map: `sumMap.set(currentPrefixSum, frequency)`.",
+          "Use WeakMaps to associate cached calculations directly with object inputs without impeding garbage collection.",
         description:
-          "Write a function `subarraySumEqualsK(nums, k)` that counts the total number of continuous subarrays whose elements sum up exactly to a target value k using a prefix sum frequency Map.",
-        codeTemplate: `function subarraySumEqualsK(nums, k) {
-  // Track cumulative running sum counts with Map
+          "Write a function `cacheCompute(fn)` that implements object memoization. It should return a function wrapping `fn(obj)`. When called with an object `obj`, if `obj` exists in your internal `WeakMap`, return the cached result. Otherwise, execute `fn(obj)`, record the outcome in the WeakMap, and return the resolved result.",
+        codeTemplate: `function cacheCompute(fn) {
+  // Use a WeakMap instance to memoize outputs of object inputs
   
 }`,
-        functionName: "subarraySumEqualsK",
+        functionName: "cacheCompute",
         hints: [
-          "Initialize count = 0 and runningSum = 0.",
-          "Initialize new Map() and set 0 -> 1 to match sums that equal k directly.",
-          "For each number, add it to runningSum. If map.has(runningSum - k), add its frequency to count.",
-          "Update runningSum's frequency in the Map before continuing.",
+          "Declare: const cache = new WeakMap();",
+          "Return wrapper function: return function(obj) { ... }",
+          "Check cache: if (cache.has(obj)) return cache.get(obj);",
+          "Compute, cache, and return: const res = fn(obj); cache.set(obj, res); return res;",
         ],
         explanation:
-          "Using cumulative prefix sums mapped to frequencies allows finding sub-sequences in O(N).",
+          "Binds calculation payloads to objects via WeakMap keys, enabling safe, leak-free caching.",
         testCases: [
           {
             id: 1,
-            input: [[1, 1, 1], 2],
-            expected: 2,
-            description: "Finds two subarrays summing to 2",
-          },
-          {
-            id: 2,
-            input: [[1, 2, 3], 3],
-            expected: 2,
-            description: "Finds two subarrays summing to 3",
+            input: [],
+            expected: true,
+            description: "Caches computation and avoids extra execution calls",
           },
         ],
       },
@@ -2636,15 +2663,16 @@ console.log(cache.has("userId_101")); // true`,
     id: "recursion-call-stack",
     title: "Recursion & Call Stack Frames",
     shortDescription:
-      "Master repetitive structures, recursion base cases, stack frame traces, and dynamic tree flattening.",
+      "Write elegant functions that solve big problems by calling themselves with smaller inputs.",
     longExplanation:
-      "Recursion is a programming technique where a function calls itself to solve smaller sub-instances of a larger problem. Every recursive call creates a brand-new 'stack frame' inside Javascript's memory engine (the Call Stack) that stores local arguments. Without a reliable base case, recursion runs infinitely, leading to a Call Stack overflow (RangeError: Maximum call stack size exceeded).\n\n- **Core Ingredients**: A 'Base Case' (terminates the loop) and a 'Recursive Step' (moves progress closer to the base case).\n- **Real-World Uses**: Parsing filesystems directories, searching JSON trees, traversing HTML DOM subfolders (nodes).",
-    codeSnippet: `// Example: standard recursive countdown
-function countdown(n) {
-  if (n <= 0) return; // Base Case
-  console.log(n);
-  countdown(n - 1); // Recursive Step
-}`,
+      "Recursion is a fascinating technique where a function calls **itself** to break down a large problem into smaller, bite-sized tasks. Think of it like nested Russian nesting dolls: you open each layer until you find the prize inside.\n\n- **The Base Case**: Your parachute! This is the core condition that stops the function from calling itself forever. If you forget your base case, your program will crash with a 'stack overflow'.\n- **Ideal for Tree Structures**: Essential for winding through nested menus, folder filesystems, or HTML document branches.",
+    codeSnippet: `// Example: Recursive summation of integers under n
+function sumUp(n) {
+  if (n <= 1) return n; // Base Case: the stop rule
+  return n + sumUp(n - 1); // Recursive Step: adding and calling itself with smaller input
+}
+
+console.log(sumUp(4)); // 10 (4 + 3 + 2 + 1)`,
     exercises: [
       {
         id: "recursion-factorial",
@@ -2741,70 +2769,71 @@ function countdown(n) {
         ],
       },
       {
-        id: "recursion-binary-search",
-        title: "Recursive Binary Search Bounds",
-        difficulty: "DSA Easy",
+        id: "recursion-sum-range",
+        title: "Recursive Number Range Accumulator",
+        difficulty: "Warm-up",
         conceptContext:
-          "Binary search finds elements in sorted arrays by checking the midpoint. If target is smaller than mid, search left half; if larger, search right half.",
+          "Accumulate values recursively by diminishing the input variable on each frame.",
         description:
-          "Write a recursive function `recursiveBinarySearch(arr, target, low = 0, high = arr.length - 1)` that returns the index of the target if found, or -1 if not found.",
-        codeTemplate: `function recursiveBinarySearch(arr, target, low = 0, high = arr.length - 1) {
-  // Base case: check out of bounds, select midpoint, recurse
+          "Write a recursive function `sumRange(n)` that calculates the sum of all positive integers from 1 up to `n`. For example, `sumRange(4)` should return `10` (4 + 3 + 2 + 1). If `n` is 1 or less, return `n`.",
+        codeTemplate: `function sumRange(n) {
+  // Base case: if n is 1 or less, return n; otherwise add n to sumRange(n - 1)
   
 }`,
-        functionName: "recursiveBinarySearch",
+        functionName: "sumRange",
         hints: [
-          "Base case: if low > high return -1.",
-          "Calculate mid-point: const mid = Math.floor((low + high) / 2).",
-          "If arr[mid] === target return mid.",
-          "If arr[mid] > target recurse on left boundary: return recursiveBinarySearch(arr, target, low, mid - 1).",
-          "Otherwise, recurse on right boundary: return recursiveBinarySearch(arr, target, mid + 1, high).",
+          "Establish base case: if (n <= 1) return n;",
+          "Otherwise return: return n + sumRange(n - 1);",
         ],
         explanation:
-          "Asserts log(N) complex division checks using recursion bounds elegantly.",
+          "Sums ranges sequentially using stack memory frame structures.",
         testCases: [
           {
             id: 1,
-            input: [[1, 3, 5, 7, 9], 7],
-            expected: 3,
-            description: "Locates 7 at index 3",
+            input: [4],
+            expected: 10,
+            description: "Calculates sum of 4 + 3 + 2 + 1",
           },
           {
             id: 2,
-            input: [[1, 3, 5, 7, 9], 4],
-            expected: -1,
-            description: "Returns -1 when target is missing",
+            input: [1],
+            expected: 1,
+            description: "Handles single case boundary safely",
           },
         ],
       },
       {
-        id: "recursion-generate-permutations",
-        title: "Recursive Backtracking Permutations",
-        difficulty: "DSA Medium",
+        id: "recursion-reverse-string",
+        title: "Recursive String Reverser",
+        difficulty: "DSA Easy",
         conceptContext:
-          "Backtracking recursively builds choices from a state pool, then backtracks by undoing those choices to explore other branches.",
+          "Slice character buffers sequentially to swap positions recursively.",
         description:
-          "Write a recursive function `generatePermutations(str)` that receives a string with unique letters and returns an array of all possible character arrangements (permutations) in any order.",
-        codeTemplate: `function generatePermutations(str) {
-  // Recursively swap or pick characters to generate all permutations
+          "Write a recursive function `reverseString(str)` that accepts a string `str` and returns its reversed version. For example, `reverseString('abc')` should return `'cba'`. (Do NOT use loops or native `.split().reverse().join()` methods).",
+        codeTemplate: `function reverseString(str) {
+  // Base case: if empty or single length string, return str
+  // Otherwise, return the reversed remainder of the substring plus the first letter
   
 }`,
-        functionName: "generatePermutations",
+        functionName: "reverseString",
         hints: [
-          "Base case: if string length is 1 or less, return [str].",
-          "Create an empty permutations = [] array.",
-          "For each index i in the string, select character char = str[i].",
-          "Get remaining string excluding char: const remaining = str.slice(0, i) + str.slice(i + 1).",
-          "Recursively call generatePermutations(remaining) to get sub-permutations, and join char to each of them.",
+          "Base case: if (str.length <= 1) return str;",
+          "Recursive Step: return reverseString(str.slice(1)) + str[0];",
         ],
         explanation:
-          "Recursively branches and joins character permutations, illustrating full search backtracking.",
+          "Recursively unwinds string characters backwards using call-stack frames.",
         testCases: [
           {
             id: 1,
-            input: ["abc"],
-            expected: ["abc", "acb", "bac", "bca", "cab", "cba"],
-            description: "Finds all six permutations for abc",
+            input: ["hello"],
+            expected: "olleh",
+            description: "Reverses standard string hello to olleh",
+          },
+          {
+            id: 2,
+            input: ["a"],
+            expected: "a",
+            description: "Maintains single-length letter perfectly",
           },
         ],
       },
@@ -2812,244 +2841,211 @@ function countdown(n) {
   },
   {
     id: "linked-lists-trees",
-    title: "Linked Lists & Binary Trees",
+    title: "Dates, Times & Milestones",
     shortDescription:
-      "Construct, traverse, and inspect dynamic pointer-based structures like lists and node trees.",
+      "Work with Date objects, calculate time gaps, parse formats, and construct localized relative calendar strings.",
     longExplanation:
-      "Linked Lists and Binary Trees are fundamental dynamic pointer-type data structures. Instead of contiguous array memory slots, elements are represented as standalone Node objects composed of value properties and memory pointer variables linking to adjacent nodes. Traversal involves jumping along pointers, while search algorithms are solved using recursive pointer inspections.\n\n- **Singly Linked Node**: `{ val: value, next: Node | null }`.\n- **Binary Tree Node**: `{ val: value, left: Node | null, right: Node | null }`.",
-    codeSnippet: `// Example: standard Singly Linked List Chain
-const listHead = { val: 1, next: { val: 2, next: null } };
+      "Time tracking and calendar scheduling are fundamental requirements in software interfaces. Modern JavaScript provides the `Date` constructor and internationalization APIs for robust temporal manipulations.\n\n- **Date Instance representation**: Houses absolute millisecond offsets from the Unix epoch (January 1, 1970 UTC).\n- **Date Parsing & Methods**: Retrieve or modify calendar boundaries cleanly using local or UTC helper methods.",
+    codeSnippet: `// Example: Dynamic Date interval and offset calculations
+const start = new Date("2026-05-15");
+const end = new Date("2026-05-20");
 
-// Example: standard Binary Tree Node Grouping
-const rootNode = { val: 10, left: { val: 5, left: null, right: null }, right: null };`,
+// absolute difference in days
+const diffTime = Math.abs(end - start);
+const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+console.log(diffDays); // 5
+
+// adding days offset securely
+start.setDate(start.getDate() + 10);
+console.log(start.toISOString().slice(0, 10)); // "2026-05-25"`,
     exercises: [
       {
-        id: "list-reverse",
-        title: "Reversing a Singly Linked List",
+        id: "date-difference",
+        title: "Date Milestone Difference",
         difficulty: "DSA Easy",
         conceptContext:
-          "To reverse a linked list, loop/traverse through nodes while re-orienting each node's next pointer to reference its previous sibling: `curr.next = prev`.",
+          "Calculate elapsed days by converting Date object millisecond offsets.",
         description:
-          "Write a function `reverseList(head)` that takes the head of a singly linked list and reverses the next pointers, returning the new head of the reversed list.\n\nInput Node template:\n`{ val: any, next: Node | null }`",
-        codeTemplate: `function reverseList(head) {
-  // Re-link sibling node pointers backwards, returning the new list head pointer
+          "Write a function `getDaysBetweenDates(dateStr1, dateStr2)` that accepts two date strings in `YYYY-MM-DD` format and returns the absolute difference in full calendar days as an integer.",
+        codeTemplate: `function getDaysBetweenDates(dateStr1, dateStr2) {
+  // Convert strings to Date objects, divide absolute millisecond difference by standard day multiplier
   
 }`,
-        functionName: "reverseList",
+        functionName: "getDaysBetweenDates",
         hints: [
-          "Maintain three pointers: let prev = null, let curr = head, let next = null.",
-          "Inside a while loop (while curr !== null), capture next: next = curr.next.",
-          "Reverse pointer connection: curr.next = prev.",
-          "Advance walkers: prev = curr; curr = next.",
-          "Once completed, return prev as it now points to the new head node.",
+          "Create Date instances: const d1 = new Date(dateStr1); const d2 = new Date(dateStr2);",
+          "Obtain millisecond difference: Math.abs(d2 - d1);",
+          "Convert to days dividing by milliseconds in a day: (1000 * 60 * 60 * 24)",
         ],
         explanation:
-          "Re-orients linked pointers iteratively in constant O(1) space complexity.",
+          "Normalizes calendar inputs to millisecond counters for reliable interval arithmetic.",
         testCases: [
           {
             id: 1,
-            input: [[1, 2, 3]],
-            expected: [3, 2, 1],
-            description: "Reverses a simple 3 node list accurately",
+            input: ["2026-05-20", "2026-05-27"],
+            expected: 7,
+            description: "Calculates exactly 7 days milestone gap",
           },
           {
             id: 2,
-            input: [[10]],
-            expected: [10],
-            description: "Handles single-node lists elegantly",
+            input: ["2026-05-27", "2026-05-20"],
+            expected: 7,
+            description:
+              "Maintains positive integer offset when order is reversed",
           },
         ],
       },
       {
-        id: "list-has-cycle",
-        title: "Floyd's Cycle Loop Detection",
-        difficulty: "DSA Easy",
+        id: "date-weekday",
+        title: "Localized Weekday Name",
+        difficulty: "Warm-up",
         conceptContext:
-          "Floyd's Tortoise and Hare algorithm uses two pointers moving at different speeds (slow moves 1 node, fast moves 2 nodes). If a circular reference exists, the fast pointer will eventually meet the slow pointer.",
+          "Translate Date days indexes into localized weekday strings.",
         description:
-          "Given the head of a singly linked list, determine if the list contains a cyclic loop reference.\n\nWrite a function `hasCycle(head)` that returns `true` if a cycle exists, or `false` otherwise.",
-        codeTemplate: `function hasCycle(head) {
-  // Detect linked cycle loops using fast and slow paced pointers
+          "Write a function `getWeekdayName(dateStr)` that accepts a date string in `YYYY-MM-DD` format and returns the full day of the week in English (e.g. `'Monday'`, `'Tuesday'`, `'Wednesday'`).",
+        codeTemplate: `function getWeekdayName(dateStr) {
+  // Parse date string and return localized weekday string
   
 }`,
-        functionName: "hasCycle",
+        functionName: "getWeekdayName",
         hints: [
-          "Check base conditions first: if (!head || !head.next) return false.",
-          "Set: let slow = head; and let fast = head.next;.",
-          "Loop: while (fast !== null && fast.next !== null).",
-          "If slow === fast, return true.",
-          "Advance walkers: slow = slow.next; fast = fast.next.next;",
-          "If loop finishes, return false.",
+          "Instantiate the date: const d = new Date(dateStr);",
+          "Use Intl.DateTimeFormat with day name configs: return d.toLocaleDateString('en-US', { weekday: 'long' });",
+          "Ensure timezone offsets do not shift days by parsing with slashes or standard separators if formatting locally.",
         ],
         explanation:
-          "Deploys dual fast-slow runners in O(N) time with O(1) auxiliary variables.",
+          "Formats timestamp points to human-centric locale outputs using date localized formatting.",
         testCases: [
           {
             id: 1,
-            input: [[1, 2, 3, 4], 2],
+            input: ["2026-05-25"],
+            expected: "Monday",
+            description: "Correctly identifies 2026-05-25 as Monday",
+          },
+          {
+            id: 2,
+            input: ["2026-05-27"],
+            expected: "Wednesday",
+            description: "Correctly identifies 2026-05-27 as Wednesday",
+          },
+        ],
+      },
+      {
+        id: "date-add-days",
+        title: "Project Deadline Calculator",
+        difficulty: "DSA Easy",
+        conceptContext:
+          "Add day offsets safely using setDate and getDate methods.",
+        description:
+          "Write a function `addDaysToDate(dateStr, days)` that accepts a date string in `YYYY-MM-DD` format and an integer `days`, and returns a new date string in `YYYY-MM-DD` format with the offset applied.",
+        codeTemplate: `function addDaysToDate(dateStr, days) {
+  // Increment dates safely, returning flat YYYY-MM-DD formatted strings
+  
+}`,
+        functionName: "addDaysToDate",
+        hints: [
+          "Instantiate: const d = new Date(dateStr);",
+          "Apply offset: d.setDate(d.getDate() + days);",
+          "Format back: return d.toISOString().slice(0, 10);",
+          "Make sure any timezone shifts do not corrupt dates. Using UTC methods can improve safety: d.setUTCDate(d.getUTCDate() + days); return d.toISOString().slice(0, 10);",
+        ],
+        explanation:
+          "Handles calendar month overflows and leap years transparently using native Date arithmetic.",
+        testCases: [
+          {
+            id: 1,
+            input: ["2026-05-20", 5],
+            expected: "2026-05-25",
+            description: "Identifies standard offset milestone",
+          },
+          {
+            id: 2,
+            input: ["2026-12-31", 1],
+            expected: "2027-01-01",
+            description: "Resolves year rollover boundaries gracefully",
+          },
+        ],
+      },
+      {
+        id: "date-is-leap",
+        title: "Leap Year Evaluator",
+        difficulty: "Warm-up",
+        conceptContext:
+          "Establish if a year possesses an extra day based on astronomical calendar divisions.",
+        description:
+          "Write a function `isLeapYear(year)` that checks if a calendar year is a leap year. A year is a leap year if it is divisible by 4, but not by 100, unless it is also divisible by 400.",
+        codeTemplate: `function isLeapYear(year) {
+  // Check divisibility rules for leap years
+  
+}`,
+        functionName: "isLeapYear",
+        hints: [
+          "Check standard divisibility: (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)",
+          "An alternative trick: check if new Date(year, 1, 29).getMonth() === 1 to see if Feb has 29 days!",
+        ],
+        explanation:
+          "Employs modular bounds arithmetic to declare leap year alignments accurately.",
+        testCases: [
+          {
+            id: 1,
+            input: [2024],
             expected: true,
-            description: "Catches circular cycle loop pointing back to node 3",
+            description: "Checks leap year divisible by 4",
           },
           {
             id: 2,
-            input: [[1, 2], -1],
+            input: [2026],
             expected: false,
-            description: "Correctly accepts linear safe lists",
+            description:
+              "Declares leap year false for standard non-divisible years",
           },
         ],
       },
       {
-        id: "tree-max-depth",
-        title: "Maximum Depth of a Binary Tree",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "The maximum depth of a binary tree represents the number of nodes along the longest path from root to farthest leaf node. It equates to: `1 + Math.max(depth(left), depth(right))` recursively.",
-        description:
-          "Write a recursive function `maxDepth(root)` that takes the root of a binary tree and returns its maximum depth.\n\nInput Node template:\n`{ val: any, left: Node | null, right: Node | null }`",
-        codeTemplate: `function maxDepth(root) {
-  // Recursively calculate left and right depths, returning the tallest path offset
-  
-}`,
-        functionName: "maxDepth",
-        hints: [
-          "Base Case: if root is null, return 0.",
-          "Otherwise, recurse on child subtrees: let leftDepth = maxDepth(root.left);",
-          "let rightDepth = maxDepth(root.right);",
-          "Return 1 + Math.max(leftDepth, rightDepth);",
-        ],
-        explanation:
-          "Calculates maximum height recursively utilizing standard stack frame branching.",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              {
-                val: 3,
-                left: { val: 9, left: null, right: null },
-                right: {
-                  val: 20,
-                  left: { val: 15, left: null, right: null },
-                  right: { val: 7, left: null, right: null },
-                },
-              },
-            ],
-            expected: 3,
-            description: "Calculates depth 3 for balanced hierarchical tree",
-          },
-          {
-            id: 2,
-            input: [null],
-            expected: 0,
-            description: "Handles empty tree entries smoothly",
-          },
-        ],
-      },
-      {
-        id: "tree-is-valid-bst",
-        title: "Binary Search Tree Validator",
-        difficulty: "DSA Easy",
-        conceptContext:
-          "A valid Binary Search Tree (BST) must satisfy: all left child node values must be strictly smaller than parent, and all right child values must be strictly larger than parent.",
-        description:
-          "Write a function `isValidBST(root, min = -Infinity, max = Infinity)` that recursively validates whether a binary tree fulfills BST sorting criteria.",
-        codeTemplate: `function isValidBST(root, min = -Infinity, max = Infinity) {
-  // Use recursion constraints checks to assert parent-child sorting ranges
-  
-}`,
-        functionName: "isValidBST",
-        hints: [
-          "Base Case: if root is null, return true.",
-          "Check sorting range boundaries: if root.val <= min || root.val >= max, return false.",
-          "Recurse left: passing parent val as custom max range: isValidBST(root.left, min, root.val).",
-          "Recurse right: passing parent val as custom min range: isValidBST(root.right, root.val, max).",
-          "Return both: leftRecursive && rightRecursive.",
-        ],
-        explanation:
-          "Ensures binary tree node values lie strictly within mathematical constraints in O(N).",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              {
-                val: 5,
-                left: { val: 1, left: null, right: null },
-                right: { val: 8, left: null, right: null },
-              },
-            ],
-            expected: true,
-            description: "Validates consistent BST tree sorting sequences",
-          },
-          {
-            id: 2,
-            input: [
-              {
-                val: 5,
-                left: { val: 1, left: null, right: null },
-                right: { val: 3, left: null, right: null },
-              },
-            ],
-            expected: false,
-            description: "Detects invalid child sorting offsets",
-          },
-        ],
-      },
-      {
-        id: "tree-lowest-common-ancestor",
-        title: "Lowest Common Ancestor in BST",
+        id: "date-time-elapsed",
+        title: "Relative Elapsed Time Parser",
         difficulty: "DSA Medium",
         conceptContext:
-          "The Lowest Common Ancestor (LCA) in a BST is the lowest node that has both p and q as descendants. If both are smaller than root, LCA is in left branch; if both are larger, it is in right; otherwise, root is LCA.",
+          "Produce human relative strings by scaling elapsed timestamp offsets.",
         description:
-          "Write a function `lowestCommonAncestor(root, p, q)` that searches a BST to find and return the LCA node of two target nodes `p` and `q`.",
-        codeTemplate: `function lowestCommonAncestor(root, p, q) {
-  // Traverse the tree recursively to locate the intersection node
+          "Write a function `formatRelativeTime(seconds)` that accepts an integer `seconds` representing a positive elapsed time. It should return a string format as follows: if `< 60` return `'X seconds ago'`, if `< 3600` return `'Y minutes ago'`, if `< 86400` return `'Z hours ago'`, and otherwise return `'W days ago'`.",
+        codeTemplate: `function formatRelativeTime(seconds) {
+  // Perform floor divisions to return formatted scale elapsed text segments
   
 }`,
-        functionName: "lowestCommonAncestor",
+        functionName: "formatRelativeTime",
         hints: [
-          "Verify base conditions: if (!root) return null.",
-          "Compare target values with parent: if (p.val < root.val && q.val < root.val) return lowestCommonAncestor(root.left, p, q);",
-          "If both values are larger: if (p.val > root.val && q.val > root.val) return lowestCommonAncestor(root.right, p, q);",
-          "Otherwise, current root is the splitting intersection node: return root.",
+          "If seconds < 60, return `${seconds} seconds ago`",
+          "If seconds < 3600, calculate minutes: Math.floor(seconds / 60) and return `${minutes} minutes ago`",
+          "If seconds < 86400, calculate hours: Math.floor(seconds / 3600) and return `${hours} hours ago`",
+          "Otherwise, calculate days: Math.floor(seconds / 86400) and return `${days} days ago`",
         ],
         explanation:
-          "Navigates BST search paths in O(H) time where H is tree height.",
+          "Formats numeric raw offsets into real-world relative user milestones.",
         testCases: [
           {
             id: 1,
-            input: [
-              {
-                val: 6,
-                left: {
-                  val: 2,
-                  left: { val: 0, left: null, right: null },
-                  right: { val: 4, left: null, right: null },
-                },
-                right: { val: 8, left: null, right: null },
-              },
-              2,
-              8,
-            ],
-            expected: 6,
-            description: "Identifies 6 as splitting ancestor",
+            input: [45],
+            expected: "45 seconds ago",
+            description: "Renders seconds interval under 1 minute",
           },
           {
             id: 2,
-            input: [
-              {
-                val: 6,
-                left: {
-                  val: 2,
-                  left: { val: 0, left: null, right: null },
-                  right: { val: 4, left: null, right: null },
-                },
-                right: { val: 8, left: null, right: null },
-              },
-              2,
-              4,
-            ],
-            expected: 2,
-            description: "Identifies parent node 2 as ancestor for node 4",
+            input: [120],
+            expected: "2 minutes ago",
+            description: "Renders minutes scale floor interval",
+          },
+          {
+            id: 3,
+            input: [7200],
+            expected: "2 hours ago",
+            description: "Renders hours scale floor interval",
+          },
+          {
+            id: 4,
+            input: [172800],
+            expected: "2 days ago",
+            description: "Renders days scale floor interval",
           },
         ],
       },
@@ -3059,14 +3055,18 @@ const rootNode = { val: 10, left: { val: 5, left: null, right: null }, right: nu
     id: "stack-queue-dsa",
     title: "Stacks, Queues & Monotonic Flow",
     shortDescription:
-      "Master Last-In-First-Out (LIFO) stacks, brace matching, directory paths simplification, monotonic trackers, and dynamic Reverse Polish calculators.",
+      "Enforce linear structures like Stacks (first-in-last-out) and Queues (first-in-first-out).",
     longExplanation:
-      "Linear data structures with strict access constraints are powerful foundational utilities for memory management, nested evaluation scopes, and history tracking.\n\n- **Stack (LIFO)**: Elements enter and leave at the same end. Essential for recursion, brackets validation, and path travel.\n- **Queue (FIFO)**: Elements enter at the tail and leave at the head. Ideal for task throttling and broad graph sweeps.\n- **Monotonic Stack**: Maintain elements in sorted order to answer next-greater/smaller lookup queries in optimal O(N) time.",
-    codeSnippet: `// Example: a simple array-backed LIFO stack
-const stack = [];
-stack.push("A"); // ["A"]
-stack.push("B"); // ["A", "B"]
-const value = stack.pop(); // returns "B", leaving ["A"]`,
+      "Sometimes we need lists that enforce specific rules on how items enter and leave. Stacks and Queues are simple but incredibly useful arrays that have strict entry and exit lanes.\n\n- **Stack (LIFO / Last In, First Out)**: Think of a stack of plates. You add new plates to the top, and you can only take plates off the top. This is used in browser back buttons and undo history!\n- **Queue (FIFO / First In, First Out)**: Think of a line at a grocery checkout. The first person to join the line is the first one served. Great for ordering printer tasks or message background jobs.",
+    codeSnippet: `// Example: Tracking matching items using a LIFO Stack
+const bracketStack = [];
+bracketStack.push("(");
+bracketStack.push("[");
+
+// Reached closing brace, pop the top of stack to verify matches
+const lastOpener = bracketStack.pop(); 
+console.log(lastOpener); // "["
+console.log(bracketStack); // ["("]`,
     exercises: [
       {
         id: "stack-valid-parentheses",
@@ -3317,14 +3317,20 @@ const value = stack.pop(); // returns "B", leaving ["A"]`,
     id: "fcc-basic-algorithms",
     title: "Array & Object Mechanics",
     shortDescription:
-      "Master modern array methods, bracket notations, object destructuring, and ES6+ collection iterations in JavaScript.",
+      "Practice core operations on arrays and objects, like cloning, deleting, and looping keys.",
     longExplanation:
-      "These exercises build elite collection management skills using modern JavaScript. You will master bracket lookups, in-place list operations (push, shift), non-destructive cloning with the spread operator (`...`), element presence checking using `.includes()` (the clean ES6 successor to `indexOf`), dynamic updates using computed property keys, object destructuring, and key-value scanning with `Object.entries()`.",
-    codeSnippet: `// Example: ES6 Non-destructive update & Computed Properties
-const updateField = (user, key, val) => ({
-  ...user,
-  preferences: { ...user.preferences, [key]: val }
-});`,
+      "These exercises will help you get comfortable with the absolute essentials of managing lists and objects. You will learn how to add and remove items, clone collections safely, run dynamic checks on properties, and find files or list configurations easily.",
+    codeSnippet: `// Example: Dynamic array queue and stack modifications
+const queue = ["apple", "banana"];
+
+// Adding an item to the end of array
+queue.push("cherry"); // ["apple", "banana", "cherry"]
+
+// Removing the first item from array
+const first = queue.shift(); // returns "apple", leaving ["banana", "cherry"]
+
+console.log(queue); // ["banana", "cherry"]
+console.log(first); // "apple"`,
     exercises: [
       {
         id: "ds-cart-queue",
@@ -3706,15 +3712,17 @@ const updateField = (user, key, val) => ({
     id: "basic-algorithm-scripting",
     title: "Basic Function Scripting",
     shortDescription:
-      "Solve standard frequency scans, word counters, and target checkers using declarative, functional ES6+ routines.",
+      "Practice basic script tasks like counting words or checking text inputs.",
     longExplanation:
-      "This entry-level section explores modern procedural and declarative algorithm design in JavaScript. You will master string spreads, regex cleansing, frequency mapping with `.reduce()`, alphabetical and multi-variable descending sort recipes, and targeted array filtering. Practicing these patterns establishes the fluent intuition required for modern functional data pipelines.",
-    codeSnippet: `// Example: Modern ES6 word frequency counts with reduce
-const words = "apple banana apple".split(" ");
-const freq = words.reduce((acc, word) => ({
-  ...acc,
-  [word]: (acc[word] || 0) + 1
-}), {});`,
+      "This beginner-friendly section will get you writing complete programs to perform realistic text, array, and data formatting tasks. You will practice cleaning text, counting items in lists, sorting numbers, and filtering elements to build solid scripting intuition.",
+    codeSnippet: `// Example: Case-insensitive character occurrences checking
+const phrase = "JavaScript ES6";
+const targetChar = "s";
+
+// Spreading string into character array, brushing, and filtering target matches
+const matches = [...phrase].filter(char => char.toLowerCase() === targetChar.toLowerCase());
+
+console.log(matches.length); // 2`,
     exercises: [
       {
         id: "count-char-occurrence",
@@ -4036,13 +4044,28 @@ const freq = words.reduce((acc, word) => ({
     id: "intermediate-algorithm-scripting",
     title: "Intermediate Algorithm Scripting",
     shortDescription:
-      "Progress through intermediate DSA problems covering interval scheduling, overlapping ranges, and timeline searches.",
+      "Solve intermediate problems with schedules, timelines, and overlapping ranges.",
     longExplanation:
-      "This structural module coordinates multidimensional schedule structures through sorted range intervals `[start, end]`. Learn to group serial lists, merge temporal overlaps, insert calendar slots, and parse time boundaries dynamically.",
-    codeSnippet: `// Example: standard interval sorting
-const bounds = [[12, 16], [1, 5]];
-bounds.sort((a, b) => a[0] - b[0]);
-console.log(bounds); // [[1, 5], [[12, 16]]`,
+      "Take your skills further by solving intermediate problems. You will work with ranges, manage calendars, find overlapping schedule spots, and learn how to align nested lists and timelines sequentially.",
+    codeSnippet: `// Example: Checking adjacent sequences and sorting bounds
+const steps = [1, 2, 3, 6, 7];
+const intervals = [];
+
+let start = steps[0];
+let prev = steps[0];
+
+for (let i = 1; i < steps.length; i++) {
+  if (steps[i] === prev + 1) {
+    prev = steps[i];
+  } else {
+    intervals.push([start, prev]);
+    start = steps[i];
+    prev = steps[i];
+  }
+}
+intervals.push([start, prev]);
+
+console.log(intervals); // [[1, 3], [6, 7]]`,
     exercises: [
       {
         id: "find-continuous-ranges",
