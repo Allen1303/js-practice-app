@@ -40,7 +40,7 @@ export function Header({
           }`}
         >
           <Code className="h-3.5 w-3.5 text-zinc-700" />
-          DSA Sandbox
+          Interactive Playground
         </button>
 
         <button
