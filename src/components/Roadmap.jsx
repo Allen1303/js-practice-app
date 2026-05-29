@@ -75,8 +75,8 @@ export function Roadmap({
                 learnjavascript.online
               </strong>
               . Tick topics off when you are confident, and jump straight into
-              the Interactive Sandbox to practice coding loops, strings, and dsa
-              reps!
+              the Interactive Sandbox to practice coding loops, strings, and
+              lesson exercises!
             </p>
           </div>
 

@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { Code, Lightbulb, RotateCcw, Sparkles } from "lucide-react";
 import { highlightJS } from "../utils/highlighter.js";
+import { formatTextWithCode } from "../utils/textFormatter.jsx";
 
 export function CodeWorkspace({
   currentCode,
@@ -173,7 +174,7 @@ export function CodeWorkspace({
               <p className="text-zinc-700 leading-normal text-[11px]">
                 🎯{" "}
                 <strong className="text-zinc-950">Current delta shift:</strong>{" "}
-                {prevExercise.explanation}
+                {formatTextWithCode(prevExercise.explanation)}
               </p>
             </div>
 

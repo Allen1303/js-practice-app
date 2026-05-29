@@ -1,71 +1,101 @@
-import { Layers, Check, Braces, Database, Terminal } from "lucide-react";
+import {
+  Layers,
+  Check,
+  Braces,
+  Database,
+  Terminal,
+  Type,
+  Clock,
+  Cpu,
+  Award,
+} from "lucide-react";
 
 const CATEGORIES = [
   {
-    id: "callbacks",
-    title: "1. Isolated Callbacks",
+    id: "foundations",
+    title: "1. Core Foundations",
+    icon: Type,
+    subgroups: [
+      {
+        title: "Baseline Elements",
+        concepts: ["string-parsing", "optional-chaining-coalescing"],
+      },
+    ],
+  },
+  {
+    id: "arrays-fp",
+    title: "2. Arrays & Functional Methods",
     icon: Layers,
     subgroups: [
       {
-        concepts: ["map-callbacks", "filter-callbacks", "reduce-callbacks"],
+        title: "Transform & Iteration",
+        concepts: [
+          "array-search-verification",
+          "map-callbacks",
+          "filter-callbacks",
+          "reduce-callbacks",
+        ],
       },
     ],
   },
   {
-    id: "functional-oop",
-    title: "2. Functional & OOP Classes",
+    id: "objects",
+    title: "3. Objects & Data Storage",
     icon: Braces,
     subgroups: [
       {
-        title: "Functional & Scoping Elements",
+        title: "Key-Value States",
         concepts: [
-          "closures-scoping",
+          "object-dictionaries",
           "spread-destructuring-unpack",
-          "optional-chaining-coalescing",
+          "set-unique-collections",
+          "es6-maps-collections",
         ],
-      },
-      {
-        title: "OOP Classes & Prototypes Section",
-        concepts: ["oop-classes-prototype", "es6-maps-collections"],
       },
     ],
   },
   {
-    id: "data-structures",
-    title: "3. Basic Data Structure",
-    icon: Database,
+    id: "scopes-async",
+    title: "4. Scopes & Asynchronous flows",
+    icon: Clock,
     subgroups: [
       {
-        title: "Basic Data Structure",
+        title: "Closures & Timers",
         concepts: [
-          "fcc-basic-algorithms",
-          "object-dictionaries",
-          "string-parsing",
-          "array-search-verification",
-          "set-unique-collections",
+          "closures-scoping",
+          "two-pointer-sliding-window",
+          "recursion-call-stack",
+          "linked-lists-trees",
         ],
       },
+    ],
+  },
+  {
+    id: "oop-engine",
+    title: "5. OOP Class Templates",
+    icon: Cpu,
+    subgroups: [
       {
-        title: "Advanced DSA Structures",
-        concepts: ["linked-lists-trees", "stack-queue-dsa"],
+        title: "Engine Blueprints",
+        concepts: [
+          "oop-classes-prototype",
+          "fcc-basic-algorithms",
+          "stack-queue-dsa",
+        ],
       },
     ],
   },
   {
     id: "algorithms",
-    title: "4. Algorithm Scripting",
-    icon: Terminal,
+    title: "6. Practical Algorithms",
+    icon: Award,
     subgroups: [
       {
-        title: "Algorithm Scripting",
+        title: "Algorithmic Challenges",
         concepts: [
           "basic-algorithm-scripting",
           "intermediate-algorithm-scripting",
         ],
-      },
-      {
-        title: "Sequential DSA Paradigms",
-        concepts: ["two-pointer-sliding-window", "recursion-call-stack"],
       },
     ],
   },

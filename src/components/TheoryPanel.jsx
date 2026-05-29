@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import { BookOpen, Layers, ArrowRight } from "lucide-react";
 import { highlightJS } from "../utils/highlighter.js";
+import { formatTextWithCode } from "../utils/textFormatter.jsx";
+import { formatDifficulty } from "../utils/difficultyFormatter.js";
 
 export function TheoryPanel({
   activeConcept,
@@ -29,7 +31,7 @@ export function TheoryPanel({
 
       <div className="text-zinc-650 leading-relaxed text-sm space-y-4 font-sans text-zinc-750">
         {activeConcept.longExplanation.split("\n\n").map((para, i) => (
-          <p key={i}>{para}</p>
+          <p key={i}>{formatTextWithCode(para)}</p>
         ))}
       </div>
 
@@ -43,6 +45,7 @@ export function TheoryPanel({
         </div>
         <pre
           className="p-4 overflow-x-auto text-xs font-mono text-[#abb2bf] bg-[#282c34] leading-relaxed select-all"
+          style={{ fontFamily: "Consolas, Monaco, monospace" }}
           dangerouslySetInnerHTML={{
             __html: highlightJS(activeConcept.codeSnippet, true),
           }}
@@ -87,13 +90,17 @@ export function TheoryPanel({
                   >
                     {idx === activeExerciseIndex
                       ? "active focus"
-                      : ex.difficulty}
+                      : formatDifficulty(ex.difficulty)}
                   </span>
                 </p>
-                <p className="text-zinc-500 font-mono text-[10.5px] leading-relaxed">
-                  {idx === 0
-                    ? "Baseline: Core syntax paradigm & baseline callback execution model."
-                    : `Evolution: ${ex.explanation}`}
+                <p className="text-zinc-600 font-sans text-[11px] leading-relaxed">
+                  {idx === 0 ? (
+                    formatTextWithCode(
+                      "Baseline: Core syntax paradigm & baseline callback execution model.",
+                    )
+                  ) : (
+                    <>Evolution: {formatTextWithCode(ex.explanation)}</>
+                  )}
                 </p>
               </div>
             </div>

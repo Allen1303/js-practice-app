@@ -61,7 +61,7 @@ export const KNOWLEDGE_MAP_CATEGORIES = [
   },
   {
     id: "async-javascript",
-    title: "11. Async, Promises & Fetch",
+    title: "11. Promises & Asynchronous JS",
     color: "from-fuchsia-500 to-purple-600",
     lightColor: "bg-fuchsia-50 text-fuchsia-750 border-fuchsia-200",
   },
@@ -93,7 +93,7 @@ export const KNOWLEDGE_MAP_TOPICS = [
 // console.log(x); // ReferenceError!
 const x = 10;
 let y = 20;`,
-    relatedExerciseId: "closure-counter",
+    relatedExerciseId: "search-find-positive",
   },
   {
     id: "km-primitive-types",
@@ -109,9 +109,9 @@ let y = 20;`,
       "Strict mode ('use strict') prevents accidental global allocations",
     ],
     codeSnippet: `console.log(typeof "hello"); // "string"
-console.log(typeof 42);      // "number"
-console.log(typeof null);    // "object"`,
-    relatedExerciseId: "fcc-reverse-string",
+    console.log(typeof 42);      // "number"
+    console.log(typeof null);    // "object"`,
+    relatedExerciseId: "count-char-occurrence",
   },
   {
     id: "km-global-environment",
@@ -127,7 +127,7 @@ console.log(typeof null);    // "object"`,
     ],
     codeSnippet: `console.log(globalThis === window); // true (in browser)
 "3" === 3; // false (strict type validation)`,
-    relatedExerciseId: "fcc-reverse-string",
+    relatedExerciseId: "count-char-occurrence",
   },
 
   // 2. Numbers & Remainder
@@ -147,7 +147,7 @@ console.log(typeof null);    // "object"`,
     codeSnippet: `const price = Number.parseInt("150_000 USD", 10); // 150000
 const largeNum = 1_000_000; // 1000000 (numeric separator)
 Number.isNaN(NaN); // true`,
-    relatedExerciseId: "safe-division",
+    relatedExerciseId: "reduce-multiplier",
   },
   {
     id: "km-division-remainder",
@@ -163,7 +163,7 @@ Number.isNaN(NaN); // true`,
     ],
     codeSnippet: `const isOdd = x % 2 !== 0;
 const index = step % length; // resets boundary`,
-    relatedExerciseId: "safe-division",
+    relatedExerciseId: "search-all-even-positives",
   },
 
   // 3. Strings & Text Methods
@@ -183,7 +183,7 @@ const index = step % length; // resets boundary`,
     codeSnippet: `const text = "JavaScript";
 console.log(text.at(-2)); // 'p'
 console.log(text.slice(0, 4)); // "Java"`,
-    relatedExerciseId: "fcc-reverse-string",
+    relatedExerciseId: "string-html-tag",
   },
   {
     id: "km-string-matching-regex",
@@ -201,7 +201,7 @@ console.log(text.slice(0, 4)); // "Java"`,
     codeSnippet: `const msg = "Buy 2 apples and 3 bananas";
 console.log(msg.includes("apple")); // true
 console.log(msg.replace(/\\d/g, "#")); // "Buy # apples and # bananas"`,
-    relatedExerciseId: "fcc-confirm-ending",
+    relatedExerciseId: "string-camel-case",
   },
   {
     id: "km-string-formatting",
@@ -220,7 +220,7 @@ console.log(msg.replace(/\\d/g, "#")); // "Buy # apples and # bananas"`,
     codeSnippet: `const name = "  Bob  ";
 const clean = name.trim().toLowerCase(); // "bob"
 const paddedId = "7".padStart(3, "0"); // "007"`,
-    relatedExerciseId: "fcc-repeat-string",
+    relatedExerciseId: "string-camel-case",
   },
 
   // 4. Control Flow & Loops
@@ -238,7 +238,7 @@ const paddedId = "7".padStart(3, "0"); // "007"`,
     ],
     codeSnippet: `const state = active ? "Online" : "Offline";
 const name = username ?? "Guest"; // Nullish coalescing`,
-    relatedExerciseId: "safe-wallet-transfer",
+    relatedExerciseId: "search-contains-underage",
   },
   {
     id: "km-loops-statements",
@@ -255,7 +255,7 @@ const name = username ?? "Guest"; // Nullish coalescing`,
     ],
     codeSnippet: `const words = ["a", "b"];
 for (const word of words) { console.log(word); }`,
-    relatedExerciseId: "safe-wallet-transfer",
+    relatedExerciseId: "build-frequency-map",
   },
 
   // 5. Functions, Scopes & Closures
@@ -274,7 +274,7 @@ for (const word of words) { console.log(word); }`,
     ],
     codeSnippet: `const multiply = (x, y = 5) => x * y;
 console.log(multiply(2)); // 10`,
-    relatedExerciseId: "closure-counter",
+    relatedExerciseId: "gather-rest-sum",
   },
   {
     id: "km-scopes-closures",
@@ -309,7 +309,7 @@ console.log(multiply(2)); // 10`,
     ],
     codeSnippet: `const exec = (cb) => cb("Executed");
 exec(msg => console.log(msg));`,
-    relatedExerciseId: "closure-multiplier",
+    relatedExerciseId: "map-scale-parity",
   },
   {
     id: "km-generators-control",
@@ -329,7 +329,7 @@ exec(msg => console.log(msg));`,
 }
 const gen = idGenerator();
 gen.next().value; // 1`,
-    relatedExerciseId: "closure-multiplier",
+    relatedExerciseId: "closure-stream",
   },
 
   // 6. Handling Arrays & Spread
@@ -346,7 +346,7 @@ gen.next().value; // 1`,
     ],
     codeSnippet: `const list = ["A", "B"];
 const updated = list.toSpliced(1, 0, "X"); // ["A", "X", "B"]`,
-    relatedExerciseId: "fcc-chunky-monkey",
+    relatedExerciseId: "ds-cart-queue",
   },
   {
     id: "km-spread-destructuring",
@@ -378,7 +378,7 @@ const [firstColor, ...otherColors] = colors; // "red", ["green", "blue"]`,
     ],
     codeSnippet: `const users = [{ name: "Ann" }, { name: "Val" }];
 const user = users[0].name; // "Ann"`,
-    relatedExerciseId: "fcc-chunky-monkey",
+    relatedExerciseId: "ds-profile-updater",
   },
 
   // 7. Array Iteration Methods
@@ -503,7 +503,7 @@ const keys = Object.keys(config); // ["auth", "dev"]`,
     codeSnippet: `const body = document.body;
 const inputs = document.querySelectorAll(".form-input");
 const inputsArr = Array.from(inputs); // real Array`,
-    relatedExerciseId: "fcc-truncate-string",
+    relatedExerciseId: "string-html-tag",
   },
   {
     id: "km-dom-elements-classlist",
@@ -519,7 +519,7 @@ const inputsArr = Array.from(inputs); // real Array`,
     codeSnippet: `const sidebar = document.querySelector(".sidebar");
 sidebar.classList.toggle("is-active");
 sidebar.style.opacity = "0.9";`,
-    relatedExerciseId: "fcc-truncate-string",
+    relatedExerciseId: "string-html-tag",
   },
   {
     id: "km-dom-manipulation-attributes",
@@ -536,85 +536,91 @@ sidebar.style.opacity = "0.9";`,
     codeSnippet: `const el = document.querySelector(".user-row");
 const userId = el.dataset.userId; // matches data-user-id
 const parentCard = el.closest(".card");`,
-    relatedExerciseId: "fcc-truncate-string",
+    relatedExerciseId: "string-html-tag",
   },
 
-  // 11. Async, Promises & Fetch
+  // 11. Promises & Asynchronous JS
   {
-    id: "km-async-foundations",
+    id: "km-two-pointers-basics",
     categoryId: "async-javascript",
-    title: "Promises, States & the Event Loop",
+    title: "Promise Foundations & Resolving",
     summary:
-      "Acknowledge asynchronous code execution using Promises and event loop stages.",
+      "Create, resolve, and handle asynchronous actions using Promises and standard chains.",
     details:
-      "Promises manage the state transitions of independent tasks (Pending, Resolved, Rejected). The event loop prioritizes task schedules.",
+      "A Promise represents the eventual completion of an asynchronous operation. You can resolve a value or reject an error, then attach handlers using .then() and .catch().",
     takeaways: [
-      "New Promise() takes a constructor function: (resolve, reject)",
-      "The Event Loop schedules async callback tasks in distinct queues",
-      "State transitions from Pending to Resolved or Rejected are permanent",
+      "Promises have three states: pending, fulfilled, and rejected",
+      "Use new Promise((resolve, reject) => { ... }) to wrap asynchronous operations",
+      "Use .then() for handling resolved values and .catch() for errors",
     ],
-    codeSnippet: `const task = new Promise((resolve, reject) => {
-  setTimeout(() => resolve("Success!"), 100);
-});`,
-    relatedExerciseId: "async-resolve-delay",
+    codeSnippet: `const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+wait(1000).then(() => console.log("Done!"));`,
+    relatedExerciseId: "delay-resolve",
   },
   {
-    id: "km-async-await-flow",
+    id: "km-two-pointers-fast-slow",
     categoryId: "async-javascript",
-    title: "Async/Await Control Flow",
+    title: "Asynchronous Functions (async/await)",
     summary:
-      "Write legible asynchronous routines using await pausing behaviors.",
+      "Write synchronous-looking asynchronous code using the async and await keywords.",
     details:
-      "Explicit keywords replace nested catch sequences. Async/Await parses promises as sequential code statements in the thread.",
+      "The async/await keywords are syntactic sugar on top of Promises. Declaring a function as async causes it to automatically return a Promise. Awaiting inside pauses line execution until a Promise resolves, mimicking standard flow.",
     takeaways: [
-      "async functions automatically return Promises",
-      "await pauses code execution until target Promises settle",
-      "Always wrap await commands in try-catch to manage server exceptions",
+      "Mark a function with async to unlock using the await keyword inside",
+      "Awaiting a promise suspends execution gracefully without blocking client threads",
+      "Wrap async/await calls inside try...catch blocks to cleanly handle failure exceptions",
     ],
-    codeSnippet: `async function loadData() {
+    codeSnippet: `async function getUser() {
   try {
-    const data = await fetchProfileEx();
-    return data;
+    const user = await fetchUser();
+    return user.name;
   } catch (err) {
-    console.error("Failed", err.message);
+    return "GUEST";
   }
 }`,
-    relatedExerciseId: "safe-json-parse",
+    relatedExerciseId: "async-fetch-json",
   },
   {
-    id: "km-promise-concurrency",
+    id: "km-sliding-window-fixed",
     categoryId: "async-javascript",
-    title: "Concurrency: Promise.all & Promise.any",
+    title: "Parallel Promise Executions",
     summary:
-      "Resolve multiple network operations concurrently and design redundant callbacks.",
+      "Trigger and coordinate multiple asynchronous promises concurrently for speed optimizations.",
     details:
-      "Promise.all() waits for all promises to resolve. Promise.any() returns the first successful promise.",
+      "Instead of awaiting multiple async operations one after another in a slow linear sequence, we can fire them off at the same time and wait for all of them to resolve using Promise.all or Promise.allSettled.",
     takeaways: [
-      "Promise.all() rejects immediately if any single promise fails",
-      "Promise.any() ignores rejections, resolving with the first successful value",
+      "Promise.all(arr) rejects instantly if any single promise fails",
+      "Promise.allSettled(arr) waits for all promises to complete and returns details of all outcomes",
+      "Executing in parallel improves API integration speeds and client response times",
     ],
-    codeSnippet: `const profiles = [fetchUser(1), fetchUser(2)];
-const results = await Promise.all(profiles);`,
-    relatedExerciseId: "async-resolve-delay",
+    codeSnippet: `const [users, posts] = await Promise.all([
+  fetchUsers(),
+  fetchPosts()
+]);`,
+    relatedExerciseId: "promise-all-safe",
   },
   {
-    id: "km-fetch-apis",
+    id: "km-sliding-window-dynamic",
     categoryId: "async-javascript",
-    title: "Fetch API & JSON parsing",
+    title: "Promisification of Callback APIs",
     summary:
-      "Request resources from remote servers and configure exchange formats.",
+      "Convert old-school, callback-heavy functions into modern, chainable Promise shapes.",
     details:
-      "Requires double-step promises: resolving transport headers, then parsing payloads into JSON objects using response.json().",
+      "Many older environments and platform APIs use error-first callbacks (e.g. fn(arg, callback)). We can promisify these functions by wrapping them in new Promises, enabling support for async/await.",
     takeaways: [
-      "HTTP verbs control actions: GET reads, POST creates, PUT updates, DELETE removes",
-      "response.ok checks status codes to verify success",
-      "JSON.stringify() converts JS entities into serialized text",
+      "Promisification bridges legacy APIs with modern Promise patterns",
+      "Pass cb(...) arguments into the wrap function and trigger resolve or reject inside",
+      "Allows composing complex network or file system operations using async/await chains",
     ],
-    codeSnippet: `const res = await fetch("/api/users", { method: "POST", body: JSON.stringify({ id: 5 }) });
-if (res.ok) {
-  const data = await res.json();
-}`,
-    relatedExerciseId: "safe-json-parse",
+    codeSnippet: `const promisified = (val) => {
+  return new Promise((resolve, reject) => {
+    legacyCallbackCall(val, (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+};`,
+    relatedExerciseId: "promisify-callback",
   },
 
   // 12. OOP, Classes & super()

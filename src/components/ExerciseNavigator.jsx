@@ -1,4 +1,5 @@
 import { CheckCircle } from "lucide-react";
+import { formatDifficulty } from "../utils/difficultyFormatter.js";
 
 export function ExerciseNavigator({
   activeConcept,
@@ -66,7 +67,7 @@ export function ExerciseNavigator({
               </div>
 
               <span className="text-[9px] font-mono text-zinc-400 mt-1 select-none">
-                {ex.difficulty}
+                {formatDifficulty(ex.difficulty)}
               </span>
 
               {/* Active highlight bar under selector */}
