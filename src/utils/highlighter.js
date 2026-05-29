@@ -105,11 +105,23 @@ export function highlightJS(code, isDark = true) {
   // 7. Match and replace numeric characters
   html = html.replace(/\b(\d+)\b/g, (m) => addToken(m, numberClass));
 
+  // 7.8 Match arrow function operator =>
+  html = html.replace(/=&gt;/g, (m) => addToken(m, keywordClass));
+
   // 8. Match and replace operators
   html = html.replace(
-    /(=&gt;|&gt;|&lt;|===|==|!==|!=|=|\+|-|\*|\/|&amp;&amp;|\|\||!)/g,
+    /(&gt;|&lt;|===|==|!==|!=|=|\+|-|\*|\/|&amp;&amp;|\|\||!)/g,
     (m) => addToken(m, opClass),
   );
+
+  // 8.5 Match and replace brackets, parentheses, and braces
+  const parenClass = "text-[#ffd700] font-mono font-bold"; // gold / yellow
+  const bracketClass = "text-[#61afef] font-mono font-bold"; // blue / cyan
+  const braceClass = "text-[#c678dd] font-mono font-bold"; // purple / magenta
+
+  html = html.replace(/(\(|\))/g, (m) => addToken(m, parenClass));
+  html = html.replace(/(\[|\])/g, (m) => addToken(m, bracketClass));
+  html = html.replace(/(\{|\})/g, (m) => addToken(m, braceClass));
 
   // 9. Reconstruct the HTML by replacing placeholders with safe formatted spans in reverse order
   for (let i = tokens.length - 1; i >= 0; i--) {

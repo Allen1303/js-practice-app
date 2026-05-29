@@ -273,7 +273,7 @@ export function ProblemGoalPanel({
                     setActiveExerciseIndex(journeyPreviewIdx);
                     setLeftTab("problem");
                   }}
-                  className="text-[9px] font-mono font-bold text-zinc-950 bg-[#F7DF1E] hover:bg-[#edd012] px-2 py-1 rounded border border-zinc-350 flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                  className="text-[9px] font-mono font-bold text-zinc-955 bg-[#F7DF1E] hover:bg-[#edd012] px-2 py-1 rounded border border-zinc-350 flex items-center gap-1 transition-all active:scale-95 shadow-sm"
                 >
                   Jump to Code <ArrowRight className="h-2.5 w-2.5" />
                 </button>
@@ -286,7 +286,7 @@ export function ProblemGoalPanel({
                   <p>
                     🎯 <strong>The Solid Foundation</strong>:
                   </p>
-                  <p className="text-zinc-650 mt-1 pl-2 border-l border-zinc-300">
+                  <p className="text-zinc-655 mt-1 pl-2 border-l border-zinc-300">
                     This is the starting point. Master the fundamental syntax
                     and properties first before layering auxiliary mechanics.
                   </p>
@@ -308,33 +308,6 @@ export function ProblemGoalPanel({
             </div>
           </motion.div>
         </AnimatePresence>
-      </div>
-
-      {/* Methodological comparison note for pattern recognition */}
-      <div className="bg-[#10b981]/5 border border-emerald-200/60 rounded-xl p-4.5 space-y-2.5">
-        <span className="text-[10px] font-mono font-bold tracking-wider text-emerald-800 uppercase flex items-center gap-1.5">
-          <Trophy className="h-4 w-4 text-emerald-600 fill-emerald-100/50" />
-          The Pattern-Recognition Advantage
-        </span>
-        <p className="text-xs text-zinc-650 leading-relaxed font-normal font-sans">
-          Unlike traditional platforms that present isolated, unstructured
-          riddles, this curriculum is engineered as an{" "}
-          <strong>incremental ladder</strong>. Each topic's 5 exercises build
-          directly upon the preceding step's solution.
-        </p>
-        <div className="text-[10.5px] text-zinc-505 font-mono pl-3 border-l-2 border-emerald-500/40 space-y-1">
-          <div>
-            • Layer one mechanic at a time to develop syntax muscle memory.
-          </div>
-          <div>
-            • Press{" "}
-            <strong className="text-[#a1871a] bg-amber-50 px-1 py-0.2 rounded border border-amber-200/40">
-              Compare Step Upgrade
-            </strong>{" "}
-            in the editor to instantly reference or import your previous
-            solution code.
-          </div>
-        </div>
       </div>
 
       {/* Hints & Solutions Area */}

@@ -18,7 +18,7 @@ console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains u
         title: "Clean Word Sanitizer",
         difficulty: "Warm-up",
         conceptContext:
-          "In JavaScript, strings have built-in methods like `.trim()` which removes whitespace from both ends, and `.toUpperCase()` which capitalizes all characters. They can be chained: `word.trim().toUpperCase()`.",
+          "In JavaScript, strings have built-in methods like `.trim()` (removes whitespace from ends) and `.toUpperCase()` (makes text CAPITAL). Chained: `word.trim().toUpperCase()`.\n\n💡 **Learn By Comparison: `.map()` vs `.forEach()`**:\n• Use `.map()` when you want to **transform** an array into a new one (it returns a new array of the same length).\n• Use `.forEach()` solely to **run side-effects** (like logging to console or pushing to an existing array) without returning anything.",
         description:
           "In JS, strings often contain messy formatting from input forms.\n\nWrite a function `cleanStrings(arr)` that takes an array of strings. It should use `.map()` to return a new array where each string has been trimmed of leading/trailing whitespaces and converted to uppercase.",
         codeTemplate: `function cleanStrings(arr) {
@@ -218,7 +218,7 @@ console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
         title: "Post-Zero Filter Sanitizer",
         difficulty: "Warm-up",
         conceptContext:
-          "The `.filter()` method executes a callback predicate. If the callback returns `true`, the element is saved; if it returns `false`, it's ignored: `arr.filter(element => element >= 0)`.",
+          "The `.filter()` method tests every element in an array and keeps only those that return `true` from your test: `arr.filter(val => val >= 0)`.\n\n💡 **Learn By Comparison: `.filter()` vs `.find()`**:\n• `.filter()` searches the entire list and **returns a NEW array** of all values that match (even if only 1 matches, it's still inside an array).\n• `.find()` **returns the single value of the first match** directly, and then stops looking immediately! If no matches exist, it returns `undefined`.",
         description:
           "Let's warm up with basic selection mechanics.\n\nWrite a function `keepPositives(nums)` that takes an array of numbers and filters them, keeping only elements that are positive or zero (`>= 0`).",
         codeTemplate: `function keepPositives(nums) {
@@ -406,7 +406,7 @@ console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
         title: "Secure Value Product Reducer",
         difficulty: "Warm-up",
         conceptContext:
-          "`.reduce((accumulator, current) => ..., initialValue)` loops values. The returned result of each callback iteration becomes the next iteration's accumulator value.",
+          "The `.reduce((acc, curr) => ..., initialValue)` method loops through values, using the return value of the previous loop as `acc` for the next.\n\n💡 **Learn By Comparison: `.reduce()` vs `.map()`**:\n• `.map()` processes each item and returns a **new array containing the same number of items**.\n• `.reduce()` is for **condensing/shaping an array down into a single result** (such as a sum number, a combined string, or a grouped object). Use `.reduce()` when you need to collapse details to a single outcome.",
         description:
           "Let's warm up with a classic numeric total aggregator.\n\nWrite a function `multiplyAll(nums, initialMultiplier)` that multiplies all integers in an array together, utilizing a custom initial scaling value passed as the second argument.",
         codeTemplate: `function multiplyAll(nums, initialMultiplier) {
@@ -1128,7 +1128,7 @@ console.log(firstPositiveLog); // 4`,
         title: "First Positive Number Finder",
         difficulty: "Warm-up",
         conceptContext:
-          "The `.find(predicate)` method returns the first matched element value, returning `undefined` if no items meet the criteria: `arr.find(x => x > 0)`.",
+          "The `.find(predicate)` method returns the first element that matches your rule. If nothing is found, it returns `undefined`: `arr.find(x => x > 0)`.\n\n💡 **Learn By Comparison: `.find()` vs `.some()`**:\n• `.find()` returns the **actual value** of the first matching element itself. Use this when you need the item to work with.\n• `.some()` returns a simple **boolean (`true` or `false`)** if *at least one* element matches. Use this when you only need a quick yes/no check without using the data value itself.",
         description:
           "Let's warm up with basic search lookups.\n\nWrite a function `firstPositive(nums)` that takes an array of numbers and returns the **first** element that is strictly positive (`> 0`). If no positive numbers exist, return `undefined`.",
         codeTemplate: `function firstPositive(nums) {
@@ -1163,7 +1163,7 @@ console.log(firstPositiveLog); // 4`,
         title: "Age Compliance verifier",
         difficulty: "DSA Easy",
         conceptContext:
-          "Checking if *any* element satisfies a condition is highly optimal using `.some(predicate)`. It halts execution (short-circuits) the moment a match resolves true: `arr.some(age => age < 18)`.",
+          "The `.some(predicate)` method checks if at least one item satisfy your condition, short-circuiting immediately outputting true on first success: `arr.some(age => age < 18)`.\n\n💡 **Learn By Comparison: `.some()` vs `.every()`**:\n• `.some()` returns `true` if **at least one** item passes the check (lenient rule).\n• `.every()` returns `true` only if **every single** item passes. It halts and returns `false` the moment it finds even a single fail (strict rule).",
         description:
           "Verify safety conditions across dynamic collections.\n\nWrite a function `hasUnderage(ages, limit)` that checks whether there resides any customer in the array `ages` whose age is strictly less than the specified integer `limit`.",
         codeTemplate: `function hasUnderage(ages, limit) {

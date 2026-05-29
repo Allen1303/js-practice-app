@@ -56,6 +56,137 @@ export function CodeWorkspace({
     window.addEventListener("mouseup", handleMouseUp);
   };
 
+  const handleKeyDownLocal = (e) => {
+    // 1. Let the parent run its check first (e.g. Ctrl/Cmd+Enter for running tests)
+    if (handleKeyDown) {
+      handleKeyDown(e);
+    }
+
+    // If parent prevented default, skip local handling
+    if (e.defaultPrevented) return;
+
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const { selectionStart, selectionEnd } = textarea;
+    const key = e.key;
+
+    // Handle tab key to insert 2 spaces
+    if (key === "Tab") {
+      e.preventDefault();
+      const value = textarea.value;
+      const newValue =
+        value.slice(0, selectionStart) + "  " + value.slice(selectionEnd);
+      handleCodeChange(newValue);
+      setTimeout(() => {
+        textarea.selectionStart = selectionStart + 2;
+        textarea.selectionEnd = selectionStart + 2;
+      }, 0);
+      return;
+    }
+
+    if (selectionStart === selectionEnd) {
+      const openPairs = {
+        "(": ")",
+        "[": "]",
+        "{": "}",
+        '"': '"',
+        "'": "'",
+        "`": "`",
+      };
+
+      if (openPairs[key] !== undefined) {
+        e.preventDefault();
+        const value = textarea.value;
+        const closingChar = openPairs[key];
+
+        const newValue =
+          value.slice(0, selectionStart) +
+          key +
+          closingChar +
+          value.slice(selectionStart);
+        handleCodeChange(newValue);
+
+        setTimeout(() => {
+          textarea.selectionStart = selectionStart + 1;
+          textarea.selectionEnd = selectionStart + 1;
+        }, 0);
+        return;
+      }
+
+      // Handle backspace when the character to the left and right are matching brackets/quotes
+      if (key === "Backspace") {
+        const value = textarea.value;
+        const prevChar = value[selectionStart - 1];
+        const nextChar = value[selectionStart];
+        const matchingPairs = {
+          "(": ")",
+          "[": "]",
+          "{": "}",
+          '"': '"',
+          "'": "'",
+          "`": "`",
+        };
+        if (prevChar && matchingPairs[prevChar] === nextChar) {
+          e.preventDefault();
+          const newValue =
+            value.slice(0, selectionStart - 1) +
+            value.slice(selectionStart + 1);
+          handleCodeChange(newValue);
+          setTimeout(() => {
+            textarea.selectionStart = selectionStart - 1;
+            textarea.selectionEnd = selectionStart - 1;
+          }, 0);
+          return;
+        }
+      }
+
+      // Handle typing the closing character if it is already right in front of the cursor (overtyping)
+      const closingChars = [")", "]", "}", '"', "'", "`"];
+      if (closingChars.includes(key)) {
+        const value = textarea.value;
+        const nextChar = value[selectionStart];
+        if (nextChar === key) {
+          e.preventDefault();
+          setTimeout(() => {
+            textarea.selectionStart = selectionStart + 1;
+            textarea.selectionEnd = selectionStart + 1;
+          }, 0);
+          return;
+        }
+      }
+
+      // Smart newline indentation when Enter is pressed between { and }
+      if (key === "Enter") {
+        const value = textarea.value;
+        const prevChar = value[selectionStart - 1];
+        const nextChar = value[selectionStart];
+        if (prevChar === "{" && nextChar === "}") {
+          e.preventDefault();
+          // Find preceding indentation of current line
+          const lines = value.slice(0, selectionStart).split("\n");
+          const currentLine = lines[lines.length - 1];
+          const indentMatch = currentLine.match(/^\s*/);
+          const indent = indentMatch ? indentMatch[0] : "";
+          const extraIndent = indent + "  ";
+          const newValue =
+            value.slice(0, selectionStart) +
+            "\n" +
+            extraIndent +
+            "\n" +
+            indent +
+            value.slice(selectionStart);
+          handleCodeChange(newValue);
+          setTimeout(() => {
+            textarea.selectionStart = selectionStart + 1 + extraIndent.length;
+            textarea.selectionEnd = selectionStart + 1 + extraIndent.length;
+          }, 0);
+          return;
+        }
+      }
+    }
+  };
+
   return (
     <div
       style={{ height: `${workspaceHeight}px` }}
@@ -127,7 +258,7 @@ export function CodeWorkspace({
             ref={textareaRef}
             value={currentCode}
             onChange={(e) => handleCodeChange(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleKeyDownLocal}
             onScroll={handleScroll}
             className="absolute inset-0 p-4 m-0 w-full h-full bg-transparent text-transparent caret-[#528bff] font-mono text-sm focus:outline-none focus:ring-0 leading-6 resize-none overflow-auto whitespace-pre tab-calc selection:bg-[#3e4451]/80 z-10"
             spellCheck="false"
