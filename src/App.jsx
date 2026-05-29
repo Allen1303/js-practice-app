@@ -506,6 +506,32 @@ export default function App() {
                     </div>
                   </div>
                 )}
+
+                {isConceptMastered && (
+                  <div className="mt-4 bg-emerald-950 text-white rounded-xl p-4.5 border border-emerald-800 shadow-lg animate-fade-in space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center text-zinc-100">
+                        <Sparkles className="h-4 w-4 text-zinc-905 fill-zinc-905" />
+                      </div>
+                      <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300">
+                        🎓 Concept fully Mastered!
+                      </h4>
+                    </div>
+                    <p className="text-[11px] text-zinc-200 leading-relaxed font-sans">
+                      Amazing job! You successfully completed all{" "}
+                      {activeConcept.exercises.length} repetitions for{" "}
+                      <strong>{activeConcept.title}</strong>. Head over to the{" "}
+                      <strong>Concept Guide</strong> tab on the left to review
+                      your interactive, beginner-friendly Concept Recap!
+                    </p>
+                    <button
+                      onClick={() => setLeftTab("theory")}
+                      className="w-full text-center py-2 px-3 rounded bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold font-mono text-[10.5px] tracking-tight uppercase shadow transition-all active:scale-[0.98] cursor-pointer"
+                    >
+                      Open Concept Recap Guide →
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

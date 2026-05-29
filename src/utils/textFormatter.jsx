@@ -17,7 +17,7 @@ export function formatTextWithCode(text) {
       return (
         <code
           key={index}
-          className="bg-zinc-100/80 text-[#e01e5a] border border-zinc-200 px-1.5 py-0.5 rounded font-mono text-[12.5px] font-bold mx-[1px]"
+          className="bg-zinc-100/80 text-[#e01e5a] border border-zinc-200 px-1.5 py-0.5 rounded font-mono text-[12.5px] mx-[1px]"
           style={{ fontFamily: "Consolas, Monaco, monospace" }}
         >
           {codeContent}
