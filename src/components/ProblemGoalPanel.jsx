@@ -30,8 +30,9 @@ export function ProblemGoalPanel({
   const [copied, setCopied] = useState(false);
 
   const handleCopyExample = () => {
-    if (!activeConcept?.codeSnippet) return;
-    navigator.clipboard.writeText(activeConcept.codeSnippet);
+    const snippet = activeExercise?.codeSnippet || activeConcept?.codeSnippet;
+    if (!snippet) return;
+    navigator.clipboard.writeText(snippet);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -90,7 +91,7 @@ export function ProblemGoalPanel({
           {formatTextWithCode(activeExercise.conceptContext)}
         </p>
 
-        {activeConcept?.codeSnippet && (
+        {(activeExercise?.codeSnippet || activeConcept?.codeSnippet) && (
           <div className="border border-[#1a1c22] rounded-xl bg-[#282c34] overflow-hidden shadow-xs transition-all">
             <div className="flex items-center justify-between px-3.5 py-2 bg-[#21252b] border-b border-[#181a1f] select-none">
               <span className="text-[9px] font-mono font-bold tracking-wider text-[#abb2bf] uppercase">
@@ -117,7 +118,10 @@ export function ProblemGoalPanel({
                   "JetBrains Mono, Fira Code, Consolas, Monaco, monospace",
               }}
               dangerouslySetInnerHTML={{
-                __html: highlightJS(activeConcept.codeSnippet, true),
+                __html: highlightJS(
+                  activeExercise.codeSnippet || activeConcept.codeSnippet,
+                  true,
+                ),
               }}
             />
           </div>

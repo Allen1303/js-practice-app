@@ -17,8 +17,12 @@ console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains u
         id: "map-trim-upper",
         title: "Clean Word Sanitizer",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Clean trimming and casing
+const raw = [" hello ", " world "];
+const formatted = raw.map(str => str.trim().toUpperCase());
+// ["HELLO", "WORLD"]`,
         conceptContext:
-          "In JavaScript, strings have built-in methods like `.trim()` (removes whitespace from ends) and `.toUpperCase()` (makes text CAPITAL). Chained: `word.trim().toUpperCase()`.\n\n💡 **Learn By Comparison: `.map()` vs `.forEach()`**:\n• Use `.map()` when you want to **transform** an array into a new one (it returns a new array of the same length).\n• Use `.forEach()` solely to **run side-effects** (like logging to console or pushing to an existing array) without returning anything.",
+          "In JavaScript, strings have built-in methods like `.trim()` (removes whitespace from ends) and `.toUpperCase()` (makes text CAPITAL).\n\n💡 **Learn By Comparison: `.map()` vs `.forEach()`**:\n• Use `.map()` when you want to **transform** an array into a new one (it returns a new array of the same length).\n• Use `.forEach()` solely to **run side-effects** (like logging to console or pushing to an existing array) without returning anything.",
         description:
           "In JS, strings often contain messy formatting from input forms.\n\nWrite a function `cleanStrings(arr)` that takes an array of strings. It should use `.map()` to return a new array where each string has been trimmed of leading/trailing whitespaces and converted to uppercase.",
         codeTemplate: `function cleanStrings(arr) {
@@ -52,8 +56,12 @@ console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains u
         id: "map-scale-parity",
         title: "Position-Based Scalar Selector",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Accessing element index in .map()
+const names = ["Alice", "Bob"];
+const positionText = names.map((name, index) => \`\${index + 1}: \${name}\`);
+// ["1: Alice", "2: Bob"]`,
         conceptContext:
-          "The callback passed to `.map()` receives three arguments: the current element, its index (zero-based position), and the original array: `.map((val, index, array) => ...)`.",
+          "The callback passed to `.map()` receives three arguments: the current element value, its index (zero-based position), and the original array.",
         description:
           "Now that you can map simple primitives, let's inject the optional element *index* parameters inside mapping callbacks!\n\nWrite a function `scaleByIndex(nums)` that transforms an array of integers utilizing this condition logic:\n- If the element value is **even**, return its value doubled (`val * 2`).\n- If the element value is **odd**, return its value multiplied by its current *element index* in the array (`val * index`).",
         codeTemplate: `function scaleByIndex(nums) {
@@ -87,8 +95,13 @@ console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains u
         id: "map-diff-bounds",
         title: "Peak Normalized Distance Matrix",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Mapping with array-wide dynamic helpers
+const grades = [80, 95, 70];
+const maxGrade = Math.max(...grades); // 95
+const gaps = grades.map(g => maxGrade - g);
+// [15, 0, 25]`,
         conceptContext:
-          "To map arrays relative to their global structure, query global variables or helpers first. For instance, `Math.max(...nums)` uses spread parameters to discover the largest number in a dataset.",
+          "To map arrays relative to their global structure, query global variables or helpers first. For instance, use spread parameters with math helpers to discover the largest number in a dataset.",
         description:
           "Sometimes, before performing `.map()`, you need to calculate some collective metrics on the array.\n\nWrite a function `peakNormalize(nums)` that finds the absolute maximum value (the highest peak) in `nums`, and then returns a new array where each element `x` is replaced by its absolute difference from that maximum value (`Math.abs(peak - x)`).",
         codeTemplate: `function peakNormalize(nums) {
@@ -123,8 +136,11 @@ console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains u
         id: "map-user-profiles",
         title: "Structured Profiles Extractor",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Transforming arrays of objects
+const members = [{ name: "Alice", active: true }, { name: "Bob", active: false }];
+const profiles = members.map(m => ({ username: m.name, status: m.active ? "Online" : "Offline" }));`,
         conceptContext:
-          "Mapping is extremely useful for transforming arrays of objects. Code inside the map callback returns a brand-new restructured object literal: `arr.map(user => ({ id: user.id, status: 'active' }))`.",
+          "Mapping is extremely useful for transforming arrays of objects. Code inside the map callback returns a brand-new structured object literal.",
         description:
           "Let's level up from primitive numbers and strings by transforming nested Objects!\n\nWrite a function `extractAges(users)` that takes an array of user profile objects with the structure: `{ name, birthYear }`.\n\nIt should return a new array containing objects formatted as: `{ username: name, age: currentAge }` where `currentAge` is calculated relative to the reference year **2026** (i.e. `2026 - birthYear`).",
         codeTemplate: `function extractAges(users) {
@@ -160,8 +176,13 @@ console.log(rawTags);   // ["  JavaScript ", " es6  ", " React  js "] (remains u
         id: "map-coordinates",
         title: "Grid Coordinates Flat-Mapper",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Converting 2D grid coordinates to 1D indexes
+const gridNodes = [{ r: 0, c: 5 }, { r: 2, c: 1 }];
+const itemWidth = 10;
+const linearOffsets = gridNodes.map(n => n.r * itemWidth + n.c);
+// [5, 21]`,
         conceptContext:
-          "In graphics processors and pathfinding engines, multidimensional coordinates are compressed into high-speed 1D flat lines with linear calculations: `index = row * total_width + col`.",
+          "In graphics processors and pathfinding engines, multidimensional coordinates are compressed into high-speed 1D flat lines with linear calculations.",
         description:
           "To complete the `.map()` sequence, let's solve a real graphics lookup equation.\n\nWrite a function `flattenCoordinates(nodes, width)` that processes a list of coordinate objects. Each node contains `{ r, c }` (representing rows and columns in a 2D grid matrix of size `width`).\n\nYour task is to map this coordinate array into an array of flat 1D linear indexes using the formula: `index = row * width + column`.",
         codeTemplate: `function flattenCoordinates(nodes, width) {
@@ -217,8 +238,12 @@ console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
         id: "filter-positives",
         title: "Post-Zero Filter Sanitizer",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Keep only values meeting positive threshold rules
+const scores = [-10, 15, 0, 32, -5];
+const positiveScores = scores.filter(score => score >= 0);
+// [15, 0, 32]`,
         conceptContext:
-          "The `.filter()` method tests every element in an array and keeps only those that return `true` from your test: `arr.filter(val => val >= 0)`.\n\n💡 **Learn By Comparison: `.filter()` vs `.find()`**:\n• `.filter()` searches the entire list and **returns a NEW array** of all values that match (even if only 1 matches, it's still inside an array).\n• `.find()` **returns the single value of the first match** directly, and then stops looking immediately! If no matches exist, it returns `undefined`.",
+          "The `.filter()` method tests every element in an array and keeps only those that return `true` from your test.\n\n💡 **Learn By Comparison: `.filter()` vs `.find()`**:\n• `.filter()` searches the entire list and **returns a NEW array** of all values that match (even if only 1 matches, it's still inside an array).\n• `.find()` **returns the single value of the first match** directly, and then stops looking immediately! If no matches exist, it returns `undefined`.",
         description:
           "Let's warm up with basic selection mechanics.\n\nWrite a function `keepPositives(nums)` that takes an array of numbers and filters them, keeping only elements that are positive or zero (`>= 0`).",
         codeTemplate: `function keepPositives(nums) {
@@ -246,8 +271,13 @@ console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
         id: "filter-averages",
         title: "Dynamic Average Outliers Filter",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Filtering outliers relative to dynamic averages
+const points = [10, 20, 30];
+const average = points.reduce((a, b) => a + b) / points.length; // 20
+const aboveAverage = points.filter(p => p > average);
+// [30]`,
         conceptContext:
-          "Callbacks can use variables declared outside the `.filter()` block. Calculating metrics (like sum/average) beforehand lets you filter relative to dynamic stats.",
+          "Callbacks can use variables declared outside the `.filter()` block. Calculating metrics beforehand lets you filter relative to dynamic totals.",
         description:
           "Building on the basic filter, let's work on dynamic criteria derived from the array itself.\n\nWrite a function `filterAverages(nums)` that calculates the average value of `nums` first, and then filters the array to keep only elements that are strictly **greater** than that average.",
         codeTemplate: `function filterAverages(nums) {
@@ -283,8 +313,16 @@ console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
         id: "filter-valleys",
         title: "Relational Neighbor Valley Filter",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Relational positional filtering with index
+const list = [5, 2, 8, 1, 9];
+const valleys = list.filter((num, i, arr) => {
+  const isLeftSmaller = i === 0 || num < arr[i - 1];
+  const isRightSmaller = i === arr.length - 1 || num < arr[i + 1];
+  return isLeftSmaller && isRightSmaller;
+});
+// [2, 1]`,
         conceptContext:
-          "Just like `.map()`, `.filter()` passes the element's index position as the second argument, and the complete array as the third. This lets you index adjacent neighbors.",
+          "Just like `.map()`, `.filter()` passes the element's index position as the second argument, and the complete array as the third. This lets you index adjacent neighbor cells.",
         description:
           "Now let's introduce *contextual sibling checking* by using the element index within `.filter()`!\n\nWrite a function `filterValleys(nums)` that filters a sequence, returning only local 'valleys'.\n\nA valley is defined as an element that is strictly smaller than its horizontal adjacent neighbors:\n- For interior elements, compare with elements immediately left and right.\n- For boundary elements (first and last elements), compare only with their single adjacent neighbor.",
         codeTemplate: `function filterValleys(nums) {
@@ -319,8 +357,12 @@ console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
         id: "filter-uniques",
         title: "Occurrence Deduplicator Filter",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Finding items that appear exactly once
+const items = [1, 2, 2, 3];
+const uniqueItems = items.filter(num => items.indexOf(num) === items.lastIndexOf(num));
+// [1, 3]`,
         conceptContext:
-          "An element is unique in an array if its first occurrence index matches its last occurrence index, which can be queried using `.indexOf(elem)` and `.lastIndexOf(elem)`.",
+          "An element is unique in an array if its first occurrence index matches its last occurrence index, which can be queried using built-in array index helpers.",
         description:
           "Let's build on local searches to handle global-occurrence uniqueness filtering.\n\nWrite a function `filterUnique(nums)` that processes an array, returning a standard array containing only elements that appear **exactly once** in the entire collection.\n\nExample: `[1, 2, 2, 3]` should return `[1, 3]` since `2` has duplicate records.",
         codeTemplate: `function filterUnique(nums) {
@@ -353,8 +395,19 @@ console.log(readings);      // [15, -3, 0, 22, -10, 8] (remains unmodified)`,
         id: "filter-landmarks",
         title: "Stateful Monotonic Elevation Lands",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Stateful traversal using external conditions
+const heights = [3, 1, 4, 2, 5];
+let runningMax = -Infinity;
+const peaks = heights.filter(h => {
+  if (h > runningMax) {
+    runningMax = h;
+    return true;
+  }
+  return false;
+});
+// [3, 4, 5]`,
         conceptContext:
-          "A filter callback can update a running reference variable tracking values from left-to-right (like the maximum height seen so far) in the outer function scope.",
+          "A filter callback can check and update a running reference variable tracking values from left-to-right (like the maximum height seen so far) in the outer function scope.",
         description:
           "To complete the `.filter()` curriculum, let's learn how to preserve dynamic outer state variables!\n\nWrite a function `filterLandmarks(nums)` that filters an array of heights. It must return a new array containing only elements that are strictly greater than **all** elements previously observed in the array to their left.\n\n(The first element is always included, as check is relative to pre-existing maximums).",
         codeTemplate: `function filterLandmarks(nums) {
@@ -405,6 +458,11 @@ console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
         id: "reduce-multiplier",
         title: "Secure Value Product Reducer",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Condensing an array to a single product value
+const factor = 10;
+const nums = [2, 3, 4];
+const product = nums.reduce((acc, curr) => acc * curr, factor);
+// 240`,
         conceptContext:
           "The `.reduce((acc, curr) => ..., initialValue)` method loops through values, using the return value of the previous loop as `acc` for the next.\n\n💡 **Learn By Comparison: `.reduce()` vs `.map()`**:\n• `.map()` processes each item and returns a **new array containing the same number of items**.\n• `.reduce()` is for **condensing/shaping an array down into a single result** (such as a sum number, a combined string, or a grouped object). Use `.reduce()` when you need to collapse details to a single outcome.",
         description:
@@ -433,8 +491,16 @@ console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
         id: "reduce-parity-obj",
         title: "Parity Object Partition Aggregator",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Grouping values into structured objects
+const values = [1, 2, 3, 4];
+const grouped = values.reduce((acc, num) => {
+  if (num % 2 === 0) acc.evens.push(num);
+  else acc.odds.push(num);
+  return acc;
+}, { evens: [], odds: [] });
+// { evens: [2, 4], odds: [1, 3] }`,
         conceptContext:
-          "The initial value can be an object: `.reduce((acc, curr) => { ... }, { evens: [], odds: [] })`. Be sure to push to arrays and return the `acc` reference.",
+          "The initial value can be an object instead of a primitive. Be sure to push to nested arrays and return the updated accumulator reference from each callback step.",
         description:
           "Now let's transition from accumulating single numbers to aggregating into *objects* with nested lists!\n\nWrite a function `partitionParity(nums)` that takes an array of integers and splits them into an object with two keys:\n- `evens`: An array containing all even values.\n- `odds`: An array containing all odd values.\n\nSolve this strictly inside a single functional `.reduce()` statement.",
         codeTemplate: `function partitionParity(nums) {
@@ -461,8 +527,15 @@ console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
         id: "reduce-freq-tally",
         title: "Word Frequency Dict Counter",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Tallying string frequencies into a hash count
+const tallyWords = ["dog", "cat", "dog"];
+const tally = tallyWords.reduce((acc, word) => {
+  acc[word] = (acc[word] || 0) + 1;
+  return acc;
+}, {});
+// { dog: 2, cat: 1 }`,
         conceptContext:
-          "To count element counts, initialize with `{}`. In the callback, if the key does not exist yet inside accumulator, fallback to 0: `acc[word] = (acc[word] || 0) + 1`.",
+          "To count element counts, initialize with an empty object dictionary. In the callback, if the key does not exist yet inside accumulator, fallback to 0 and increment.",
         description:
           "Let's build on the object accumulator by dynamic key tallying!\n\nWrite a function `tallyFrequencies(words)` that reads an array of strings. It must return an object counting the occurrences of each word (word -> count matches).\n\nExample: `['apple', 'banana', 'apple']` -> `{ apple: 2, banana: 1 }`.",
         codeTemplate: `function tallyFrequencies(words) {
@@ -490,8 +563,12 @@ console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
         id: "reduce-flatten",
         title: "Matrix Rows Grid Flattener",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Flat-concatenating structural multi-level matrices
+const matrix = [[1, 2], [3], [4, 5]];
+const flattened = matrix.reduce((acc, row) => acc.concat(row), []);
+// [1, 2, 3, 4, 5]`,
         conceptContext:
-          "An empty array `[]` initialized as the accumulator can be concatenated sequentially with nested rows inside a map closure via `acc.concat(row)`.",
+          "An empty array initialized as the accumulator can be concatenated sequentially with nested rows inside a map closure.",
         description:
           "Now, let's learn how to flatten complex matrices without using the built-in `.flat()` array method.\n\nWrite a function `flattenGrid(grid)` that processes an array of nested arrays, merging them into a single 1D flat array using `.reduce()`.",
         codeTemplate: `function flattenGrid(grid) {
@@ -518,8 +595,17 @@ console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
         id: "reduce-run-length",
         title: "Run-Length Sequence Encoder",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Compressing duplicate runs with reduce history
+const items = ["a", "a", "b", "b", "b", "a"];
+const compressed = items.reduce((acc, val) => {
+  const last = acc[acc.length - 1];
+  if (last && last[0] === val) last[1]++;
+  else acc.push([val, 1]);
+  return acc;
+}, []);
+// [["a", 2], ["b", 3], ["a", 1]]`,
         conceptContext:
-          "Reductions can read historical records inside their active accumulator container (like `acc[acc.length - 1]`) to determine whether to combine or push data.",
+          "Reductions can read historical records inside their active accumulator container to determine whether to combine or push data.",
         description:
           "To complete the `.reduce()` system, let's solve a real sequence data compression algorithm.\n\nWrite a function `runLengthEnc(chars)` that uses `.reduce()` to compress sequential duplicate elements.\n\nIt should return an array of arrays, where each sub-array contains `[char, count]`.\n\nExample:\n`['a', 'a', 'b', 'b', 'b', 'a']` -> `[['a', 2], ['b', 3], ['a', 1]]`.",
         codeTemplate: `function runLengthEnc(chars) {
@@ -574,8 +660,13 @@ if (key in mergedConfig) {
         id: "object-merge-conf",
         title: "Selective Default config Merger",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Merging default and override configurations
+const defaults = { host: "127.0.0.1", port: 8080 };
+const userOverrides = { port: 3000 };
+const finalConfig = { ...defaults, ...userOverrides };
+// { host: "127.0.0.1", port: 3000 }`,
         conceptContext:
-          "The ES6 Spread operator `...` compiles and clones dictionary properties into brand new objects: `{ ...defaults, ...overrides }` updates existing matching keys.",
+          "The ES6 Spread operator clones dictionary properties into brand new objects: properties inside active override elements update existing matching default keys safely.",
         description:
           "Let's warm up with basic object key manipulation and fallback searches.\n\nWrite a function `mergeConfig(defaults, overrides)` that takes a defaults dictionary and overrides list of keys.\n\nIt should return a new object containing the default configuration values, except where overriding parameters are provided inside `overrides`.",
         codeTemplate: `function mergeConfig(defaults, overrides) {
@@ -603,8 +694,22 @@ if (key in mergedConfig) {
         id: "object-two-sum",
         title: "Two Sum Hash Map Lookup",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Linear-time Two-Sum using index lookups
+const nums = [2, 7, 11, 15];
+const target = 9;
+const seen = {}; // num -> index
+let result;
+for (let i = 0; i < nums.length; i++) {
+  const complement = target - nums[i];
+  if (complement in seen) {
+    result = [seen[complement], i];
+    break;
+  }
+  seen[nums[i]] = i;
+}
+// result is [0, 1]`,
         conceptContext:
-          "Instead of searching for matching pairs using nested loops (which is O(N²)), caching checked numbers in a lookup dictionary resolves targets in one linear timeline (O(N)).",
+          "Instead of searching for matching pairs using nested loops, caching checked numbers in a lookup dictionary resolves target matches in constant O(1) time per element.",
         description:
           "Let's build on basic dictionary lookups to solve a classic DSA algorithm in linear time!\n\nWrite a function `twoSumLookup(nums, target)` that seeks the index positions of two numbers in `nums` that add up to `target`.\n\nYou must achieve **O(N) linear runtime** by using an object as a coordinate lookup tracker. Nested loops are forbidden!",
         codeTemplate: `function twoSumLookup(nums, target) {
@@ -638,8 +743,15 @@ if (key in mergedConfig) {
         id: "object-anagram-check",
         title: "O(N) Anagram Match Counts",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Creating key-count frequency maps
+const charCount = {};
+const text = "apple";
+for (const char of text) {
+  charCount[char] = (charCount[char] || 0) + 1;
+}
+// charCount is { a: 1, p: 2, l: 1, e: 1 }`,
         conceptContext:
-          "An anagram has identical character balance counts. Building occurrence tallies with objects (`{ a: 2, b: 1 }`) compares strings instantly.",
+          "An anagram has identical character balance counts. Building occurrence tallies with objects compares string signatures instantly without sorting lists.",
         description:
           "Now, let's compare two datasets using maps of character occurrences.\n\nWrite a function `isAnagramLookup(s, t)` which verifies if strings `s` and `t` are anagrams in strict **O(N)** time.\n\nAn anagram contains identical letters in exactly the same quantities (frequency counts).",
         codeTemplate: `function isAnagramLookup(s, t) {
@@ -674,8 +786,16 @@ if (key in mergedConfig) {
         id: "object-index-users",
         title: "Structured Database Indexer",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Grouping database collections dynamically
+const roles = [{ user: "Ann", role: "Dev" }, { user: "Val", role: "Dev" }];
+const index = roles.reduce((acc, obj) => {
+  if (!acc[obj.role]) acc[obj.role] = [];
+  acc[obj.role].push(obj.user);
+  return acc;
+}, {});
+// { Dev: ["Ann", "Val"] }`,
         conceptContext:
-          "Looping through records allows building a dynamic index repository on a category field where each key points to an array: `if (!obj[key]) obj[key] = []`.",
+          "Looping through records allows building a dynamic index repository on a category field where each key points to an array for structured fast grouping.",
         description:
           "Let's build on grouping logic by indexing list datasets into categorized object arrays.\n\nWrite a function `indexUsers(users)` which processes a user objects array: `[{ name: '...', dept: '...' }]`.\n\nIt should return an object where each key is a department name, and its value is an array of names belonging to that department.\n\nExample:\n`[{ name: 'Alice', dept: 'HR' }, { name: 'Bob', dept: 'IT' }, { name: 'Charlie', dept: 'HR' }]` ->\n`{ HR: ['Alice', 'Charlie'], IT: ['Bob'] }`.",
         codeTemplate: `function indexUsers(users) {
@@ -709,8 +829,12 @@ if (key in mergedConfig) {
         id: "object-consecutive-seq",
         title: "Continuous Streak Hash Crawler",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Fast set queries with lookup indicators
+const lookup = { 100: true, 4: true, 200: true, 1: true, 3: true, 2: true };
+const checkStart = !(3 in lookup); // false (not start)
+const findStart = !(100 - 1 in lookup); // true (100 is start)`,
         conceptContext:
-          "To identify lists streaks in linear time, save elements into an object lookup index. Then, query only element starts with `if (!(val - 1 in index))` to bypass double checks.",
+          "To identify sequence streaks in linear time, save elements into an object lookup index. Then, query only element starts to bypass duplicate checks.",
         description:
           "To complete the Object Dictionaries sequence, let's solve a high-speed streak validation test.\n\nWrite a function `longestStreak(nums)` that takes an array of unsorted integers and identifies the length of its longest consecutive sequence of numbers.\n\nExample: `[100, 4, 30, 1, 3, 2]` contains consecutive sequence `1, 2, 3, 4`, returning a length of `4`.\n\nAchieve O(N) complexity using helper hash maps.",
         codeTemplate: `function longestStreak(nums) {
@@ -767,8 +891,18 @@ console.log(incrementByTwo()); // 4 (remembers and persists private 'count')`,
         id: "closure-counter",
         title: "Private Counter Factory",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Encapsulated private state methods
+function makeCounter(val) {
+  let count = val;
+  return {
+    add: () => ++count,
+    get: () => count
+  };
+}
+const myCounter = makeCounter(10);
+myCounter.add(); // 11`,
         conceptContext:
-          "Variables declared in the outer function persist inside returned callback objects because of lexical closures, shielding them from external edits.",
+          "Variables declared inside the outer function persist in memory within the returned functions, keeping them isolated from external modification.",
         description:
           "Let's warm up with basic lexical encapsulation.\n\nWrite a function `createCounter(startValue)` that returns an object containing three methods:\n- `increment()`: adds 1 to private count and returns it.\n- `decrement()`: subtracts 1 from private count and returns it.\n- `getValue()`: returns current private count.",
         codeTemplate: `function createCounter(startValue) {
@@ -797,8 +931,14 @@ console.log(incrementByTwo()); // 4 (remembers and persists private 'count')`,
         id: "closure-multiplier",
         title: "Configurable Scaler Factory",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Custom function factory with factor variables
+function multiplier(factor) {
+  return num => num * factor;
+}
+const double = multiplier(2);
+double(5); // 10`,
         conceptContext:
-          "Outer configuration variables (like multipliers) get sealed inside custom functions returned as formulas: `return n => n * outerConfig`.",
+          "Outer configuration variables get sealed inside custom functions returned as formulas.",
         description:
           "Building on private state retention, let's create custom mathematical functions initialized with configuration options.\n\nWrite a function `createScaler(factor)` that returns an inner function. That returned function should take a number `n` and return the product of that number and the encapsulated `factor`.",
         codeTemplate: `function createScaler(factor) {
@@ -831,6 +971,17 @@ console.log(incrementByTwo()); // 4 (remembers and persists private 'count')`,
         id: "closure-auth",
         title: "Lexical Secure Token Manager",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Lexical private token container
+function authStore() {
+  let token = null;
+  return {
+    set: (val) => token = val,
+    has: () => token !== null
+  };
+}
+const store = authStore();
+store.set("secret_key");
+store.has(); // true`,
         conceptContext:
           "Token stores inside closures prevent global space leak. Methods read or write to private local variables without any window leaks.",
         description:
@@ -859,8 +1010,20 @@ console.log(incrementByTwo()); // 4 (remembers and persists private 'count')`,
         id: "closure-memoize",
         title: "Closed Cache calculation Memoizer",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Outer-scoped cache dictionary check
+function memoize(func) {
+  const cache = {};
+  return val => {
+    if (val in cache) return cache[val];
+    cache[val] = func(val);
+    return cache[val];
+  };
+}
+const square = memoize(x => x * x);
+square(4); // 16 (computes and caches)
+square(4); // 16 (retrieves from cache)`,
         conceptContext:
-          "A cache object `{}` can be stored inside a closure's lexical sphere. The returned compiler checks this record *before* executing slow computation routes.",
+          "A cache object stored inside a closure's lexical sphere lets returned functions bypass redundant, slow calculation routes.",
         description:
           "Now let's build a caching gateway for calculations!\n\nWrite a function `memoizeCalculation(func)` that takes an expensive single-argument function `func`.\n\nIt should return a memoized closure function. When called, this wrapper must first check if the input parameter has been cached before: \n- If yes, return the cached result.\n- If no, run the calculation, store the result in a private dictionary object inside the closure, and return it.",
         codeTemplate: `function memoizeCalculation(func) {
@@ -890,8 +1053,20 @@ console.log(incrementByTwo()); // 4 (remembers and persists private 'count')`,
         id: "closure-stream",
         title: "Moving Average Stream Tracker",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Lexical sequence streaming array window
+function limitStream(period) {
+  const values = [];
+  return val => {
+    values.push(val);
+    const window = values.slice(-period);
+    return window.reduce((a, b) => a + b, 0) / window.length;
+  };
+}
+const streamer = limitStream(3);
+streamer(10); // 10
+streamer(20); // 15`,
         conceptContext:
-          "Sliding window telemetry monitors continuous input feeds. Appending values to enclosed arrays, then slicing the tail, manages sliding metrics nicely.",
+          "Sliding window telemetry tracks continuous input feeds. Appending values to enclosed arrays, then slicing the tail, manages sliding metrics nicely.",
         description:
           "To complete the Closure sequence, let's create a dynamic running numbers data stream analyzer.\n\nWrite a function `createAverageStreamer(period)` that tracks numbers in sliding windows.\n\nIt returns a streamer function that accepts a number `val`, pushes it to a private list, and returns the average of the last `period` elements in that list (or the average of all items if the stream holds fewer elements than `period`).",
         codeTemplate: `function createAverageStreamer(period) {
@@ -936,8 +1111,13 @@ console.log(initialGreeting); // "Sarah C."`,
         id: "string-html-tag",
         title: "Sanitized HTML Tag Wrappers",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Wrapping lines in HTML tag blocks
+const label = "Home ";
+const tagType = "ANCHOR";
+const html = \`<\${tagType.toLowerCase()}>\${label.trim()}</\${tagType.toLowerCase()}>\`;
+// "<a>Home</a>"`,
         conceptContext:
-          "Constructing tags can use string template literals: `\`<\${tag}>\${text}</\${tag}>\``. Remember to clean whitespace using `.trim()` and casing with `.toLowerCase()`.",
+          "HTML template generation requires standardizing lowercase identifiers and scrubbing boundary whitespace characters to prevent layout anomalies.",
         description:
           "Let's warm up with custom template constructors.\n\nWrite a function `wrapInHTML(text, tag)` that encloses a string within customized HTML tags.\n\nEnsure that:\n- Whitespaces are trimmed from the `text`.\n- The `tag` value is converted completely to lowercase before generation.\n\nExample: `wrapInHTML(' Hello ', 'DIV')` -> `'<div>Hello</div>'`.",
         codeTemplate: `function wrapInHTML(text, tag) {
@@ -972,8 +1152,12 @@ console.log(initialGreeting); // "Sarah C."`,
         id: "string-csv-reader",
         title: "Clean delimiter CSV Row Reader",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Parsing and brushing spreadsheet entries
+const record = "admin,  moderator , guest ";
+const roles = record.split(",").map(val => val.trim());
+// ["admin", "moderator", "guest"]`,
         conceptContext:
-          "Splitting strings into separate array chunks is achieved via `.split(delimiter)`. You can then map over the resulting array to clear trailing and leading spaces safely.",
+          "CSV cell splitting parses continuous strings on specific characters to isolate elements, and trims surrounding whitespace to sanitize inputs.",
         description:
           "Let's build on basic mapping by splitting tabular fields from raw data formats!\n\nWrite a function `parseCSVRow(row, delimiter)` that takes a line of spreadsheet values and a character separator (like a comma).\n\nIt should split the string on that separator into arrays, ensuring that every resulting field has leading and trailing spaces stripped cleanly.",
         codeTemplate: `function parseCSVRow(row, delimiter) {
@@ -1006,8 +1190,12 @@ console.log(initialGreeting); // "Sarah C."`,
         id: "string-camel-case",
         title: "CamelCase Variable Standardizer",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Converting slug labels to camel case variables
+const slug = "active_user_session";
+const camel = slug.split("_").map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1)).join("");
+// "activeUserSession"`,
         conceptContext:
-          "Transforming strings with complex separators utilizes split-and-join strategies. Capitalizing subsequent array terms yields dynamic properties: `word[0].toUpperCase() + word.slice(1)`.",
+          "Transforming standard slugs to camelCase isolates separate words by their boundaries, then capitalizes the subsequent words and joins them back together.",
         description:
           "Convert separated inputs into standard camelCase syntax!\n\nWrite a function `toCamelCase(str)` that accepts hyphens, underscores, or space-separated term strings and converts them to modular CamelCase form.\n\nExample:\n- `'first-name'` -> `'firstName'`\n- `'Capitalize space text'` -> `'capitalizeSpaceText'`.",
         codeTemplate: `function toCamelCase(str) {
@@ -1041,8 +1229,17 @@ console.log(initialGreeting); // "Sarah C."`,
         id: "string-brackets",
         title: "Balanced Bracket sequence Auditor",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Dynamic parentheses parity verification
+const stack = [];
+const text = "(hello)";
+for (const char of text) {
+  if (char === "(") stack.push("(");
+  if (char === ")") stack.pop();
+}
+const isSafe = stack.length === 0;
+// true`,
         conceptContext:
-          "A classic stack structure is constructed with arrays `push` and `pop`. Matching bracket characters can be verified using lookups: `const matches = { ')': '(', '}': '{', ']': '[' }`.",
+          "Bracket sequences are audited using stack queues. Storing opening delimiters allows us to run chronological parity checks when closing elements are visited.",
         description:
           "Build an automated syntax verification engine!\n\nWrite a function `isBalancedBrackets(code)` that inspects a string of code, returning `true` if all parentheses `()`, curly braces `{}`, and square brackets `[]` are properly opened and closed in the correct chronological order.\n\nIf any brackets are closed out of sequence or remain unclosed, return `false`.",
         codeTemplate: `function isBalancedBrackets(code) {
@@ -1077,8 +1274,13 @@ console.log(initialGreeting); // "Sarah C."`,
         id: "string-decompress-rle",
         title: "Run-Length Sequence Decompressor",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Replicating repeating character runs
+const symbol = "x";
+const runLength = 12;
+const stream = symbol.repeat(runLength);
+// "xxxxxxxxxxxx"`,
         conceptContext:
-          "Iterating through characters allows finding numeric runs. Standard string replication `str.repeat(num)` multiplies letters instantly.",
+          "Data expansion reads encoded patterns and multiplies symbols according to the adjacent count parameter using string repeating utilities.",
         description:
           "Create an inverse data decompression script!\n\nWrite a function `decompressRLE(str)` that takes a compacted run-length encoded string and expands it back to its original layout.\n\nInput strings are structured as repeating characters followed directly by their occurrences counts (which can be multi-digit numbers).\n\nExample:\n- `'a2b3a1'` -> `'aabbba'`\n- `'x10y1'` -> `'xxxxxxxxxxy'`.",
         codeTemplate: `function decompressRLE(str) {
@@ -1127,8 +1329,12 @@ console.log(firstPositiveLog); // 4`,
         id: "search-find-positive",
         title: "First Positive Number Finder",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Finding the first positive metric in a series
+const logs = [-5, -2, 4, -1, 10];
+const firstPositiveLog = logs.find(num => num > 0);
+// 4`,
         conceptContext:
-          "The `.find(predicate)` method returns the first element that matches your rule. If nothing is found, it returns `undefined`: `arr.find(x => x > 0)`.\n\n💡 **Learn By Comparison: `.find()` vs `.some()`**:\n• `.find()` returns the **actual value** of the first matching element itself. Use this when you need the item to work with.\n• `.some()` returns a simple **boolean (`true` or `false`)** if *at least one* element matches. Use this when you only need a quick yes/no check without using the data value itself.",
+          "The `.find()` utility walks your collection left-to-right and extracts the first single item that triggers your true/false test, returning undefined immediately if no items pass.",
         description:
           "Let's warm up with basic search lookups.\n\nWrite a function `firstPositive(nums)` that takes an array of numbers and returns the **first** element that is strictly positive (`> 0`). If no positive numbers exist, return `undefined`.",
         codeTemplate: `function firstPositive(nums) {
@@ -1162,8 +1368,12 @@ console.log(firstPositiveLog); // 4`,
         id: "search-contains-underage",
         title: "Age Compliance verifier",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Lenient check for any underage attendees
+const ages = [21, 25, 16, 30];
+const hasMinor = ages.some(age => age < 18);
+// true`,
         conceptContext:
-          "The `.some(predicate)` method checks if at least one item satisfy your condition, short-circuiting immediately outputting true on first success: `arr.some(age => age < 18)`.\n\n💡 **Learn By Comparison: `.some()` vs `.every()`**:\n• `.some()` returns `true` if **at least one** item passes the check (lenient rule).\n• `.every()` returns `true` only if **every single** item passes. It halts and returns `false` the moment it finds even a single fail (strict rule).",
+          "The `.some()` utility performs an existential verification. It yields true if at least one item satisfies your condition, halting the search immediately on the first match.",
         description:
           "Verify safety conditions across dynamic collections.\n\nWrite a function `hasUnderage(ages, limit)` that checks whether there resides any customer in the array `ages` whose age is strictly less than the specified integer `limit`.",
         codeTemplate: `function hasUnderage(ages, limit) {
@@ -1196,8 +1406,12 @@ console.log(firstPositiveLog); // 4`,
         id: "search-all-even-positives",
         title: "Homogeneous Evens compliance Check",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Strict validation of homogeneous even numbers
+const integers = [2, 4, 8, 10];
+const allEven = integers.every(num => num % 2 === 0);
+// true`,
         conceptContext:
-          "Asserting that *every* item in a collection conforms to conditions is handled via `.every(predicate)`. It halts and returns `false` immediate upon finding single violations.",
+          "The `.every()` helper enforces strict general collection compliance. It ensures that every single item conforms to your testing criteria, returning false right away if a single failure is detected.",
         description:
           "Enforce strict compliance standards across dynamic transaction collections.\n\nWrite a function `allEvenPositives(nums)` that checks if **all** numbers inside `nums` are both even (`x % 2 === 0`) AND strictly positive (`x > 0`).",
         codeTemplate: `function allEvenPositives(nums) {
@@ -1236,8 +1450,12 @@ console.log(firstPositiveLog); // 4`,
         id: "search-find-first-repeating",
         title: "First Duplicated Character Finder",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Finding first duplicate by comparing index boundaries
+const word = "hello";
+const firstRepeatIdx = [...word].findIndex((char, i, arr) => arr.indexOf(char) !== i);
+// 3 (representing 'l')`,
         conceptContext:
-          "We can query character positions inside strings. If `str.indexOf(char) !== index` for a character at position `index`, it indicates the character has appeared earlier.",
+          "Checking item frequencies inside sequences is solved by monitoring positional indices. If the first discovered position of a character is different from its current index, it has been encountered before.",
         description:
           "Locate the primary duplicate item within streams!\n\nWrite a function `firstRepeatingChar(str)` that scans a string and returns the **first** character that appears more than once.\n\nExample: `'abcdefb'` should return `'b'` since it represents the first letter we encounter a duplicate for.",
         codeTemplate: `function firstRepeatingChar(str) {
@@ -1271,8 +1489,12 @@ console.log(firstPositiveLog); // 4`,
         id: "search-find-subarray-target",
         title: "Subarray Range Target Sum Indexer",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Continuous range verification check
+const sequence = [10, 2, 3, 7];
+const containsTarget = (sequence.reduce((acc, current) => acc + current, 0) === 22);
+// true`,
         conceptContext:
-          "Sub-arrays can be checked iteratively using sliding sweeps or double pointers: `sum` of array slice offsets matches the goal.",
+          "Locating matching subsegments uses sliding pointer coordinate sweeps to compute linear sums of contiguous slices relative to a specific target boundary.",
         description:
           "Find continuous sequences that add up to target limits!\n\nWrite a function `findSubarraySum(nums, target)` that locates a contiguous sub-array whose elements add up to exactly `target`.\n\nReturn an array containing start and end index boundaries: `[startIdx, endIdx]`.\n\nExample:\n`findSubarraySum([1, 4, 20, 3, 10, 5], 33)` -> `[2, 4]` (since 20 + 3 + 10 = 33).",
         codeTemplate: `function findSubarraySum(nums, target) {
@@ -1326,8 +1548,12 @@ console.log(coordinates); // "No coordinate profile found"`,
         id: "safe-nested-attr",
         title: "Nested coordinates extractor",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Accessing deep path parameters safely
+const profile = { contact: { emails: ["a@b.com"] } };
+const primaryEmail = profile?.contact?.emails?.[0] ?? "no-email";
+// "a@b.com"`,
         conceptContext:
-          "Accessing nested attributes is secured by putting ?. between properties. Combining ?? provides a solid default: `obj?.sub?.item ?? 'default'`.",
+          "Deep objects can have parts missing at runtime. Placing optional chaining operator between attributes safely returns undefined if any node is empty.",
         description:
           "Let's warm up with basic safe lookups.\n\nWrite a function `getNestedCoordinates(user)` that attempts to fetch a user's location coordinates. It should query: `user.profile.address.coordinates`.\n\nIf any step along this path is missing, return `'No coordinate profile found'`.",
         codeTemplate: `function getNestedCoordinates(user) {
@@ -1361,8 +1587,12 @@ console.log(coordinates); // "No coordinate profile found"`,
         id: "safe-preference-lookup",
         title: "Dynamic Default Preference Picker",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Distinguishing missing values from zero/false
+const metrics = { count: 0 };
+const score = metrics?.count ?? 10;
+// 0`,
         conceptContext:
-          "Nullish coalescing `??` is superior to OR `||` because it keeps legitimate falsy entries like `0`, `false`, or empty strings, only falling back on `null` or `undefined`.",
+          "Nullish coalescing filters strictly for null or undefined. This ensures that valid but potentially falsy values like false or 0 are preserved, unlike standard OR operations.",
         description:
           "Let's explore selection mechanics where falsy inputs must be preserved!\n\nWrite a function `getUserThemePreference(settings)` that queries active user selections:\n- Fetch property `settings.theme.darkMode`.\n- If that field is non-existent (`null` or `undefined`), fall back to a default value of `true`.\n- Ensure that if `darkMode` is explicitly defined as `false`, you return `false` (do not mistakenly overwrite it).",
         codeTemplate: `function getUserThemePreference(settings) {
@@ -1396,8 +1626,12 @@ console.log(coordinates); // "No coordinate profile found"`,
         id: "safe-matrix-bound",
         title: "Grid Out of Bounds Protector",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Safely accessing indices inside multi-dimensional structures
+const matrix = [[1, 2]];
+const value = matrix?.[0]?.[5] ?? -1;
+// -1`,
         conceptContext:
-          "Indexing matrix arrays is safe if outer nodes are checked first: `grid?.[row]?. [col]` handles missing grids safely.",
+          "Matrix lookups are protected by checking parent rows before indexing column cells. Chaining bracket notation prevents out-of-bounds runtime errors.",
         description:
           "Shield matrix array indexes from throws!\n\nWrite a function `safeMatrixLookup(grid, row, col)` that returns an item inside a 2D matrix.\n\nUse optional chaining to fetch `grid[row][col]`. If that grid slot resides outside physical bounds, return `-1`.",
         codeTemplate: `function safeMatrixLookup(grid, row, col) {
@@ -1448,8 +1682,12 @@ console.log(coordinates); // "No coordinate profile found"`,
         id: "safe-log-sensor",
         title: "Nested telemetry diagnostics Picker",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Executing functions that may be undefined
+const driver = { start: () => "OK" };
+const message = driver?.start?.() ?? "inactive";
+// "OK"`,
         conceptContext:
-          "Chaining can be integrated with methods calls: `telemetry?.getLogs?.()` returns `undefined` if `getLogs` is missing, which can then fall back on another pipeline.",
+          "Chaining can be merged with dynamic function executions. If a targeted method is not implemented, the statement stops safely and outputs undefined, which can then be bypassed with fallback values.",
         description:
           "Extract sensor streams from dynamic diagnostic payloads!\n\nWrite a function `getSensorStatus(device)` that attempts to return a device's sensor health rating:\n- If `device.fetchMetrics` method is present, execute it: `device.fetchMetrics()`. Then return its `status` parameter.\n- If that method is completely missing, attempt to query the static field `device.lastKnownTelemetry.status`.\n- If both options fail (i.e. resolve to `null`/`undefined`), return the string `'OFFLINE'`.",
         codeTemplate: `function getSensorStatus(device) {
@@ -1478,8 +1716,16 @@ console.log(coordinates); // "No coordinate profile found"`,
         id: "safe-path-crawler",
         title: "Dynamic directory config Crawler",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Traversing nested tracks using keys list
+const config = { database: { host: "localhost" } };
+const path = ["database", "host"];
+let resolved = config;
+for (const key of path) {
+  resolved = resolved?.[key];
+}
+// resolved is "localhost"`,
         conceptContext:
-          "Custom path navigation is protected by checking arrays and keys. Chaining bracket lookup keys `obj?.[pathArray[i]]` handles dynamic navigation tracks.",
+          "Traversal of unstructured deep settings is secured by dynamic bracket lookups. Walking keys sequentially yields values if pathways remain unbroken.",
         description:
           "Build a safe path resolver!\n\nWrite a function `crawlPath(obj, pathKeys)` that takes a nested object and an array of keys representing a coordinate pathway.\n\nit should traverse the target object along that sequence of keys, returning the final resolved value.\n\nIf at any layer the pathway breaks (the current key resolves to `null` or `undefined`), return `'PATH_BLOCKED'`.",
         codeTemplate: `function crawlPath(obj, pathKeys) {
@@ -1530,8 +1776,12 @@ console.log([...uniqueSet]);   // [1, 2, 3, 4]`,
         id: "set-deduplicate-list",
         title: "Array Cleaner Deduplicator",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Instantly removing raw array duplicate values
+const items = [1, 2, 2, 3, 1, 4];
+const unique = [...new Set(items)];
+// [1, 2, 3, 4]`,
         conceptContext:
-          "A Set removes duplicate values from an array instantly. We can convert back to an array using the Spread operator: `[...new Set(arr)]`.",
+          "Set data structures represent native lists where each value can exist exactly once. This capability makes them ideal for instant duplicate extraction.",
         description:
           "Let's warm up with basic Set deduplication.\n\nWrite a function `deduplicateList(arr)` that quickly prunes duplicate values from an array, returning a clean deduplicated array.",
         codeTemplate: `function deduplicateList(arr) {
@@ -1564,8 +1814,13 @@ console.log([...uniqueSet]);   // [1, 2, 3, 4]`,
         id: "set-common-elements",
         title: "Mathematical Intersection Tracker",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Finding intersecting items in constant lookup complexity
+const listA = [1, 2, 3];
+const setB = new Set([2, 3, 4]);
+const intersection = listA.filter(item => setB.has(item));
+// [2, 3]`,
         conceptContext:
-          "Finding overlapping elements in two sets is known as intersection. Converting the smaller list to a Set allows constant O(1) searches: `arr1.filter(x => set2.has(x))`.",
+          "Overlapping values in two lists can be found efficiently. Converting one list to a Set gives us fast search capabilities, avoiding high computational overhead.",
         description:
           "Let's perform dynamic set intersection comparisons!\n\nWrite a function `findCommon(arr1, arr2)` that takes two arrays. It should return a deduplicated array containing elements that are present in **both** inputs.\n\nYour code should run in optimum linear **O(N + M)** time using Sets.",
         codeTemplate: `function findCommon(arr1, arr2) {
@@ -1608,8 +1863,12 @@ console.log([...uniqueSet]);   // [1, 2, 3, 4]`,
         id: "set-unique-characters",
         title: "Unique Characters String Tracker",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Verifying string has no repeating letters
+const input = "prism";
+const isUnique = new Set(input).size === input.length;
+// true`,
         conceptContext:
-          "Checking unique items can compare sizing. If a string has unique letters, loading its characters into a Set results in: `set.size === string.length`.",
+          "Checking unique letters can compare sizes. If a collection of character entries contains no redundant values, its size remains identical to the initial count.",
         description:
           "Determine string metrics swiftly with size evaluations.\n\nWrite a function `isAllUniqueChars(str)` that checks whether all characters in a string are entirely distinct from one another.\n\nReturn `true` if every character appears exactly once. Otherwise, return `false`. Your code should execute in optimum linear **O(N)** time using Sets.",
         codeTemplate: `function isAllUniqueChars(str) {
@@ -1642,8 +1901,13 @@ console.log([...uniqueSet]);   // [1, 2, 3, 4]`,
         id: "set-symmetric-difference",
         title: "Exclusive Symmetric Difference Tracker",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Extracting exclusive items that exist in only one list
+const a = new Set([1, 2]);
+const b = new Set([2, 3]);
+const diff = [1, 2, 3].filter(x => a.has(x) !== b.has(x));
+// [1, 3]`,
         conceptContext:
-          "Symmetric difference collects elements that are in *either* list, but **not** in both: `(A - B) ∪ (B - A)`. This is solved by checking sets membership of elements.",
+          "Symmetric Difference extracts elements that exist in one collection but not both. This search filters and merges elements based on presence checks.",
         description:
           "Now let's compute set differences across compound groupings.\n\nWrite a function `symmetricDifference(arr1, arr2)` that identifies exclusive elements. It must return a deduplicated array containing elements that are present in `arr1` but not `arr2`, OR present in `arr2` but not `arr1`.\n\nEnsure that the output array contains only unique values and is constructed in linear time.",
         codeTemplate: `function symmetricDifference(arr1, arr2) {
@@ -1687,8 +1951,18 @@ console.log([...uniqueSet]);   // [1, 2, 3, 4]`,
         id: "set-target-sum-seen",
         title: "Seen Set Two Sum Crawler",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Tracking numbers checked to find target pairs
+const seenSet = new Set();
+const additionGoal = 8;
+const numbers = [5, 3, 10];
+let foundPair = false;
+for (const val of numbers) {
+  if (seenSet.has(additionGoal - val)) foundPair = true;
+  seenSet.add(val);
+}
+// true`,
         conceptContext:
-          "Instead of mapping key-indexes inside dictionary objects, tracking checked items inside a `Set` allows O(1) membership checks to discover pairs that sum to target: `set.has(target - num)`.",
+          "Pair matches are evaluated by tracking historical parameters. Storing checked indices allows O(1) membership lookups for completing algebraic pairs.",
         description:
           "To complete the Sets series, let's solve an extremely optimized search equation.\n\nWrite a function `hasPairWithSum(nums, target)` that takes an array of integers and checks if there exists any pair of numbers that add up to exactly the `target` value.\n\nAchieve O(N) runtime complexity by saving checked values in a single `Set`, checking `target - currentNum` occurrences in O(1) time. Nested loops are forbidden!",
         codeTemplate: `function hasPairWithSum(nums, target) {
@@ -1743,8 +2017,11 @@ delayWithResult("Hello prompt resolved!", 1000)
         id: "delay-resolve",
         title: "Timed Delay Promise",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Registering an asynchronous timeout task
+const task = new Promise((resolve) => setTimeout(() => resolve("done"), 100));
+// Resolves after 100 milliseconds`,
         conceptContext:
-          "Use new Promise((resolve) => { ... }) combined with setTimeout to delay code execution.",
+          "Asynchronous delay timers use Promise wrappers around native callback functions, putting resolve actions inside standard setTimeout events.",
         description:
           "Write a function `delayResolve(value, ms)` that returns a Promise. The Promise should resolve with the given `value` after `ms` milliseconds.",
         codeTemplate: `function delayResolve(value, ms) {
@@ -1778,8 +2055,14 @@ delayWithResult("Hello prompt resolved!", 1000)
         id: "promisify-callback",
         title: "Promisify Callback API",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Converting double-parameter callback flows
+const legacyAPI = (id, cb) => cb(null, "retrieved_data");
+const promisified = (id) => new Promise((resolve, reject) => {
+  legacyAPI(id, (err, res) => err ? reject(err) : resolve(res));
+});
+// Resolves with "retrieved_data"`,
         conceptContext:
-          "Bridge legacy error-first callbacks with modern Promise patterns.",
+          "Node.js uses error-first callbacks. Wrapping those routines inside Promise constructors allows you to handle successes via resolve triggers and failures via reject triggers.",
         description:
           "Write a function `promisify(fn)` that takes a function `fn(arg, callback)` where callback has the signature `(error, result)`. Your function should return another function that accepts `arg` and returns a Promise. That Promise resolves with the result or rejects with the error.",
         codeTemplate: `function promisify(fn) {
@@ -1813,8 +2096,13 @@ delayWithResult("Hello prompt resolved!", 1000)
         id: "promise-all-safe",
         title: "Safe Promise.all Settler",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Gathering concurrent outcomes without halting on partial errors
+const requests = [Promise.resolve("data"), Promise.reject(new Error("error"))];
+const statusChecks = requests.map(p => p.then(v => ({ status: "fulfilled", value: v })).catch(e => ({ status: "rejected", reason: e.message })));
+Promise.all(statusChecks).then(console.log);
+// [{ status: "fulfilled", value: "data" }, { status: "rejected", reason: "error" }]`,
         conceptContext:
-          "Emulate Promise.allSettled behavior to evaluate multiple promises without crashing on single fails.",
+          "Concurrent processing uses array mappings. Injecting self-contained .catch blocks around individual child nodes prevents single failures from crashing adjacent achievements.",
         description:
           "Write a function `allSafe(promises)` that accepts an array of Promises and returns a Promise resolving to an array of objects representing their outcomes. Each outcome object must have the shape `{ status: 'fulfilled', value: ... }` on success, or `{ status: 'rejected', reason: ... }` on rejection. Use Promise.all underneath inside standard .then() / .catch() maps.",
         codeTemplate: `function allSafe(promises) {
@@ -1864,8 +2152,16 @@ delayWithResult("Hello prompt resolved!", 1000)
         id: "async-fetch-json",
         title: "Mock API User Fetcher",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Safely invoking asynchronous APIs
+async function fetchConfig(apiCall) {
+  try {
+    return await apiCall();
+  } catch (err) {
+    return "default_config";
+  }
+}`,
         conceptContext:
-          "Use async/await with try/catch to invoke mock fetch calls safely.",
+          "Structured exception handling guards network operations. Placing async requests in try-catch blocks isolates connection timeouts and supplies fallback datasets.",
         description:
           "Write an `async` function `fetchUserData(userId, mockFetch)` that calls `mockFetch(userId)` (which returns a Promise resolving to a user object: `{ username }`). Your function should return the uppercase representation of `username`. If the request fails or throws an error, catch the exception cleanly and return `'GUEST'`. Assume mockFetch is provided to you.",
         codeTemplate: `async function fetchUserData(userId, mockFetch) {
@@ -1900,8 +2196,18 @@ delayWithResult("Hello prompt resolved!", 1000)
         id: "auto-retry-promise",
         title: "Auto-Retry Executor",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Attempting retry loops around unreliable pipelines
+async function tryDownload(getTask) {
+  for (let i = 0; i < 3; i++) {
+    try {
+      return await getTask();
+    } catch (err) {
+      if (i === 2) throw err;
+    }
+  }
+}`,
         conceptContext:
-          "Combine loops or recursion with async execution to implement resilient auto-retries.",
+          "Persistent execution models wrap unreliable pipelines in chronological retry iterations, capturing successive errors up until targeted failure budgets are fully exhausted.",
         description:
           "Write an `async` function `retryPromise(fn, maxRetries)` that takes an async function `fn` (which returns a Promise) and tries executing it. If it rejects or fails, retry execution up to `maxRetries` times. If it succeeds at any attempt, return the resolved value. If all attempts fail, reject with the final error from the last execution.",
         codeTemplate: `async function retryPromise(fn, maxRetries) {
@@ -1953,8 +2259,12 @@ console.log(z); // 0 (fallback default applied because z was undefined)`,
         id: "coords-extractor",
         title: "Fallback Coordinate Deconstructor",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Extracting coordinates with fallback assignments
+const coordinates = { x: 10, y: 25 };
+const { x, y, z = 0 } = coordinates;
+// x is 10, y is 25, z is 0 (fallback)`,
         conceptContext:
-          "Destructuring can unpack objects with fallback defaults if fields are missing: `const { x, y, z = 0 } = point`.",
+          "Destructuring pulls designated fields out of complex structures. Fallback values can be supplied in line to safeguard against missing values.",
         description:
           "Unpack three-dimensional nodes down to two planes cleanly.\n\nWrite a function `extractCoords(point)` that takes a point object containing properties `x`, `y`, and optionally `z`.\n\nUtilizing ES6 Object Destructuring with default values in a single line if possible:\n- Extract properties `x` and `y`.\n- Extract property `z`, falling back to `0` if `z` is `undefined` or not declared.\n- Return an array containing these values: `[x, y, z]`.",
         codeTemplate: `function extractCoords(point) {
@@ -1987,8 +2297,12 @@ console.log(z); // 0 (fallback default applied because z was undefined)`,
         id: "merge-profile",
         title: "Rest-Stripped Profile Merger",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Filtering delicate keys using rest parameters
+const payload = { id: 1, secretToken: "TOKEN_SECRET", data: "open" };
+const { secretToken, ...filteredPayload } = payload;
+// filteredPayload is { id: 1, data: "open" }`,
         conceptContext:
-          "Using object destructuring combined with the rest parameter `...rest` allows isolating single unwanted properties while compiling the rest into a clean dictionary: `const { password, ...safeUser } = user`.",
+          "Rest parameter syntax is able to capture all remaining properties after certain keys are extracted, allowing you to isolate and filter specific fields.",
         description:
           "Perform clean profile merges for dynamic directories, ensuring delicate keys like database tracking credentials are never leaked.\n\nWrite a function `mergeProfile(baseProfile, overrides)` that takes a base user object and an overrides object.\n\nIt should:\n- Double-merge both objects: base profile gets decorated with overrides.\n- Standardize the output by stripping out the specific property `dbToken` from the returned merged collection using the Rest operator.\n- Return this safe merged dictionary.",
         codeTemplate: `function mergeProfile(baseProfile, overrides) {
@@ -2020,8 +2334,12 @@ console.log(z); // 0 (fallback default applied because z was undefined)`,
         id: "gather-rest-sum",
         title: "Variable Arguments Adder",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Aggregating dynamic function parameters
+const sumAll = (...values) => values.reduce((sum, v) => sum + v, 0);
+const total = sumAll(2, 4, 6);
+// 12`,
         conceptContext:
-          "A function's formal arguments list can capture remaining loose parameters utilizing Rest notation: `function check(main, ...restOfArgs)` where `restOfArgs` automatically pools values as a standard array.",
+          "Rest parameter arrays collect variable inputs into a standard array. This lets functions support arguments of arbitrary count without manual arguments object lookups.",
         description:
           "Handle variable input arguments lists cleanly without standard loop offsets.\n\nWrite a function `gatherRestSum(multiplier, ...numbers)` that takes an initial factor multiplier, followed by a variable quantity of dynamic integers.\n\nIt should use the Rest parameter to capture those integers in an array, double-map or sum them, and return their combined total multiplied by the initial multiplier factor value.\n\nIf no numbers are provided, return `0`.",
         codeTemplate: `function gatherRestSum(multiplier, ...numbers) {
@@ -2056,8 +2374,13 @@ console.log(z); // 0 (fallback default applied because z was undefined)`,
         id: "deep-merge-config",
         title: "Single-Level Nested Config Double-Merger",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Inductive sub-key merging
+const defaults = { ui: { theme: "light" } };
+const userConfig = { ui: { font: "Inter" } };
+const updated = { ...defaults, ui: { ...defaults.ui, ...userConfig.ui } };
+// { ui: { theme: "light", font: "Inter" } }`,
         conceptContext:
-          "Shallow spreads `{ ...a, ...b }` replaces complete sub-objects if keys clash. To preserve nested properties, spread nested child items individually: `{ ...a, sub: { ...a.sub, ...b.sub } }`.",
+          "Shallow copies overwrite nested properties entirely when parent keys collide. To combine nested properties, inner fields must be spread individually.",
         description:
           "Let's perform precision structural object combinations!\n\nWrite a function `deepMergeConfig(base, target)` that combines two config objects. Both contain a nested sub-configuration under the key `theme`.\n\nYour task is to merge both objects cleanly. Make sure that:\n- Normal parameters are overridden properly.\n- The sub-object dictionary under the key `theme` is merged individually (so that properties inside `base.theme` are retained unless explicitly overwritten by `target.theme`).\n- Return the completed merged configuration object.",
         codeTemplate: `function deepMergeConfig(base, target) {
@@ -2092,8 +2415,12 @@ console.log(z); // 0 (fallback default applied because z was undefined)`,
         id: "swap-nested-coordinate",
         title: "Matrix Coordinate Destructuring Rotator",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Extracting elements from 2D structures in one step
+const gridValues = [[1, 2], [3, 4]];
+const [[topLeft, topRight], [bottomLeft, bottomRight]] = gridValues;
+// topLeft is 1, bottomRight is 4`,
         conceptContext:
-          "Nested array destructuring allows pulling values out inside a single assignment line: `const [[a, b], [c, d]] = grid`.",
+          "Hierarchical array destructuring lets you unpack structured matrix dimensions in a single statement, avoiding temp variables.",
         description:
           "Perform clean geometric shifts in a 2D matrix coordinates grid using unpacking patterns.\n\nWrite a function `rotateNestedPair(coords)` that takes a pairs matrix structured as: `[[x1, y1], [x2, y2]]`.\n\nit should:\n- Destructure and unpack these four variables in a single step.\n- Reassemble and return this pair swapped and rotated in the following structure: `[[y2, x2], [y1, x1]]`.",
         codeTemplate: `function rotateNestedPair(coords) {
@@ -2154,8 +2481,16 @@ console.log(user.getDetails()); // "Alice is online"`,
         id: "oop-simple-book",
         title: "Class-Based Book Descriptor",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Generating standardized book collections
+class CatalogBook {
+  constructor(title) {
+    this.title = title;
+  }
+}
+const item = new CatalogBook("Dune");
+// item is { title: "Dune" }`,
         conceptContext:
-          "Classes are instantiated via constructors: `class Companion { constructor(title) { this.title = title; } }`. Calling `new Companion('A')` fires this routine.",
+          "JavaScript classes are templates implemented via constructor functions. Calling them with the 'new' keyword creates a structured object instance.",
         description:
           "Construct a basic digital book profile generator.\n\nCreate a JavaScript class named `Book` that matches these qualities:\n- Constructor takes `title` and `author`.\n- Sets these as accessible object properties `this.title` and `this.author`.\n- Provides a method `getDetails()` which returns the string format: `'Title by Author'`.",
         codeTemplate: `class Book {
@@ -2183,8 +2518,17 @@ console.log(user.getDetails()); // "Alice is online"`,
         id: "oop-secure-account",
         title: "Guarded Bank Account Ledger",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Utilizing getters and setters to protect properties
+class Wallet {
+  constructor() { this._cash = 0; }
+  get cash() { return this._cash; }
+  set cash(amount) { if (amount >= 0) this._cash = amount; }
+}
+const stash = new Wallet();
+stash.cash = -50; // Ignored!
+// stash.cash remains 0`,
         conceptContext:
-          "Getters and setters (`get balance()`, `set balance(val)`) catch property reads and edits dynamically, allowing you to intercept changes before writing fields.",
+          "Getters and setters intercept reads and writes on class properties dynamically, enabling validations before the internal fields are updated.",
         description:
           "Configure security checks around transaction operations.\n\nCreate a class `BankAccount` that has:\n- Constructor that accepts standard account string `id` and `initialBalance`.\n- Properties `this.id` and a private-facing field `this._balance` (initially set to `initialBalance`).\n- A getter `balance` which fetches the current `_balance` rating.\n- A setter `balance(newAmount)` which updates `_balance` only if `newAmount` is greater than or equal to `0`. If negative, ignore the update entirely (i.e. do not alter `_balance`).",
         codeTemplate: `class BankAccount {
@@ -2213,8 +2557,16 @@ console.log(user.getDetails()); // "Alice is online"`,
         id: "oop-vector",
         title: "Immutable Vector Calculator",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Generating fresh calculation outputs immutably
+class Point {
+  constructor(x) { this.x = x; }
+  shift(dx) { return new Point(this.x + dx); }
+}
+const basePt = new Point(5);
+const shiftedPt = basePt.shift(10);
+// basePt.x is still 5, shiftedPt.x is 15`,
         conceptContext:
-          "Immutability states that instead of modifying existing data structures, methods return shiny new class coordinates: `add(other) { return new Vector(this.x + other.x, ...) }`.",
+          "Immutable objects avoid changing their inner properties, and instead return brand new class instances whenever calculations are performed.",
         description:
           "Perform coordinate calculation rules without corrupting original points datasets.\n\nCreate a class `Vector` that has:\n- Constructor accepting `x` and `y` numeric values.\n- A method `add(otherVector)` which adds coordinate fields cleanly, returning a brand new Vector instance with the resulting sum indices. (Original vectors must remain unchanged).",
         codeTemplate: `class Vector {
@@ -2245,8 +2597,20 @@ console.log(user.getDetails()); // "Alice is online"`,
         id: "oop-inherited-vehicle",
         title: "Derived Electric Vehicle Subclass",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Inheriting parent models via subclasses
+class Machine {
+  constructor(name) { this.name = name; }
+}
+class RoboticCoring extends Machine {
+  constructor(name, brand) {
+    super(name);
+    this.brand = brand;
+  }
+}
+const client = new RoboticCoring("Corer", "CoreTech");
+// client is structured with BOTH parent and child characteristics`,
         conceptContext:
-          "Subclasses extend parent models via the `extends` keyword. Super constructors must be called first inside the child's constructor: `super(arg1, arg2)`.",
+          "Specialized models extend parent blueprints. Inherited parameters are passed to parent constructor functions using super constructor triggers.",
         description:
           "Unify parent behaviors across specialized product catalog classes.\n\n- Create a parent class `Vehicle` which has constructor taking `make` and `model` (sets `this.make` and `this.model`) and provides a getter `description` that yields 'Make Model'.\n- Create a subclass `ElectricCar` that extends `Vehicle`. It adds parameter `batteryCapacity` (kWh) in its constructor. Override the `description` getter to additionally return the battery capacity: 'Make Model (batteryCapacity kWh)'.",
         codeTemplate: `class Vehicle {
@@ -2259,7 +2623,6 @@ console.log(user.getDetails()); // "Alice is online"`,
     return this.make + ' ' + this.model;
   }
 }
-
 class ElectricCar extends Vehicle {
   // Extend Vehicle, implementing super constructor calls and overriding details description
   
@@ -2285,8 +2648,15 @@ class ElectricCar extends Vehicle {
         id: "oop-min-stack",
         title: "Class-Based High-Velocity MinStack",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Maintaining secondary tracks for tracking properties
+class TrackingStack {
+  constructor() {
+    this.data = [];
+    this.tracker = [];
+  }
+}`,
         conceptContext:
-          "To find minimum stack elements in O(1) time without looping arrays, maintain a parallel auxiliary 'minimum tracking' stack alongside your standard values stack.",
+          "Complex structures manage parallel properties under the hood. Parallel arrays track auxiliary metrics to support fast status checks without scanning values.",
         description:
           "To complete the OOP classes track, let's engineer an elegant high-performance Data Structure Class!\n\nCreate a Class `MinStack` which operates exactly like a stack (Last-In-First-Out) but can find the minimum value in correct constant O(1) time.\n\nImplement these methods:\n- `push(val)`: pushes element onto stack.\n- `pop()`: removes top element of stack.\n- `top()`: fetches top element's value without removing it.\n- `getMin()`: fetches the absolute minimum element currently present inside the stack in constant O(1) time.",
         codeTemplate: `class MinStack {
@@ -2484,8 +2854,12 @@ console.log(tally.has("oranges")); // false`,
         id: "map-frequency-counter",
         title: "Clean Dictionary Word Indexer",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Registering word frequency scores
+const scores = new Map();
+scores.set("item", (scores.get("item") || 0) + 1);
+// scores.get("item") is 1`,
         conceptContext:
-          "Build safe lookup profiles using ES6 Maps without risk of prototype pollution.",
+          "ES6 Maps provide a prototype-safe lookup profile, establishing keys that are independent of built-in object properties and prototype inheritance chains.",
         description:
           "Write a function `frequencyMap(arr)` that tallies occurrences of strings inside an array. It should return an ES6 `Map` mapping each unique element to its total frequency count.",
         codeTemplate: `function frequencyMap(arr) {
@@ -2516,7 +2890,13 @@ console.log(tally.has("oranges")); // false`,
         id: "map-object-keys",
         title: "Object Memory Mapping Store",
         difficulty: "DSA Easy",
-        conceptContext: "Use objects directly as unique keys in an ES6 Map.",
+        codeSnippet: `// Example Use Case: Mapping metadata directly to object structures
+const elementNode = { tag: "div" };
+const nodesRegistry = new Map();
+nodesRegistry.set(elementNode, { clicked: true });
+// nodesRegistry.get(elementNode) is { clicked: true }`,
+        conceptContext:
+          "Unlike plain objects, ES6 Maps allow developers to use objects directly as lookup keys, keeping reference addresses separate from value associations.",
         description:
           "Write a function `trackSessionStates(sessions, statuses)` that takes an array of session objects and an array of status strings of equal length. Map each object directly to its corresponding status inside an ES6 `Map`. Return the completed Map.",
         codeTemplate: `function trackSessionStates(sessions, statuses) {
@@ -2550,8 +2930,16 @@ console.log(tally.has("oranges")); // false`,
         id: "map-iterator-sum",
         title: "Map Inventory Synchronizer",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Combining collections by iterating Map values
+const baseMap = new Map([["A", 10]]);
+const offsetMap = new Map([["A", 5], ["B", 2]]);
+const merged = new Map(baseMap);
+for (const [k, v] of offsetMap) {
+  merged.set(k, (merged.get(k) || 0) + v);
+}
+// merged has key "A" with value 15`,
         conceptContext:
-          "Iterate across Map entries using .entries() or standard loops to merge inventory maps.",
+          "Map structures are iterable collections, meaning they expose entry, key, and value traversers which can be iterated cleanly via standard loops.",
         description:
           "Write a function `mergeInventoryMaps(mapA, mapB)` that merges two ES6 Map objects, where keys are item names and values are stock quantities. Return a new Map mapping item names to the combined sum of stock quantities.",
         codeTemplate: `function mergeInventoryMaps(mapA, mapB) {
@@ -2592,8 +2980,16 @@ console.log(tally.has("oranges")); // false`,
         id: "map-grouping-keys",
         title: "Relational Data Grouping Map",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Multi-value categorization
+const entries = [{ cat: "A", val: 1 }, { cat: "A", val: 2 }];
+const buckets = new Map();
+entries.forEach(item => {
+  if (!buckets.has(item.cat)) buckets.set(item.cat, []);
+  buckets.get(item.cat).push(item.val);
+});
+// buckets has "A" mapping to [1, 2]`,
         conceptContext:
-          "Use Map to group array elements by a shared object property.",
+          "Map databases group data by dynamic variables or nested values without suffering from key collision or automatic prototype conversion.",
         description:
           "Write a function `bulkGroupUsersByRole(users)` that takes an array of user objects: `{ username, role }`. Return an ES6 Map where keys are roles and values are arrays of usernames that have that role.",
         codeTemplate: `function bulkGroupUsersByRole(users) {
@@ -2631,8 +3027,13 @@ console.log(tally.has("oranges")); // false`,
         id: "map-weakmap-cache",
         title: "WeakMap Metadata Cache Manager",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Setting leak-free cache associations
+const heavyData = { dataRef: "val" };
+const lookupCache = new WeakMap();
+lookupCache.set(heavyData, { computedValue: 42 });
+// lookupCache has dynamic key-value pair that auto-garbage-collects when heavyData reference is dropped`,
         conceptContext:
-          "Use WeakMaps to associate cached calculations directly with object inputs without impeding garbage collection.",
+          "WeakMaps hold key references weakly. When an object key is dereferenced, its WeakMap cached pair automatically cleanses from system memory, preventing leaks.",
         description:
           "Write a function `cacheCompute(fn)` that implements object memoization. It should return a function wrapping `fn(obj)`. When called with an object `obj`, if `obj` exists in your internal `WeakMap`, return the cached result. Otherwise, execute `fn(obj)`, record the outcome in the WeakMap, and return the resolved result.",
         codeTemplate: `function cacheCompute(fn) {
@@ -2678,8 +3079,14 @@ console.log(sumUp(4)); // 10 (4 + 3 + 2 + 1)`,
         id: "recursion-factorial",
         title: "Mathematical Factorial Calculator",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Calculating combinatorics permutations recursively
+const findPermutationsCount = (n) => {
+  if (n <= 1) return 1;
+  return n * findPermutationsCount(n - 1);
+};
+// findPermutationsCount(3) is 6`,
         conceptContext:
-          "Factorial of n (denoted as n!) represents: `n * (n-1) * (n-2) * ... * 1`. The base case is when `n <= 1`, returning `1`.",
+          "Recursive algorithms split tasks into smaller representations of themselves. A strict conditional check (the base case) is mandatory to prevent execution loops.",
         description:
           "Let's warm up with base-case validation! How it works: In compounding percentages, mathematical permutations, or building probability arrays in graphics engines, recursive formulas model multi-layered combinations elegantly.\n\nWrite a recursive function `factorial(n)` that calculates `n!` recursively. (Do not use loops like `for` or `while`).",
         codeTemplate: `function factorial(n) {
@@ -2708,8 +3115,12 @@ console.log(sumUp(4)); // 10 (4 + 3 + 2 + 1)`,
         id: "recursion-array-flattener",
         title: "Deeply Nested Array Flattener",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Dismantling arrays with unknown dimensions
+const nestedList = [1, [2, [3]]];
+const extract = (arr) => arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? extract(val) : val), []);
+// extract(nestedList) is [1, 2, 3]`,
         conceptContext:
-          "To flat arrays of unknown depth, loop across items. If an item is an array: recursively flat it, otherwise push it to output collection.",
+          "Hierarchical arrays can be expanded by inspecting each list element recursively. Dynamic recursion allows flattening deeply nested arrays.",
         description:
           "Traverse deep nested hierarchies recursively! How it works: In rendering recursive components (like comments threads or directories menus), elements can be nested inside multiple nested subdirectories. Unpacking them into a linear array is standard practice.\n\nWrite a recursive function `deepFlatten(arr)` that takes an array containing nested arrays of any level of depth, and returns a single flat array.",
         codeTemplate: `function deepFlatten(arr) {
@@ -2738,8 +3149,15 @@ console.log(sumUp(4)); // 10 (4 + 3 + 2 + 1)`,
         id: "recursion-fibonacci",
         title: "Recursive Fibonacci Indexer",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Formulating growth values recursively
+const findGrowthRate = (term) => {
+  if (term <= 0) return 0;
+  if (term === 1) return 1;
+  return findGrowthRate(term - 1) + findGrowthRate(term - 2);
+};
+// findGrowthRate(4) is 3`,
         conceptContext:
-          "The Fibonacci sequence starts with 0 and 1. Each succeeding number is the sum of the two preceding ones: `F(n) = F(n-1) + F(n-2)`.",
+          "Symmetric branching models complex mathematical growth by creating multiple recursive invocations side-by-side in each execution step.",
         description:
           "Write a recursive function `fibonacci(n)` that returns the n-th Fibonacci number. Assume n >= 0.",
         codeTemplate: `function fibonacci(n) {
@@ -2772,8 +3190,14 @@ console.log(sumUp(4)); // 10 (4 + 3 + 2 + 1)`,
         id: "recursion-sum-range",
         title: "Recursive Number Range Accumulator",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Running countdown aggregators
+const sumCountdown = (start) => {
+  if (start <= 1) return start;
+  return start + sumCountdown(start - 1);
+};
+// sumCountdown(3) is 6`,
         conceptContext:
-          "Accumulate values recursively by diminishing the input variable on each frame.",
+          "Accumulating number sequences recursively reduces the value towards the base case, stacking addition frames in memory.",
         description:
           "Write a recursive function `sumRange(n)` that calculates the sum of all positive integers from 1 up to `n`. For example, `sumRange(4)` should return `10` (4 + 3 + 2 + 1). If `n` is 1 or less, return `n`.",
         codeTemplate: `function sumRange(n) {
@@ -2806,8 +3230,14 @@ console.log(sumUp(4)); // 10 (4 + 3 + 2 + 1)`,
         id: "recursion-reverse-string",
         title: "Recursive String Reverser",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Reversing single character layers recursively
+const reverseWord = (word) => {
+  if (word.length <= 1) return word;
+  return reverseWord(word.slice(1)) + word[0];
+};
+// reverseWord("car") is "rac"`,
         conceptContext:
-          "Slice character buffers sequentially to swap positions recursively.",
+          "Strings are modified recursively by slicing characters, recursively processing the remaining slice, and combining parts.",
         description:
           "Write a recursive function `reverseString(str)` that accepts a string `str` and returns its reversed version. For example, `reverseString('abc')` should return `'cba'`. (Do NOT use loops or native `.split().reverse().join()` methods).",
         codeTemplate: `function reverseString(str) {
@@ -2863,8 +3293,12 @@ console.log(start.toISOString().slice(0, 10)); // "2026-05-25"`,
         id: "date-difference",
         title: "Date Milestone Difference",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Finding the gap between two calendar milestones
+const dayDelta = Math.abs(new Date("2026-05-15") - new Date("2026-05-20"));
+const daysCount = Math.floor(dayDelta / (1000 * 60 * 60 * 24));
+// 5`,
         conceptContext:
-          "Calculate elapsed days by converting Date object millisecond offsets.",
+          "Subtracting Date instances yields their raw difference in milliseconds, which can then be converted into standard calendar days using division operations.",
         description:
           "Write a function `getDaysBetweenDates(dateStr1, dateStr2)` that accepts two date strings in `YYYY-MM-DD` format and returns the absolute difference in full calendar days as an integer.",
         codeTemplate: `function getDaysBetweenDates(dateStr1, dateStr2) {
@@ -2899,8 +3333,11 @@ console.log(start.toISOString().slice(0, 10)); // "2026-05-25"`,
         id: "date-weekday",
         title: "Localized Weekday Name",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Resolving weekday name using standard localization
+const nameDay = new Date("2026-05-25").toLocaleDateString("en-US", { weekday: "long" });
+// "Monday"`,
         conceptContext:
-          "Translate Date days indexes into localized weekday strings.",
+          "JavaScript engines format date points directly to human-friendly week representations using localized calendars and standard formatting helpers.",
         description:
           "Write a function `getWeekdayName(dateStr)` that accepts a date string in `YYYY-MM-DD` format and returns the full day of the week in English (e.g. `'Monday'`, `'Tuesday'`, `'Wednesday'`).",
         codeTemplate: `function getWeekdayName(dateStr) {
@@ -2934,8 +3371,12 @@ console.log(start.toISOString().slice(0, 10)); // "2026-05-25"`,
         id: "date-add-days",
         title: "Project Deadline Calculator",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Incremental date calculations
+const deadline = new Date("2026-05-15");
+deadline.setDate(deadline.getDate() + 10);
+// deadline value is updated to representing May 25, 2026`,
         conceptContext:
-          "Add day offsets safely using setDate and getDate methods.",
+          "Adding day counts cleanly relies on setting setDate metrics relative to active getDate parameters, shielding operations from rollover calculations.",
         description:
           "Write a function `addDaysToDate(dateStr, days)` that accepts a date string in `YYYY-MM-DD` format and an integer `days`, and returns a new date string in `YYYY-MM-DD` format with the offset applied.",
         codeTemplate: `function addDaysToDate(dateStr, days) {
@@ -2970,8 +3411,11 @@ console.log(start.toISOString().slice(0, 10)); // "2026-05-25"`,
         id: "date-is-leap",
         title: "Leap Year Evaluator",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Checking leap rules via astronomical intervals
+const divideYear = (y) => (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+// true or false`,
         conceptContext:
-          "Establish if a year possesses an extra day based on astronomical calendar divisions.",
+          "Divisibility checks identify leap years, validating calendar dates by checking if February possesses an extra day.",
         description:
           "Write a function `isLeapYear(year)` that checks if a calendar year is a leap year. A year is a leap year if it is divisible by 4, but not by 100, unless it is also divisible by 400.",
         codeTemplate: `function isLeapYear(year) {
@@ -3005,8 +3449,11 @@ console.log(start.toISOString().slice(0, 10)); // "2026-05-25"`,
         id: "date-time-elapsed",
         title: "Relative Elapsed Time Parser",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Formulating relative countdowns
+const displayPast = (gap) => gap < 60 ? "moments ago" : "longer ago";
+// "moments ago"`,
         conceptContext:
-          "Produce human relative strings by scaling elapsed timestamp offsets.",
+          "Produce human relative strings by scaling elapsed timestamp offsets and compiling descriptions according to proportional measurements representing minutes, hours, or days.",
         description:
           "Write a function `formatRelativeTime(seconds)` that accepts an integer `seconds` representing a positive elapsed time. It should return a string format as follows: if `< 60` return `'X seconds ago'`, if `< 3600` return `'Y minutes ago'`, if `< 86400` return `'Z hours ago'`, and otherwise return `'W days ago'`.",
         codeTemplate: `function formatRelativeTime(seconds) {
@@ -3072,8 +3519,12 @@ console.log(bracketStack); // ["("]`,
         id: "stack-valid-parentheses",
         title: "Valid Parentheses Matcher",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Storing parenthesis opener states inside arrays
+const openTags = ["{", "["];
+const lastOpenTag = openTags.pop();
+// lastOpenTag is "[", openTags is ["{"]`,
         conceptContext:
-          "Push opening symbols onto a stack. When encountering a closing symbol, pop from the stack and verify that the popped brace pattern matches perfectly. If there's a mismatch or the stack ends up empty prematurely, the string is invalid.",
+          "Parentheses checks verify bracket symmetries by matching opening symbols against popped stack values, ensuring structured nesting syntax compliance.",
         description:
           "Verify nesting structure constraints!\n\nWrite a function `isValidParentheses(s)` that takes a string of bracket symbols: `(`, `)`, `[`, `]`, `{`, and `}`. It must evaluate whether the nested brace structure is completely valid.\n\nAn input string is valid if opening brackets are closed by the same type of brackets, and closed in the correct chronological nesting order.",
         codeTemplate: `function isValidParentheses(s) {
@@ -3120,8 +3571,13 @@ console.log(bracketStack); // ["("]`,
         id: "stack-backspace-compare",
         title: "Backspace String Comparator",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Processing backspaces iteratively
+const buffer = [];
+const addInput = (char) => char === "#" ? buffer.pop() : buffer.push(char);
+addInput("a"); addInput("b"); addInput("#");
+// buffer is ["a"]`,
         conceptContext:
-          "Build raw string representations using a LIFO stack. Instead of complex coordinate slices, iterate over your characters: push standard items onto your stack, and pop items off the stack whenever encountering a backspace character '#' representing erasure.",
+          "Keyboard backspace events mutate ongoing strings. Applying array modifiers simulates real-time text deletion cleanly.",
         description:
           "Compare two typing sequences containing active backspaces.\n\nWrite a function `backspaceCompare(s, t)` that evaluates if the two typing strings `s` and `t` result in the exact same typed word. The character `#` represents a backspace key (erasing the previously typed character if any).\n\nProcess both strings using a stack, build their final states, and compare them for structural match.",
         codeTemplate: `function backspaceCompare(s, t) {
@@ -3162,8 +3618,13 @@ console.log(bracketStack); // ["("]`,
         id: "stack-simplify-path",
         title: "Unix Directory Path Simplifier",
         difficulty: "DSA Easy-Medium",
+        codeSnippet: `// Example Use Case: Directory path manipulation
+const segments = ["home", "user", "..", "projects"];
+const pathStack = [];
+segments.forEach(dir => dir === ".." ? pathStack.pop() : pathStack.push(dir));
+// pathStack contains ["home", "projects"]`,
         conceptContext:
-          "Split the path by '/' to inspect directory movements. Ignore empty or single-dot '.' entries as they represent the current directory. When encountering double-dots '..', pop the last directory off our stack (moving up one parent levels). For anything else, push it onto the stack as a nested folder.",
+          "Splitting input paths by delimiters uncovers dynamic directory jumps, converting complex relative file addresses into absolute paths.",
         description:
           "Resolve complex relative paths down to clean canonical Unix files.\n\nWrite a function `simplifyPath(path)` that takes an absolute Unix file path (e.g., `'/home//foo/../bar/'`) and simplifies it to the canonical form.\n\nYour canonical form must start with a single `'/'`, directories must be separated by a single `'/'`, the path must not end with a trailing `'/'`, and it must only contain directory names (excluding current '.' or parent '..' jumps).",
         codeTemplate: `function simplifyPath(path) {
@@ -3210,8 +3671,12 @@ console.log(bracketStack); // ["("]`,
         id: "stack-next-greater",
         title: "Next Greater Element Tracker",
         difficulty: "DSA Easy-Medium",
+        codeSnippet: `// Example Use Case: Maintaining monotonic indexes
+const numbers = [2, 10, 5];
+const indexes = [0]; // Tracks index of 2
+// 10 is greater than numbers[0], resolving index 0's next greater value to 10`,
         conceptContext:
-          "Maintain elements in a monotonic stack (sorted order). For each element, while the stack is not empty and the current element is greater than the element represented by the top of the stack, pop from the stack and map that popped element's next-greater value.",
+          "Monotonic stacks sort index coordinates. If newly evaluated values exceed current stack benchmarks, we locate their greater successor in O(N).",
         description:
           "Locate successor values dynamically.\n\nWrite a function `nextGreaterElement(nums)` that accepts an array of integers and returns an array of the same length containing the 'next greater' element for each item.\n\nThe next greater element of a value at index `i` is the first element to its right that is strictly greater than `nums[i]`. If no greater element exists to its right, assign a default value of `-1` for that index coordinate.",
         codeTemplate: `function nextGreaterElement(nums) {
@@ -3254,8 +3719,12 @@ console.log(bracketStack); // ["("]`,
         id: "stack-evaluate-rpn",
         title: "Reverse Polish Expression Evaluator",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Processing postfix equations
+const args = [3, 4, "+"];
+const operands = [];
+// push 3, push 4. Reached operator, pop them to sum: 3 + 4 = 7`,
         conceptContext:
-          "In Reverse Polish Notation (RPN), operators follow their operands. Iterate tokens: if the token is an integer, push it to our stack. If the token is an operator (+, -, *, /), pop the second operand first (right), then the first operand (left). Apply math, and push results back to evaluate progressively.",
+          "Postfix mathematical formulas place operators after arguments. Standard stacks process these files sequentially without bracket rules.",
         description:
           "Design a stack-based equation calculator!\n\nWrite a function `evalRPN(tokens)` that evaluates an arithmetic expression presented in Reverse Polish Notation. Operators are represented by the strings `'+'`, `'-'`, `'*'`, and `'/'`.\n\nAssume valid input arrays. Division should perform integer division (truncating toward zero, e.g., floating outcomes like `1.5` truncate to `1`, while `-1.5` truncates to `-1`).",
         codeTemplate: `function evalRPN(tokens) {
@@ -3336,8 +3805,13 @@ console.log(first); // "apple"`,
         id: "ds-cart-queue",
         title: "Shopping Cart Queue Mutator",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Managing sequential task buffers
+const taskQueue = ["taskA"];
+taskQueue.push("taskB");
+const processed = taskQueue.shift();
+// processed is "taskA", taskQueue is ["taskB"]`,
         conceptContext:
-          "In modern JavaScript, we write functions with robust defaults: `function manageCart(cart = [], ...)` (ES6 Default Parameters). To add or remove items, use in-place methods like `push()` (add to end), `unshift()` (add to start), `pop()` (remove from end), and `shift()` (remove from start).",
+          "Array modifiers mutates lists in-place. Default parameters safeguard functions by assuring arguments resolve to valid structures even when left undefined.",
         description:
           "Write a function `manageCartQueue(cart = [], action, item)` that takes a `cart` array, an `action` string ('push', 'unshift', 'pop', or 'shift'), and an optional `item` string.\n\n- If the action is `'push'`, add the item to the end of the cart and return the cart.\n- If the action is `'unshift'`, add the item to the start of the cart and return the cart.\n- If the action is `'pop'`, remove the last item from the cart and return the cart.\n- If the action is `'shift'`, remove the first item from the cart and return the cart.\n\nYour code must mutate the original array in-place and return the updated array, leveraging ES6 parameters where possible.",
         codeTemplate: `function manageCartQueue(cart = [], action, item) {
@@ -3383,8 +3857,13 @@ console.log(first); // "apple"`,
         id: "ds-catalog-splicer",
         title: "Store Catalog Splicer & Cloner",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Intercepting and replacing midpoint categories inline
+const words = ["A", "B", "C"];
+words.splice(1, 1, "NEW_B");
+const clonedList = [...words];
+// clonedList contains ["A", "NEW_B", "C"]`,
         conceptContext:
-          "Sometimes we need to insert elements midpoint. Modify arrays in-place using `splice(index, deleteCount, ...newItems)`. To avoid side-effects elsewhere, copy the mutated output immediately into a brand new array utilizing the ES6 Spread Operator (`[...]`).",
+          "Splice operations insert or drop elements at designated array offsets, while the spread operator generates isolated shallow clones to protect reference records.",
         description:
           "Let's perform a bulk replacement operation on our store catalog lists!\n\nWrite a function `updateCatalog(catalog, startIndex, deleteCount, newItems)` that modifies the original `catalog` array in-place: removes `deleteCount` elements starting at index `startIndex` and inserts the contents of the `newItems` array at that location.\n\nFinally, return a brand new shallow copy of the modified catalog using the ES6 Spread Operator (`...`).",
         codeTemplate: `function updateCatalog(catalog, startIndex, deleteCount, newItems) {
@@ -3419,8 +3898,12 @@ console.log(first); // "apple"`,
         id: "ds-shelf-finder",
         title: "Multi-Dimensional Warehouse Locator",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Element search validation
+const subLevels = ["east_aisle", "west_aisle"];
+const search = subLevels.includes("west_aisle");
+// search is true`,
         conceptContext:
-          "Modern JavaScript champions elegant boolean checking over complex indexing equations. Instead of utilizing older patterns like `array.indexOf(item) !== -1`, we use the cleaner ES6 method `array.includes(item)` which returns a clean boolean.",
+          "The includes helper performs search validations, verifying structural member coordinates by returning a clean boolean flag.",
         description:
           "In our warehouse, products are organized across multiple rows of shelves, styled as a 2D multi-dimensional array `shelves` (e.g. `[['apples', 'pears'], ['bananas'], ['lemons']]`). We need to scan our inventory and report which shelf indices contain a target product.\n\nWrite a function `findProductShelves(shelves, target)` that iterates over the outer `shelves` array and checks if the inner shelf contains the `target` product using `includes()`. Return a new array with all matching shelf indices.",
         codeTemplate: `function findProductShelves(shelves, target) {
@@ -3458,8 +3941,13 @@ console.log(first); // "apple"`,
         id: "ds-profile-updater",
         title: "Nested User Preference Registrar",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Dynamic key registration and cleanup
+const core = { info: { a: 1 } };
+core.info["b"] = 2;
+delete core.info["a"];
+// core.info is { b: 2 }`,
         conceptContext:
-          "Object keys map properties. In ES6, we can update keys dynamically using Computed Property Names: `[targetKey]: newValue`. To check if property keys exist, use `.hasOwnProperty()` (or ES2022 `Object.hasOwn()`), and delete obsolete objects properties using the `delete` keyword.",
+          "Computing dynamic property associations inside objects leverages bracket entries, while standard check and delete helpers audit metadata boundaries.",
         description:
           "Let's manage registered user profile metadata! Each user has a profile of user details mapping a nested `preferences` object.\n\nWrite a function `manageUserProfile(profile, targetKey, newValue, purgeKey)` that:\n\n1. Adds or updates a property `targetKey` with value `newValue` inside the nested `profile.preferences` object (use dynamic bracket notation `profile.preferences[targetKey] = newValue`).\n2. Checks if an outdated property `purgeKey` is present inside `profile.preferences` using `.hasOwnProperty()`. If present, delete it using the `delete` keyword.\n3. Returns the modified complete `profile` object.",
         codeTemplate: `function manageUserProfile(profile, targetKey, newValue, purgeKey) {
@@ -3518,8 +4006,12 @@ console.log(first); // "apple"`,
         id: "ds-inventory-auditor",
         title: "Iterative Category Stock Auditor",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Processing dynamic objects iteratively
+const items = { apple: 10, orange: 20 };
+const keys = Object.keys(items);
+// keys is ["apple", "orange"]`,
         conceptContext:
-          "Instead of old-school `for...in` loops which run the risk of scanning prototype chain keys, modern JavaScript leverages `Object.entries(obj)` which returns an array of `[key, value]` pairs, allowing us to utilize array destructuring and functional iterators.",
+          "Extracting dictionary keys and looping dynamic parameters cleanly is managed by entries translators, avoiding prototype property pollutions.",
         description:
           "To achieve complete data structures mastery, let's build an e-commerce inventory reporting auditor using modern ES6+ object entries techniques!\n\nWrite a function `auditStockGaps(inventory, minThreshold)` that audits a nested store `inventory` object (where categories map product names to their custom current stock counts). Your auditor must:\n\n1. Iterate through categories (keys) inside `inventory` using modern object iteration blocks.\n2. In each active category, collect all item keys whose values (stock) are strictly less than `minThreshold` and push them into a single `lowStockItems` flat list.\n3. Using `Object.keys()`, extract a list of categories that contain *one or more* low-stock items and store them inside an array named `flaggedCategories`.\n\nReturn a report object formatted precisely as follows:\n```javascript\n{\n  lowStockItems: [ ...all low stocked item names... ],\n  flaggedCategories: [ ...audited categories containing low items... ]\n}\n```",
         codeTemplate: `function auditStockGaps(inventory, minThreshold) {
@@ -3575,8 +4067,12 @@ console.log(first); // "apple"`,
         id: "ds-deep-freeze",
         title: "Immutable Nested Object Guard",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Locking complex configs deeply
+const settings = { style: { color: "red" } };
+Object.freeze(settings);
+// settings.style.color can still be modified because freeze is shallow`,
         conceptContext:
-          "Object-oriented state management in React requires strict immutability. While `Object.freeze(obj)` locks keys on a shallow level, nested objects can still be mutated. A true deep-freeze recursively calls `Object.freeze` on all nested object or array properties.",
+          "Shallow locking restricts root edits. Recursively applying freezing ensures deep mutability blocks, preventing downstream overrides.",
         description:
           "Let's build a recursive state locking vault!\n\nWrite a function `deepFreeze(obj)` that recursively locks the properties of `obj` (making them immutable).\n\nYour function must:\n1. Call `Object.freeze(obj)` on the target.\n2. Get all key properties of `obj` using `Object.keys()`.\n3. Recursively check if any of the values is an object or array (i.e. `typeof obj[key] === 'object' && obj[key] !== null`). If so, recursively invoke `deepFreeze(obj[key])` on them.\n4. Finally, return the fully frozen parent `obj`.",
         codeTemplate: `function deepFreeze(obj) {
@@ -3605,8 +4101,11 @@ console.log(first); // "apple"`,
         id: "ds-matrix-transpose",
         title: "Matrix Row-Column Transposer",
         difficulty: "DSA Easy-Medium",
+        codeSnippet: `// Example Use Case: Grid swapping calculations
+const grid = [[10, 20]];
+// Swap outer dimensions to build cols: [[10], [20]]`,
         conceptContext:
-          "In data analytics and grid-based games, transposing a 2D matrix replaces rows with columns (i.e. matrix[i][j] becomes matrix[j][i]). In JavaScript, this is constructed cleanly by mapping outer row coordinates to inner column indexes.",
+          "Transposing 2D coordinate systems moves horizontal coordinates to vertical layouts, reorganizing databases records into columns.",
         description:
           "Let's align a 2D dataset coordinates!\n\nWrite a function `transposeMatrix(matrix)` that accepts a 2D array of grid numbers and returns its mathematical transpose.\n- Assume a rectangular grid (each row has the same length, but rows vs cols count might differ).\n- Return a fresh translocated 2D array without mutating the input.",
         codeTemplate: `function transposeMatrix(matrix) {
@@ -3662,8 +4161,11 @@ console.log(first); // "apple"`,
         id: "ds-nested-key-deleter",
         title: "Recursive Nested Object Omitter",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Stripping sensitive credentials recursively
+const record = { email: "a@x.com", auth: { pwd: "123" } };
+// Recursively search nested shapes to strip key "pwd" cleanly`,
         conceptContext:
-          "When cleaning up sensitive tracking data before dispatching transactions to databases, nested keys like 'password' or 'token' must be dynamically removed. A deep recursive keys pruning utility strips these properties securely.",
+          "Sanitizing nesting layers recursively sweeps credentials fields before synchronizing datasets with browser memory channels.",
         description:
           "Let's secure nested records!\n\nWrite a function `omitKeyRecursive(obj, targetKey)` that recursively removes all properties matching `targetKey` from a source object or array of objects.\n\n- Do not mutate the original object; return a clean deeply cloned copy with the specified key deleted from all levels of nesting.\n- Handle nested objects, arrays of objects, and arrays containing other nested structures.",
         codeTemplate: `function omitKeyRecursive(obj, targetKey) {
@@ -3728,8 +4230,12 @@ console.log(matches.length); // 2`,
         id: "count-char-occurrence",
         title: "Character Speed Scanner",
         difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Matching specific characters in user logs
+const sample = "Error Code: FFFF";
+const count = [...sample].filter(c => c === "F").length;
+// count is 4`,
         conceptContext:
-          "In modern ES6+, we can avoid verbose for-loops by spreading a string into a character array `[...str]` and filtering it: `const matches = [...str].filter(char => ...)`.",
+          "Spreading a string converts a series of text characters into an array, which allows functional filters to iterate over individual letters cleanly.",
         description:
           "Write a function `countCharOccurrence(str, char)` that counts how many times a given single character `char` appears in the string `str`. Your implementation MUST be case-insensitive and should showcase elegant, blockless ES6 arrow function syntax.",
         codeTemplate: `function countCharOccurrence(str, char) {
@@ -3769,8 +4275,15 @@ console.log(matches.length); // 2`,
         id: "build-frequency-map",
         title: "Sentence Word Frequency Map",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Indexing text elements elegantly
+const words = ["hi", "hi", "hey"];
+const freq = words.reduce((acc, w) => {
+  acc[w] = (acc[w] || 0) + 1;
+  return acc;
+}, {});
+// freq is { hi: 2, hey: 1 }`,
         conceptContext:
-          "Instead of declaring an empty object variable and mutating it inside a manual loop, ES6+ advocates utilizing the `.reduce()` method to accumulate and build up our frequency map cleanly.",
+          "Aggregating strings inside dynamic lookup dictionaries is managed by reducers, mapping keyword metrics cleanly.",
         description:
           "Let's expand letter scans to full sentence word counting!\n\nWrite a function `buildFrequencyMap(sentence)` that takes a sentence string, splits it by spaces, and returns an object containing the lowercase count of each word. Make sure to remove any common trailing punctuation like commas, periods, exclamation points, and question marks `[, . ! ?]` beforehand so words parse cleanly, and implement it using ES6 `.reduce()`.",
         codeTemplate: `function buildFrequencyMap(sentence) {
@@ -3804,8 +4317,12 @@ console.log(matches.length); // 2`,
         id: "filter-high-frequency-words",
         title: "Top-Tier Keyword Selector",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Filtering dictionary occurrences
+const counts = { "cat": 5, "dog": 1 };
+const topKeys = Object.keys(counts).filter(k => counts[k] > 2);
+// topKeys is ["cat"]`,
         conceptContext:
-          "Combine `Object.keys()` with the `.filter()` and `.sort()` array methods to easily chain object property filtering. Chaining these methods is an essential skill in contemporary JavaScript development.",
+          "Retrieving list filters and chaining alphabetized sorting methods isolates the highest ranking elements inside record collections.",
         description:
           "Now let's filter our dynamic frequency outputs!\n\nWrite a function `filterHighFrequencyWords(sentence, threshold)` that calculates word frequencies in a sentence (ignoring punctuation and casings) and returns an array of unique words that appear at least `threshold` times. This output array MUST be sorted alphabetically using modern array chaining.",
         codeTemplate: `function filterHighFrequencyWords(sentence, threshold) {
@@ -3843,8 +4360,11 @@ console.log(matches.length); // 2`,
         id: "find-most-frequent-k-words",
         title: "Highly Popular Topic Sorter",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Multi-criteria sorted lists
+const list = ["apple", "cherry"];
+// Alphabetical backup locale compare checks: a.localeCompare(b)`,
         conceptContext:
-          "Declarative multi-criteria sorting is a primary pattern in modern web apps. We compare values descending (`freq[b] - freq[a]`) and gracefully default to an alphabetical compare (`a.localeCompare(b)`) inside a single arrow function comparator.",
+          "Dynamic descending sorting matched with backup locale checking handles ties in word frequency lists, ensuring correct sorting order.",
         description:
           "Let's expand on our frequency sorters!\n\nWrite a function `findMostFrequentKWords(sentence, k)` that processes the sentence, counts individual word occurrences (lowercased without punctuation), and returns an array of the top `k` most frequent words. Sort the output in descending order of frequency. If multiple words have the exact same frequency, sort those words in alphabetical order.",
         codeTemplate: `function findMostFrequentKWords(sentence, k) {
@@ -3880,8 +4400,11 @@ console.log(matches.length); // 2`,
         id: "frequent-subsegment-analyzer",
         title: "Target Subsegment Search Matcher",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Finding the highest scoring match
+const targetHits = { "apple": 3, "pear": 1 };
+// Select target keyword with highest frequency count using active dictionary indexes`,
         conceptContext:
-          "Let's culminate this module by selecting from a list of predefined targets using ES6 array query methods. Use `.reduce()` to track the target with the highest occurrence count, defaulting to `null` if no targets are found in the string.",
+          "Checking frequency counts against dedicated target keywords allows analytical systems to match relevant topics.",
         description:
           "To complete the frequency progression, let's match frequency indexes against a pre-selected blacklist or category list of search keywords!\n\nWrite a function `frequentSubsegmentAnalyzer(sentence, targets)` that counts word occurrences in `sentence` (case-insensitive, ignoring punctuation) and returns the word from the `targets` array that has the absolute highest frequency count in `sentence`.\n\n- If none of the words in `targets` appear in the sentence at all, return `null`.\n- If there is a tie between multiple targets, return the matching target word that appears *earlier/first* in the `targets` array.",
         codeTemplate: `function frequentSubsegmentAnalyzer(sentence, targets) {
@@ -3928,8 +4451,12 @@ console.log(matches.length); // 2`,
         id: "algo-array-chunk",
         title: "Paginated Sub-Sequence Chunker",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Batch calculation streams
+const source = [10, 20, 30, 40];
+const firstPage = source.slice(0, 2);
+// firstPage is [10, 20]`,
         conceptContext:
-          "In frontend architecture, pagination has crucial significance. Splitting raw databases arrays into chunked subsections of fixed counts (e.g. 10 items per page) allows high performance grid loading. In JS, this is solved cleanly by sliding and stepping indexes using indices, taking subsections with the array's `.slice()` utility.",
+          "Splitting elements into fixed sized slices supports table paging and paginated API pagination schemes.",
         description:
           "Let's construct a paginating array utility!\n\nWrite a function `chunkArray(arr, size)` that splits an array `arr` into nested subarrays of length `size`.\n\n- If `arr` cannot be split evenly, the final chunk will simply contain the remaining trailing elements.\n- Return a single nested array containing these individual chunks in order.",
         codeTemplate: `function chunkArray(arr, size) {
@@ -3965,8 +4492,12 @@ console.log(matches.length); // 2`,
         id: "algo-title-case",
         title: "Title Case Sentence Formatter",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Formatting display names
+const word = "hello";
+const title = word[0].toUpperCase() + word.slice(1);
+// title is "Hello"`,
         conceptContext:
-          "Title casing is a standard text presentation format where the first letter of each word is capitalized while the remaining letters are in lowercase. In modern JavaScript, this is solved elegantly by splitting a sentence into words, transforming each word individually, and joining them back.",
+          "Standardizing casing styles requires isolating first characters for capital translation and appending the remaining string values lowercase.",
         description:
           "Let's standardize word casings!\n\nWrite a function `titleCase(str)` that receives a full string sentence and returns it nicely formatted in Title Case format.\n- Ensure that words are separated by a single space character in the resultant string.",
         codeTemplate: `function titleCase(str) {
@@ -4003,8 +4534,12 @@ console.log(matches.length); // 2`,
         id: "algo-fib-sum-odds",
         title: "Odd Fibonacci Generator & Sum",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Compiling odd numbers
+const numbers = [1, 2, 3];
+const oddsOnly = numbers.filter(n => n % 2 !== 0);
+// oddsOnly is [1, 3]`,
         conceptContext:
-          "Fibonacci numbers are constructed by summing the two previous values: F(n) = F(n-1) + F(n-2). An iterative logic can compute Fibonacci numbers on-the-fly, auditing odd numbers dynamically.",
+          "Summing specific number patterns builds a sequence programmatically, keeping bounds matched while isolating remainder values.",
         description:
           "Let's aggregate sequence subsets!\n\nWrite a function `sumFibs(num)` that returns the sum of all **odd** Fibonacci numbers that are less than or equal to `num`.\n\n- The first two numbers in the Fibonacci sequence are 1 and 1.\n- For example, passing `4` should return `5` because the Fibonacci numbers up to 4 are `1, 1, 2, 3`, and the sum of the odd ones is `1 + 1 + 3 = 5`.",
         codeTemplate: `function sumFibs(num) {
@@ -4071,8 +4606,11 @@ console.log(intervals); // [[1, 3], [6, 7]]`,
         id: "find-continuous-ranges",
         title: "Continuous Integer Range Compactor",
         difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Finding connected sequences
+const indices = [1, 2, 4];
+// Detect contiguous breaks (difference !== 1) to cluster ranges`,
         conceptContext:
-          "Coordinate adjacent indexes inside sorted systems. Compare adjacent cell variables: `nums[i] - nums[i-1] === 1`. Group continuous items into range brackets `[start, end]`.",
+          "Iterating elements and tracking value sequence gaps groups continuous segments into tuple arrays.",
         description:
           "Write a function `findContinuousRanges(nums)` that takes a sorted array of unique integers and groups adjacent sequential numbers together, returning them as a list of interval coordinate tuples `[start, end]`.",
         codeTemplate: `function findContinuousRanges(nums) {
@@ -4119,8 +4657,11 @@ console.log(intervals); // [[1, 3], [6, 7]]`,
         id: "merge-overlapping-intervals",
         title: "Timeline Overlaps Merger",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Collapsing scheduled time sessions
+const times = [[1, 3], [2, 4]];
+// Resolve overlap bounds dynamically to return [[1, 4]]`,
         conceptContext:
-          "Building on the interval data structures. To merge coordinate spans, sort them by starting index: `intervals.sort((a, b) => a[0] - b[0])`. Loop intervals, checking if current start overlaps previous end: `currStart <= prevEnd`.",
+          "Sorting interval arrays by their initial coordinate lets comparison blocks merge intersecting boundaries.",
         description:
           "Now that we can represent integer intervals, let's learn how to merge them when they overlap!\n\nWrite a function `mergeOverlappingIntervals(intervals)` that takes an array of arbitrary nested interval pairs `[start, end]`. It should sort them by start times and merge all overlapping boundaries, returning a new list of consolidated, sorted disjoint intervals.",
         codeTemplate: `function mergeOverlappingIntervals(intervals) {
@@ -4172,8 +4713,11 @@ console.log(intervals); // [[1, 3], [6, 7]]`,
         id: "insert-and-merge-interval",
         title: "Live Event Timeline Inserter",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Injecting new events into disjoint arrays
+const list = [[1, 5]];
+// Insert [2, 7] and reduce output loops to return [[1, 7]]`,
         conceptContext:
-          "Build upon your merging logic! To insert a single slot into pre-sorted intervals, either append it and run your full sorting/merging routine, or walk the array inserting it in O(N) linear time and merging overlapping ranges dynamically.",
+          "Adding incoming tuples into pre-sorted interval systems scales cleanly by joining contiguous or overlapping borders sequentially.",
         description:
           "Let's apply our interval merging rules to handle live calendar additions!\n\nWrite a function `insertAndMergeInterval(intervals, newInterval)` that takes a list of pre-sorted, non-overlapping intervals, inserts a `newInterval` tuple into the correct position, and merges any overlapping bounds, returning the updated sorted disjoint intervals array.",
         codeTemplate: `function insertAndMergeInterval(intervals, newInterval) {
@@ -4229,8 +4773,12 @@ console.log(intervals); // [[1, 3], [6, 7]]`,
         id: "find-interval-intersection",
         title: "Coordinated Free Time Finder",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Finding intersecting hours
+const userA = [[1, 5]];
+const userB = [[3, 6]];
+// Keep intersection ranges: [[3, 5]]`,
         conceptContext:
-          "Rather than merging ranges, let's find the intersecting areas between two datasets! Use a two-pointer approach, checking if `listA[i]` and `listB[j]` overlap (i.e. `start = Math.max(aStart, bStart)` and `end = Math.min(aEnd, bEnd)`). If `start <= end`, an intersection overlaps! Increment pointers based on who ends first.",
+          "Scanning two sorted disjoint arrays using pointers measures maximum starts against minimum ends to locate structural intersections.",
         description:
           "Let's extract overlapping segments between two separate timetables!\n\nWrite a function `findIntervalIntersection(listA, listB)` that takes two separate lists of disjoint, sorted intervals, detects all overlapping ranges, and returns a new array of intersection intervals.",
         codeTemplate: `function findIntervalIntersection(listA, listB) {
@@ -4290,8 +4838,11 @@ console.log(intervals); // [[1, 3], [6, 7]]`,
         id: "schedule-free-slots",
         title: "Ultimate Team Sync Calendar Finder",
         difficulty: "DSA Hard",
+        codeSnippet: `// Example Use Case: Extracting free gaps in calendar lists
+const busyMerged = [[10, 12], [13, 14]];
+// Subtract busy limits from total time bounds to locate team availabilities`,
         conceptContext:
-          "Outstanding progress! To find common free slots across several people, first flatten and merge everyone's busy intervals into a single timeline using `mergeOverlappingIntervals` logic. Then, scan the gaps in this merged checklist that occur within standard `workingHours`, retaining any slots that span at least `minDuration` units.",
+          "Extracting free meeting slots gathers all members' busy calendars, flattens them, resolves merges, and returns gaps.",
         description:
           "To achieve complete mastery, let's build a real calendar scheduler!\n\nWrite a function `scheduleFreeSlots(schedules, workingHours, minDuration)` that takes:\n- `schedules`: an array of individual calendars, where each calendar is a list of busy interval tuples `[start, end]` (e.g., `[[[12, 13], [14, 15]], [[12, 14]]]`)\n- `workingHours`: a tuple representing the start and end of the boundary day `[dayStart, dayEnd]` (e.g., `[9, 17]`)\n- `minDuration`: the minimum duration needed to schedule a free slot\n\nYour task is to merge everyone's busy intervals, look for gaps inside `workingHours`, and return a list of free interval slots that are at least `minDuration` long.",
         codeTemplate: `function scheduleFreeSlots(schedules, workingHours, minDuration) {
@@ -4342,8 +4893,11 @@ console.log(intervals); // [[1, 3], [6, 7]]`,
         id: "algo-group-and-tally",
         title: "Multiclass Inventory Group & Aggregate",
         difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Aggregating transaction sums dynamically
+const txs = [{ label: "A", amt: 100 }, { label: "A", amt: 50 }];
+// Reduce items to compile: { A: 150 }`,
         conceptContext:
-          "Aggregation pipeline models in database systems like PostgreSQL or MongoDB group records and apply reduction operations. In JavaScript, writing high speed custom group-by-count or group-by-sum operations can be elegantly accomplished using `.reduce()` matched with dynamic object initialization.",
+          "Applying reduce loops maps dynamic datasets to aggregate objects categories, compiling final numeric totals in O(N) runtime speeds.",
         description:
           "Let's build a clean analytics reducer!\n\nWrite a function `groupAndTally(items, groupKey, sumKey)` that takes:\n- `items`: an array of transaction/inventory objects (e.g. `[{ category: 'grocery', price: 10 }, { category: 'beverages', price: 5 }, { category: 'grocery', price: 4 }]`)\n- `groupKey`: a string pointing to the property to group by (e.g. `'category'`)\n- `sumKey`: a string pointing to the property whose values we should aggregate (e.g. `'price'`)\n\nYour function must reduce these items to return a single dictionary object mapping each unique group value to the sum of its aggregated numerical values.",
         codeTemplate: `function groupAndTally(items, groupKey, sumKey) {

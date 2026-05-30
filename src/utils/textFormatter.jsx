@@ -27,9 +27,16 @@ export function formatTextWithCode(text) {
     if (part.startsWith("**") && part.endsWith("**")) {
       const boldContent = part.slice(2, -2);
       return (
-        <strong key={index} className="font-extrabold text-zinc-900">
+        <code
+          key={index}
+          className="bg-zinc-100/80 text-[#e01e5a] border border-zinc-200 px-1.5 py-0.5 rounded font-mono text-[12.5px] mx-[1px]"
+          style={{
+            fontFamily: "Consolas, Monaco, monospace",
+            fontWeight: "normal",
+          }}
+        >
           {boldContent}
-        </strong>
+        </code>
       );
     }
     return part;
