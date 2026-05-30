@@ -80,54 +80,57 @@ export const KNOWLEDGE_MAP_TOPICS = [
     categoryId: "basics-types",
     title: "Variables, Hoisting & Temporal Dead Zone",
     summary:
-      "Understand standard declarations const, let, and var, along with the behavior of hoisting.",
+      "Master the fundamental containers for storing your application's data. Learn how const, let, and var behave differently in memory.",
     details:
-      "Using 'const' and 'let' prevents variables from hoisting to undefined, locking access in the Temporal Dead Zone until initialized. Avoid legacy var which hoists blindly.",
+      "When writing code, you need memory drawers to save integers, words, or lists. Modern JavaScript has two gold-standard drawers: 'const' and 'let'. Older JavaScript used 'var', which behaves unpredictability because of 'hoisting'—an artifact where JavaScript processes your variable declarations before executing anything else. By using 'let' or 'const', we prevent these variables from being read before they are declared, trapping them in a safe 'Temporal Dead Zone' to keep our programs bug-free.",
     takeaways: [
-      "const guarantees references cannot be reassigned",
-      "let is block-scoped and allows reassignment",
-      "var hoists to outer function boundaries and is prone to scope leaks",
-      "Temporal Dead Zone prevents using the variable before its definition line",
+      "📌 const: Ideal default choice. It stands for constant. It guarantees your variable reference cannot be reassigned to a completely new value.",
+      "✏️ let: Perfect for items that will change over time, like loop indexes or score counters.",
+      "⚠️ var: A legacy choice that exhibits scope-leaking behaviors. It lacks safety barriers and should be avoided.",
+      "🧱 Temporal Dead Zone (TDZ): A guard rail that prevents you from accidentally using a variable before the line that officially defines it.",
     ],
-    codeSnippet: `// Temporal Dead Zone:
-// console.log(x); // ReferenceError!
-const x = 10;
-let y = 20;`,
-    relatedExerciseId: "search-find-positive",
+    codeSnippet: `// Temporal Dead Zone guard in action:
+// console.log(counter); // Crash check: ReferenceError!
+const counter = 100;
+let score = 20; // safe block scope`,
+    relatedExerciseId: "closure-counter",
   },
   {
     id: "km-primitive-types",
     categoryId: "basics-types",
     title: "Primitive Types & typeof operator",
     summary:
-      "Examine JavaScript primitive data types and type detection tools.",
+      "Discover the physical material blocks that make up all data in JavaScript, and how to identify them safely.",
     details:
-      "Primitives (String, Number, Boolean, null, undefined, Symbol, BigInt) are immutable and passed by value. Objects are dynamic collections passed by reference.",
+      "In computer systems, data is divided into simple structural items called 'primitives' and deep containers called 'objects'. Primitives are extremely fast to process because they are immutable (they cannot be dismantled or altered). There are seven total primitives: String, Number, Boolean, null, undefined, Symbol, and BigInt. To safely inspect what kind of data you are holding, use the built-in 'typeof' keyword, which returns a text description of the container type.",
     takeaways: [
-      "typeof operator returns the string representation of a value's type",
-      "typeof null returns 'object' (legacy standard artifact)",
-      "Strict mode ('use strict') prevents accidental global allocations",
+      "📦 Immutability: Primitive values can't be modified. When you uppercase a word, you're actually casting a brand new word, not modifying the old one.",
+      "🔧 typeof: A built-in detector. For example, typeof 'cat' returns 'string' and typeof 99 returns 'number'.",
+      "🐛 typeof null glitch: Be careful! Running typeof null returns 'object' because of an ancient standard oversight in early browser versions.",
+      "🛑 Strict mode ('use strict'): A toggle that tells JavaScript to enforce clean rules, instantly throwing errors on sloppy actions.",
     ],
-    codeSnippet: `console.log(typeof "hello"); // "string"
-    console.log(typeof 42);      // "number"
-    console.log(typeof null);    // "object"`,
-    relatedExerciseId: "count-char-occurrence",
+    codeSnippet: `console.log(typeof "learning"); // "string"
+console.log(typeof 2026);       // "number"
+console.log(typeof null);       // "object" (heritage trap!)`,
+    relatedExerciseId: "ds-deep-freeze",
   },
   {
     id: "km-global-environment",
     categoryId: "basics-types",
     title: "ECMAScript & Global Environments",
     summary:
-      "Discover self, globalThis, window, and execution rules in browsers and modules.",
+      "Understand how your code interfaces with the wider global environment, from browsers to Node.js servers.",
     details:
-      "The global environment provides access to built-in objects. window matches browsers, self matches workers, and globalThis standardizes runtime access across all environments.",
+      "JavaScript is a standardized language defined by ECMAScript rules. It runs in different host environments—such as the browser window, server setups, or web background workers. Each environment establishes a special global object container that holds built-in tools (like console.log). To write universal code that works everywhere, ECMAScript created 'globalThis'—a standardized name that automatically translates to the local global environment object.",
     takeaways: [
-      "globalThis maps to window in the browser, and global in Node.js",
-      "Strict equality (===) evaluates both category type and value without coercion",
+      "🌐 globalThis: A universal bridging adapter that maps to window in the browser, and global on Node.js servers.",
+      "⚡ Strict Equality (===): Always use triple equals! It verifies both the data value *and* the type, preventing risky behind-the-scenes auto-conversions.",
+      "📜 ECMAScript standards: Guide how modern JavaScript continues to evolve with clean features year over year.",
     ],
-    codeSnippet: `console.log(globalThis === window); // true (in browser)
-"3" === 3; // false (strict type validation)`,
-    relatedExerciseId: "count-char-occurrence",
+    codeSnippet: `// Identical global objects mapping:
+console.log(globalThis === window); // true inside browser tabs
+console.log("5" === 5); // false (strict comparison checks the type)`,
+    relatedExerciseId: "search-find-positive",
   },
 
   // 2. Numbers & Remainder
@@ -136,33 +139,35 @@ let y = 20;`,
     categoryId: "numbers-math",
     title: "Numeric representation & Parse helper methods",
     summary:
-      "Parse strings into values, handle NaNs, and format output strings.",
+      "Learn how to parse digits out of messy text lines, handle invalid calculations, and format numbers cleanly.",
     details:
-      "Use Number.parseInt(), Number.parseFloat(), and .toString() to control types. Check failures with Number.isNaN() to secure computations.",
+      "Often, data retrieved from networks contains numbers combined with text characters (like '$150' or '24px'). JavaScript provides powerful parsing helpers like 'Number.parseInt()' and 'Number.parseFloat()' to strip away alphabet characters and extract pure mathematical numbers. If a calculation is physically impossible (such as dividing a word), the system outputs a special value called NaN (Not a Number) which can be caught using 'Number.isNaN()'.",
     takeaways: [
-      "Number.parseInt('42px') parses 42 correctly from strings",
-      "NaN represents invalid math calculations (Not a Number)",
-      "Numeric separator (_) allows writing readable large numbers",
+      "✂️ Number.parseInt(): Extracts whole integer values from text lines, scanning left-to-right until non-numeric items appear.",
+      "📏 Multiplier bases: Always specify a base parameter (usually base 10 under decimal standards) inside parseInt.",
+      "🧼 Number.isNaN(): The only reliable way to check for mathematical failures, as NaN !== NaN is true in standard JavaScript.",
+      "💸 Numeric separators (_): Allow you to place underscores inside large numbers (like 1_500_000) to make them readable without affecting calculations.",
     ],
     codeSnippet: `const price = Number.parseInt("150_000 USD", 10); // 150000
-const largeNum = 1_000_000; // 1000000 (numeric separator)
-Number.isNaN(NaN); // true`,
-    relatedExerciseId: "reduce-multiplier",
+const cleanPi = Number.parseFloat("3.14seconds");  // 3.14
+console.log(Number.isNaN(NaN)); // true`,
+    relatedExerciseId: "stack-evaluate-rpn",
   },
   {
     id: "km-division-remainder",
     categoryId: "numbers-math",
     title: "Division Remainder (%) Operator",
     summary:
-      "Utilize division remaining portions to implement cyclic math boundaries.",
+      "Uncover the magic of the modulo and remainder operator for cyclic steps, limits, and patterns.",
     details:
-      "The division remainder operator (%) yields the absolute remainder. Indispensable for tracking modulo groups, limits, or odd/even states.",
+      "The division remainder operator (%) is a secret weapon in mathematical code. Instead of giving you the result of a division, it yields only the amount 'left over' after dividing. For example, `10 % 3` is `1` because `3` fits into `10` three times with `1` left over. This is incredibly useful for finding odd/even numbers, limiting index lists so they loop back around, or triggering cyclic game actions.",
     takeaways: [
-      "x % 2 === 0 evaluates true for even integers",
-      "Modulo resets bounds inside cyclic grids, lists, or steps",
+      "⚖️ Odd/Even tester: Any integer `n` is even if `n % 2 === 0`, and odd if `n % 2 !== 0`.",
+      "🔄 Infinite Loop Restarter: The expression `index % totalLength` ensures the rating stays strictly bounded, resetting to 0 whenever it overflows.",
+      "🧮 Cyclic Patterns: Ideal for building carousel sliders or recurring color sequences.",
     ],
-    codeSnippet: `const isOdd = x % 2 !== 0;
-const index = step % length; // resets boundary`,
+    codeSnippet: `const isEven = (num) => num % 2 === 0;
+const wrapIndex = (step, max) => step % max; // reset boundaries`,
     relatedExerciseId: "search-all-even-positives",
   },
 
@@ -172,35 +177,36 @@ const index = step % length; // resets boundary`,
     categoryId: "strings-manipulation",
     title: "Character Access, Length, and Slices",
     summary:
-      "Investigate individual characters, sequence lengths, and slice text portions.",
+      "Inspect sentence lengths, grab individual letters, and slice segments out of text files smoothly.",
     details:
-      "Strings are indexable. Access chars with Bracket [] or .at() which supports negative boundaries. Extract characters using .substring() or .slice() cleanly.",
+      "Strings are chainable lists of characters. Traditional JavaScript uses square brackets to access letters by index (starting at 0). Modern JavaScript adds the elegant `.at()` method, which lets you pass negative numbers to read backwards from the end. If you want to carve out a specific text section, methods like `.slice()` are ideal for clean extractions without manual text-character loops.",
     takeaways: [
-      "str.length tracks character length",
-      "str.at(-1) safely yields the last character without calculations",
-      "str.split() splits text records into dynamic array elements",
+      "📏 str.length: Tells you exactly how many characters (including spaces) are inside your text string.",
+      "🎯 str.at(-1): Safely grabs the very last character of a sentence without tedious `str.length - 1` mathematics.",
+      "✂️ str.slice(start, end): Harvests a clean excerpt of your text from the start index up to (but not including) the end index.",
     ],
-    codeSnippet: `const text = "JavaScript";
-console.log(text.at(-2)); // 'p'
-console.log(text.slice(0, 4)); // "Java"`,
-    relatedExerciseId: "string-html-tag",
+    codeSnippet: `const code = "ReactBuild";
+console.log(code.at(-1)); // "d" (retrieved backward)
+console.log(code.slice(0, 5)); // "React" (exclusive slice)`,
+    relatedExerciseId: "recursion-reverse-string",
   },
   {
     id: "km-string-matching-regex",
     categoryId: "strings-manipulation",
     title: "Matches, Suffixes & Regular Exps",
     summary:
-      "Trace string search occurrences with contains, find indices, and swap with regex filters.",
+      "Search sentences for words, check starters, and clean content using simple Regular Expression filters.",
     details:
-      "Utilize methods like .includes(), .startsWith(), .endsWith(), .replace(), and .replaceAll() combined with custom Regular Expression sequences.",
+      "Instead of manually building complex loops to match words inside paragraphs, use standard string search tools. `.includes()` returns a simple true/false if a term exists. `.startsWith()` and `.endsWith()` verify boundary letters. For advanced scanning patterns (like checking for emails, phone patterns, or digits), JavaScript supports 'Regular Expressions' (Regex) to replace matching blocks instantly.",
     takeaways: [
-      "includes() provides easy case-sensitive verification",
-      "replace() or replaceAll() swap matches with substitutes",
-      "Regexes represent string lookup patterns (e.g. /\\d+/g for digits)",
+      "🔍 str.includes(word): A fast, case-sensitive search tool that returns a simple true/false checklist.",
+      "🔄 str.replace() & replaceAll(): Swaps matching text segments with an upgraded substitute string.",
+      "🪄 Regular Expressions: Written between slashes (like `/pattern/g`), they allow you to search for abstract categories of characters at once.",
     ],
-    codeSnippet: `const msg = "Buy 2 apples and 3 bananas";
-console.log(msg.includes("apple")); // true
-console.log(msg.replace(/\\d/g, "#")); // "Buy # apples and # bananas"`,
+    codeSnippet: `const sentence = "Grade: A+";
+console.log(sentence.includes("A+")); // true
+// Replace all non-letters with empty spaces:
+console.log(sentence.replace(/[^a-zA-Z]/g, "")); // "Grade"`,
     relatedExerciseId: "string-camel-case",
   },
   {
@@ -208,19 +214,19 @@ console.log(msg.replace(/\\d/g, "#")); // "Buy # apples and # bananas"`,
     categoryId: "strings-manipulation",
     title: "String Formatting, Concatenations & Paddings",
     summary:
-      "Clean user text variables using case transformations, trim operations, and string pads.",
+      "Standardize user inputs with lowercasing, trim messy side margins, and pad timestamps elegantly.",
     details:
-      "Build templates with Template strings, join strings with Concatenations, and align visual tables with padStart and padEnd.",
+      "To write clean programs, you must normalize input data before storing it. Trim off sloppy whitespace borders with `.trim()`. Standardize casing using `.toLowerCase()`. You can also template parameters easily with Backtick literals, and align visual displays using `.padStart()` (ideal for turning short numbers like '7' into double-digit timestamps like '07').",
     takeaways: [
-      "Template literals support string interpolation: \`\${variable}\`",
-      "toLowerCase() and toUpperCase() translate character casings",
-      "trim() strips starting and trailing white paddings",
-      "padStart() and padEnd() insert prefixes to match specified lengths",
+      "🪄 Template Literals: Use backticks (\`\`) and dollar-brackets (\`\${value}\`) to blend variables directly inside sentences without messy plus symbols.",
+      "🧹 str.trim(): Automatically sweeps away annoying outer spaces, tabs, or newlines from user form inputs.",
+      "🛡️ toLowerCase() & toUpperCase(): Normalizes inputs to prevent case mismatch searching issues.",
+      "🕖 padStart(length, char): Pads the beginning of a text with a fallback character until it spans the goal length.",
     ],
-    codeSnippet: `const name = "  Bob  ";
-const clean = name.trim().toLowerCase(); // "bob"
-const paddedId = "7".padStart(3, "0"); // "007"`,
-    relatedExerciseId: "string-camel-case",
+    codeSnippet: `const userEmail = "  Allen@gmail.com  ";
+const normalized = userEmail.trim().toLowerCase(); // "allen@gmail.com"
+const secondsText = "5".padStart(2, "0"); // "05" (clean clock output)`,
+    relatedExerciseId: "string-html-tag",
   },
 
   // 4. Control Flow & Loops
@@ -229,32 +235,39 @@ const paddedId = "7".padStart(3, "0"); // "007"`,
     categoryId: "control-flow",
     title: "Branching Checks: if vs Ternary",
     summary:
-      "Decide code actions using condition blocks and inline evaluation scripts.",
+      "Learn to design decision pathways inside your programs, choosing when to use conditional blocks.",
     details:
-      "Use if/else chains to direct large pathways. Use Ternary Operator (condition ? true : false) for assignment expressions.",
+      "Programs must react dynamically depending on user preferences. Use traditional `if/else` paths for large structural branches. For simpler variable assignments, choose the inline 'Ternary Operator' (`condition ? ifTrue : ifFalse`). To handle optional or missing settings securely, deploy modern safeguards like Nullish Coalescing (`??`) to provide reliable default options.",
     takeaways: [
-      "Nullish Coalescing (??) guarantees fallbacks only when value is null or undefined",
-      "Falsy coordinates include false, 0, '', null, undefined, and NaN",
+      "🧱 if/else blocks: Direct large execution pathways inside your algorithms.",
+      "🔀 Ternary (? :): An inline shortcut that makes assignments short, clean, and highly readable.",
+      "⚙️ Nullish Coalescing (??): Checks strictly for null or undefined. This ensures that legitimate falsy values (like 0 or false) are not mistakenly ignored.",
+      "❌ Falsy equivalents: In JavaScript, only 6 values evaluate as false: false, 0, '', null, undefined, and NaN.",
     ],
-    codeSnippet: `const state = active ? "Online" : "Offline";
-const name = username ?? "Guest"; // Nullish coalescing`,
-    relatedExerciseId: "search-contains-underage",
+    codeSnippet: `const age = 21;
+const message = age >= 18 ? "Access Granted" : "Too Young";
+const theme = userTheme ?? "default-light"; // coalescing fallback`,
+    relatedExerciseId: "safe-preference-lookup",
   },
   {
     id: "km-loops-statements",
     categoryId: "control-flow",
     title: "Iteration Statements: for, for...in, for...of",
     summary:
-      "Configure sequential code loops across ranges and array coordinates.",
+      "Walk through arrays, sets, and object key structures using standard repeating loop structures.",
     details:
-      "Deploy standard for loops for incremental indices. Use for...of for array values. Use for...in for object key strings.",
+      "When dealing with lists of products or profiles, you need your code to loop over each item. Use standard index loops when you need access to index numbers. Choose `for...of` when you simply want to walk through the elements of an array, set, or map. Choose `for...in` when you need to inspect the keys inside an object dictionary.",
     takeaways: [
-      "for(let i=0; i<n; i++) tracks index numbers",
-      "for...of iterates iterable values (Arrays, Sets, Maps)",
-      "for...in tracks object keys and inherits prototypal keys",
+      "🔢 Index Loop (for let i=0): Gives you precise control over indices, step increments, and directions.",
+      "🚶‍♀️ for...of Loop: The modern choice for reading items directly from arrays, sets, or maps without index mathematics.",
+      "⚙️ for...in Loop: Tailor-made for looping over the key labels inside an object database drawer.",
+      "🛑 break / continue: Useful keys to immediately halt loops ('break') or skip over a single step ('continue').",
     ],
-    codeSnippet: `const words = ["a", "b"];
-for (const word of words) { console.log(word); }`,
+    codeSnippet: `const tasks = ["write", "test"];
+for (const task of tasks) {
+  console.log("Active Task:", task);
+}
+// Looping over dynamic numbers: for (let i = 0; i < 5; i++) { ... }`,
     relatedExerciseId: "build-frequency-map",
   },
 
@@ -264,16 +277,16 @@ for (const word of words) { console.log(word); }`,
     categoryId: "functions-scopes",
     title: "Function Types, Arguments & ES6 Arrows",
     summary:
-      "Build reusable blocks with traditional, arrow, and default-parameter definitions.",
+      "Write clean, reusable blocks of instructions using modern arrow functions and fallback parameters.",
     details:
-      "Understand basic functions declaration, implicit returns in concise arrow forms, and fallback parameters.",
+      "Functions are the active mechanisms of your application. Declared traditionally or via modern compact Arrow syntax, they receive arguments and process computations. Always specify default parameters internally in your function definitions to prevent crashes when a user forgets to pass an expected value.",
     takeaways: [
-      "Arrow functions (=>) offer shorter bounds, omitting functional brackets",
-      "Implicit returns occur inside arrow statements when omitting curly brackets",
-      "Default parameters guard missing arguments safely on call frames",
+      "🎯 Arrow Functions (=>): Provide a short, modern syntax. They do not bind their own execution context, making them safe for callback methods.",
+      "⚡ Implicit Return: Arrow functions written without curly braces automatically return the calculated output, reducing clutter.",
+      "🛡️ Default Parameters: Fallback values (e.g. `(user = 'Guest')`) that activate automatically if an argument is absent.",
     ],
-    codeSnippet: `const multiply = (x, y = 5) => x * y;
-console.log(multiply(2)); // 10`,
+    codeSnippet: `const greetUser = (name = "Developer") => \`Hello, \${name}!\`;
+console.log(greetUser()); // "Hello, Developer!" (default parameter applied)`,
     relatedExerciseId: "gather-rest-sum",
   },
   {
@@ -281,18 +294,19 @@ console.log(multiply(2)); // 10`,
     categoryId: "functions-scopes",
     title: "Lexical Scope and Closures",
     summary:
-      "Isolate programmatic variables inside scopes and build private data factories.",
+      "Understand how lexical boundaries dictate variable vision, and build state-remembering functional bags.",
     details:
-      "A closure forms when an inner function retains lookup reference to its parent namespace even after that parent block completes execution.",
+      "Every function establishes its own lexical field boundaries. Variables defined inside a function remain invisible to the global scope outside. A 'Closure' occurs when an inner function remembers and has access to references of variables inside the outer scope, even after that parent block completes execution.",
     takeaways: [
-      "Lexical scoping looks upwards for variables definitions",
-      "Closures encapsulate variables, shielding them from global access",
-      "Hoisting transfers function declarations to the top on module launch",
+      "🧱 Lexical Bubble: Functions can look upwards for parent variables, but parent scopes cannot look inside functions.",
+      "🎒 Closure retention: Enables functions to maintain privately held counters or configs securely in background memory.",
+      "🔒 Data Encapsulation: Prevents external blocks from editing internal state parameters directly.",
     ],
-    codeSnippet: `function createStore() {
-  let val = 10;
-  return { get: () => val, set: (v) => val = v };
-}`,
+    codeSnippet: `function makeMultiplier(factor) {
+  return (num) => num * factor; // remembers 'factor' via closure
+}
+const double = makeMultiplier(2);
+console.log(double(15)); // 30`,
     relatedExerciseId: "closure-counter",
   },
   {
@@ -300,15 +314,16 @@ console.log(multiply(2)); // 10`,
     categoryId: "functions-scopes",
     title: "Callbacks & Functional Programming Intro",
     summary:
-      "Pass functions as parameters, implement callbacks, and write declarative logic.",
+      "Pass executable functions inside other functions as arguments to build flexible flow controls.",
     details:
-      "Passing functions to other functions creates callbacks. Functional Programming leverages pure functions and immutability.",
+      "In JavaScript, functions are first-class citizens. This means you can store them in variables and pass them as parameters into other functions (callbacks). Functional Programming encourages passing instructions dynamically and writing 'pure functions' that do not mutate underlying variables.",
     takeaways: [
-      "Callbacks power asynchronous actions and map transformations",
-      "Pure functions consistently yield identical outputs given identical inputs",
+      "🔧 Callback: A function passed as an argument to be invoked later once a task completes.",
+      "💎 Pure Functions: Consistently construct identical outputs given identical values, leaving outer environments untouched.",
+      "🔄 Immutability: Standard practice in FP. Clone arrays and objects instead of modifying the originals.",
     ],
-    codeSnippet: `const exec = (cb) => cb("Executed");
-exec(msg => console.log(msg));`,
+    codeSnippet: `const processInput = (val, cb) => cb(val);
+console.log(processInput(5, x => x * 2)); // 10`,
     relatedExerciseId: "map-scale-parity",
   },
   {
@@ -316,19 +331,21 @@ exec(msg => console.log(msg));`,
     categoryId: "functions-scopes",
     title: "Generator Functions & yield",
     summary:
-      "Control progress iterations manually with custom exit yield states.",
+      "Create lazy-evaluating step functions that pause and resume execution using the yield keyword.",
     details:
-      "Generators pause execution mid-flight using 'yield' and resume when next() is triggered. Use yield* for delegating to other generators.",
+      "Generator functions block execution and yield state control back to callers midway. Instead of running immediately from line 1 to the end, generator functions (marked with `function*`) pause at each `yield` line and resume only when `.next()` is triggered externally.",
     takeaways: [
-      "Generators return an Iterator object providing next()",
-      "yield yields the value structure, yield* expands iterable objects",
+      "⏳ Lazy Execution: Perfect for loading infinite series, giant datasets, or chunked pages.",
+      "⏸️ pause / resume: The yield statement acts as a custom breakpoint, preserving local variables intact.",
+      "🔧 Iterators sequence: Generators return an iterator container configured with `.next()` methods.",
     ],
-    codeSnippet: `function* idGenerator() {
-  let id = 1;
-  while (true) yield id++;
+    codeSnippet: `function* numberStream() {
+  let num = 1;
+  while (true) yield num++; // infinite stream
 }
-const gen = idGenerator();
-gen.next().value; // 1`,
+const stream = numberStream();
+console.log(stream.next().value); // 1
+console.log(stream.next().value); // 2 (resumed cleanly)`,
     relatedExerciseId: "closure-stream",
   },
 
@@ -337,15 +354,19 @@ gen.next().value; // 1`,
     id: "km-array-element-access",
     categoryId: "arrays-basics",
     title: "Element Access, Length, and CRUD Methods",
-    summary: "Manage elements in index lists using mutate and read procedures.",
+    summary:
+      "Perform array manipulation operations like inserting, extracting, and rewriting list indices cleanly.",
     details:
-      "Access with [] or .at(). Add to ends with .push(), extract with .pop(), and perform safe updates using .toSpliced().",
+      "Arrays are lists of values. JavaScript contains built-in methods to perform CRUD operations (Create, Read, Update, Delete) on them. `.push()` and `.pop()` manage items at the end, while `.shift()` and `.unshift()` manage items at the beginning. Methods like `.toSpliced()` allow you to overwrite indices safely without modifying your original list.",
     takeaways: [
-      "push() adds items, toSpliced() alters array blocks returning a safe copy",
-      "join() merges index items using a custom delimiter string",
+      "🧹 Tail Management: Use `.push()` to append, and `.pop()` to remove elements from the tail end of your list.",
+      "🧬 toSpliced(): Mutates intermediate array blocks cleanly while returning a safe copy (original array stays safe).",
+      "📦 join(): Assembles all string elements in an array into a single sentence using a custom divider string.",
     ],
-    codeSnippet: `const list = ["A", "B"];
-const updated = list.toSpliced(1, 0, "X"); // ["A", "X", "B"]`,
+    codeSnippet: `const basket = ["apple", "cherry"];
+const newBasket = basket.toSpliced(1, 0, "banana"); 
+console.log(basket);    // ["apple", "cherry"] (pristine!)
+console.log(newBasket); // ["apple", "banana", "cherry"]`,
     relatedExerciseId: "ds-cart-queue",
   },
   {
@@ -353,50 +374,56 @@ const updated = list.toSpliced(1, 0, "X"); // ["A", "X", "B"]`,
     categoryId: "arrays-basics",
     title: "Spread (...) & Array Destructuring",
     summary:
-      "Merge array collections, extract variables, and handle arguments flexibly.",
+      "Duplicate list structures, extract first values, and merge collections in single lines.",
     details:
-      "Spread unpacks collection values. Destructuring unpacks first elements into variables, storing leftovers with rest triple-dots.",
+      "Unpacking items inside array lists is a daily task. The modern triple-dot 'Spread Operator' (`...`) duplicate-clones values from array drawers into a new array. When extracting values, 'Destructuring' allows you to grab early indexes directly into distinct variables.",
     takeaways: [
-      "Spread clones elements into arrays cleanly: [...arr1, ...arr2]",
-      "Destructuring unpacks indexes inside brackets: const [first, second] = arr",
+      "✨ Spread Operator: Unpacks array items, making array copying or merging a breeze: `[...list1, ...list2]`.",
+      "🏷️ Destructuring: Maps array indices instantly into named variables: `const [first, second] = arr;`.",
+      "🎒 Rest pattern: Collects remaining trailing values inside an independent array block.",
     ],
-    codeSnippet: `const colors = ["red", "green", "blue"];
-const [firstColor, ...otherColors] = colors; // "red", ["green", "blue"]`,
-    relatedExerciseId: "coords-extractor",
+    codeSnippet: `const coordinates = [12, 45, 99];
+const [x, y, ...rest] = coordinates; // x=12, y=45, rest=[99]
+const cloned = [...coordinates]; // safe duplicated clone`,
+    relatedExerciseId: "swap-nested-coordinate",
   },
   {
     id: "km-arrays-objects",
     categoryId: "arrays-basics",
     title: "Arrays of Objects & Matrices",
     summary:
-      "Combine dictionary attributes inside linear lists and navigate grid structures.",
+      "Work with array collections holding deep profile objects or multi-dimensional matrix layout coordinates.",
     details:
-      "A dominant schema for APIs. Navigating matrices or dynamic records uses multiple bracket indices like matrix[y][x].",
+      "Almost all data sent by APIs utilizes an array of objects. Handling this data requires nesting key-lookups inside array traversals. Multiplying array dimensions also produces 'Matrices' (2D grids) where accessing items requires multiple bracket mappings like `matrix[y][x]`.",
     takeaways: [
-      "Filter, locate, and transform objects lists utilizing criteria checks",
-      "Nested indices represent 2D table files",
+      "📊 Structured collections: Ideal template for storing profile rows, shop product details, or ledger logs.",
+      "📐 Matrices (2D lists): Grids or tables represented as nested arrays. The outer index selects the row, the inner selects the column.",
     ],
-    codeSnippet: `const users = [{ name: "Ann" }, { name: "Val" }];
-const user = users[0].name; // "Ann"`,
-    relatedExerciseId: "ds-profile-updater",
+    codeSnippet: `const matrix = [
+  [1, 2],
+  [3, 4]
+];
+console.log(matrix[1][0]); // 3 (row index 1, col index 0)`,
+    relatedExerciseId: "map-user-profiles",
   },
 
   // 7. Array Iteration Methods
   {
     id: "km-iterators-map-filter",
     categoryId: "array-iteration",
-    title: "Data Transforms and Queries: map, filter, find, and forEach",
+    title: "Data Transforms: map, filter, find, and forEach",
     summary:
-      "Iterate across arrays to extract, filter, or locate matching items.",
+      "Harness the power of declarative loop functions to transform, filter, search, and update lists.",
     details:
-      "map() transforms whole sequences. filter() keeps matching subset items. find() returns the first element or undefined. forEach() runs side effects.",
+      "Instead of writing standard manual `for` loops, utilize functional iteration methods. `.map()` transforms every element. `.filter()` sifts items based on custom requirements. `.find()` checks until a match is found and returns it. `.forEach()` executes side effects for each element.",
     takeaways: [
-      "map() consistently outputs arrays matching the origin sizing",
-      "filter() shrinks outputs depending on custom constraint booleans",
-      "find() halts iteration instantly upon discovering its first match",
+      "🔄 map(): Consistently returns an array containing the exact same number of items as the input.",
+      "🟢 filter(): Produces a subset array consisting strictly of elements that triggered `true` conditions.",
+      "🚀 find(): Stops looping the exact millisecond a match triggers, returning that direct entry.",
     ],
-    codeSnippet: `const users = [{ id: 1 }, { id: 2 }];
-const userOne = users.find(u => u.id === 1); // find`,
+    codeSnippet: `const scores = [80, 45, 95];
+const passes = scores.filter(s => s >= 50); // [80, 95]
+const tripled = scores.map(s => s * 3);     // [240, 135, 285]`,
     relatedExerciseId: "map-trim-upper",
   },
   {
@@ -404,33 +431,39 @@ const userOne = users.find(u => u.id === 1); // find`,
     categoryId: "array-iteration",
     title: "Compliance Validations: every & some",
     summary:
-      "Test array compliance with predicates to confirm absolute or partial alignments.",
+      "Check list compliance, testing if either all or some elements align with rules.",
     details:
-      "every() validates if all elements satisfy criteria. some() validates if at least one satisfies.",
+      "Validating inputs requires checks. Use `.every()` when you must confirm that *all* elements in your array satisfy a requirement. Use `.some()` when you only need *at least one* element to pass.",
     takeaways: [
-      "every() returns false if any element fails",
-      "some() returns true on discovering its first compliant match",
+      "⚖️ every(): Evaluates as false the moment a single element fails, providing robust validation guarantees.",
+      "🚀 some(): Short-circuits and returns true as soon as one matching element is found.",
+      "⚡ High Performance: Both methods halt iteration immediately once their evaluation is proven.",
     ],
-    codeSnippet: `const ages = [18, 21, 15];
-const allAdults = ages.every(a => a >= 18); // false
-const hasAdult = ages.some(a => a >= 18);   // true`,
-    relatedExerciseId: "search-find-positive",
+    codeSnippet: `const users = [{ age: 21 }, { age: 15 }];
+const allAdults = users.every(u => u.age >= 18); // false
+const hasMinor = users.some(u => u.age < 18);    // true`,
+    relatedExerciseId: "search-all-even-positives",
   },
   {
     id: "km-reducer-aggregation",
     categoryId: "array-iteration",
     title: "Reductions & Structural Groupings",
-    summary: "Consolidate collections and build grouped dictionary outputs.",
+    summary:
+      "Compile arrays down into single calculated outcomes or create structured group dictionaries.",
     details:
-      "reduce() processes arrays down to aggregate sums or objects. Object.groupBy() splits indices into distinct categorized labels.",
+      "Use `.reduce()` when you need to condense an array into a single result (like an aggregate sum, a text string, or a customized lookup map). To split items into structured groups by category, use `Object.groupBy()`.",
     takeaways: [
-      "reduce() propagates calculations inside an accumulator",
-      "Object.groupBy() partitions records depending on key values",
+      "📥 reduce(): Tracks progress inside an accumulator variable ('acc') as it rolls down the array list.",
+      "🏁 Anchor: Always set a starting accumulator object (like `0` or `{}`) to lock in your expected result shape.",
+      "📂 Object.groupBy(): Organizes children into separate group boxes based on key labels.",
     ],
-    codeSnippet: `const nums = [1, 2, 3];
-const sum = nums.reduce((acc, curr) => acc + curr, 0); // 6
-const grp = Object.groupBy(nums, n => n % 2 === 0 ? 'even' : 'odd');`,
-    relatedExerciseId: "reduce-multiplier",
+    codeSnippet: `const products = [
+  { group: "A", val: 10 },
+  { group: "B", val: 20 }
+];
+// Summing values:
+const total = products.reduce((acc, p) => acc + p.val, 0); // 30`,
+    relatedExerciseId: "reduce-parity-obj",
   },
 
   // 8. Objects & Shorthands
@@ -438,35 +471,37 @@ const grp = Object.groupBy(nums, n => n % 2 === 0 ? 'even' : 'odd');`,
     id: "km-objects-properties",
     categoryId: "objects-structures",
     title: "Object Property Access & Shorthand",
-    summary: "Write concise object declarations and dynamic path selectors.",
+    summary:
+      "Read and write object keys cleanly, using bracket notations and ES6 property shortcuts.",
     details:
-      "Access keys with dots or brackets. The double-dot in operator validates key availability.",
+      "Objects store properties in key-value pairs. Read keys using Dot notation for static properties, or Bracket notation when the key name is stored inside a variable. You can also skip repeating key names when writing objects if your variables already match the key names.",
     takeaways: [
-      "Bracket notation allows searching dynamic keys represented by variables",
-      "Shorthand definitions allow leaving out values when matching names: { name }",
-      "The in operator validates key presence: 'id' in user",
+      "🏷️ Bracket lookup: The only way to retrieve properties using a dynamic variable (e.g. `user[attributeName]`).",
+      "📦 ES6 Shorthand: Writing `{ username }` instead of `{ username: username }` keeps code tidy.",
+      "👀 in operator: Checks if a property exists directly inside an object drawer.",
     ],
-    codeSnippet: `const key = "role";
-const user = { name: "Jill", [key]: "admin" }; // dynamic
-console.log("role" in user); // true`,
-    relatedExerciseId: "object-merge-conf",
+    codeSnippet: `const category = "rating";
+const game = { title: "Zelda", [category]: 10 }; // dynamic key
+console.log("rating" in game); // true`,
+    relatedExerciseId: "ds-profile-updater",
   },
   {
     id: "km-objects-iteration",
     categoryId: "objects-structures",
     title: "Keys, Values & Entries Iteration",
     summary:
-      "Extract indices datasets from dynamic objects using helper constructors.",
+      "Convert objects into indexable array collections of keys or values for easy looping.",
     details:
-      "Objects did not possess built-in iteration loops due to inheritance. Object helper classes extract lists of keys, values, or entries.",
+      "Unlike arrays, objects are not directly indexable with loops. To iterate over an object, convert it into an array first. Use `Object.keys()` to extract property names, `Object.values()` to extract property values, or `Object.entries()` to get tuples of `[key, value]` pairs.",
     takeaways: [
-      "Object.keys() yields keys array strings",
-      "Object.values() returns cell results listings",
-      "Object.entries() harvests array tuples of [key, value] pairs",
+      "🔑 Object.keys(): Returns an array containing the names of all keys inside the object.",
+      "💎 Object.values(): Returns an array of the active values stored inside the object.",
+      "⚖️ Object.entries(): Returns an array of nested arrays, where each subclass holds `[key, value]`.",
     ],
-    codeSnippet: `const config = { auth: true, dev: false };
-const keys = Object.keys(config); // ["auth", "dev"]`,
-    relatedExerciseId: "object-merge-conf",
+    codeSnippet: `const specs = { ram: "16GB", cpu: "M3" };
+const keysList = Object.keys(specs); // ["ram", "cpu"]
+const entriesList = Object.entries(specs); // [["ram", "16GB"], ["cpu", "M3"]]`,
+    relatedExerciseId: "ds-inventory-auditor",
   },
 
   // 9. Destructuring & Unpacking
@@ -475,15 +510,17 @@ const keys = Object.keys(config); // ["auth", "dev"]`,
     categoryId: "destructuring-operators",
     title: "Objects Destructuring & defaults",
     summary:
-      "Extract multiple properties into variables with custom fallbacks.",
+      "Extract properties directly out of objects into variables, with safe fallback defaults.",
     details:
-      "Direct assignment parsing reduces repetitive variable lines. Assign default fallbacks using equal signs inside the destructure block.",
+      "Repeatedly writing `const host = server.host` is redundant. Avoid this duplication with Object Destructuring, which extracts multiple properties inside braces. You can also define default values during destructuring as a fallback in case a property is missing.",
     takeaways: [
-      "Object destructuring matches keys: const { port } = server",
-      "Fallback variables apply if the property returns undefined",
+      "🧱 Clean brackets mapping: Extracts properties in a single line (e.g., `const { ram, price } = macbook`).",
+      "🕖 Destructuring Defaults: Safely fall back to default values if the property evaluates as undefined.",
+      "🏷️ Alias Renaming: Rename extracted variables on the fly to avoid naming conflicts: `const { id: userId } = user`.",
     ],
-    codeSnippet: `const params = { host: "127.0.0.1" };
-    const { host, port = 80 } = params; // defaults applied`,
+    codeSnippet: `const profile = { name: "Alex" };
+const { name, role = "User" } = profile; // role falls back to "User"
+console.log(role); // "User"`,
     relatedExerciseId: "coords-extractor",
   },
 
@@ -492,51 +529,53 @@ const keys = Object.keys(config); // ["auth", "dev"]`,
     id: "km-dom-selectors-search",
     categoryId: "dom-browser",
     title: "DOM Node Selection & NodeList",
-    summary: "Find markup element items inside document viewports cleanly.",
+    summary:
+      "Find and select markup elements on your webpage using standard CSS selectors.",
     details:
-      "Utilize querySelector and querySelectorAll to fetch Nodes via standard CSS selectors. Convert NodeList results to true Arrays to use map/filter.",
+      "To update your interface dynamically, your script must locate HTML elements. Use `querySelector` to find the first element that matches a selector, or `querySelectorAll` to find all matching elements. The result of a multi-selector query is a 'NodeList', which you should convert to a standard array before running transformation methods like `.map()`.",
     takeaways: [
-      "document.querySelector() selects the first matching element",
-      "document.querySelectorAll() returns an iterable NodeList collection",
-      "Array.from() or spread converts NodeLists into functional Arrays",
+      "🎯 document.querySelector(): Selects the first element that matches your CSS selector.",
+      "🧱 document.querySelectorAll(): Returns an iterable list of all matching elements.",
+      "📦 Array.from(): Converts a NodeList into a standard array to unlock methods like `.map()` and `.filter()`.",
     ],
-    codeSnippet: `const body = document.body;
-const inputs = document.querySelectorAll(".form-input");
-const inputsArr = Array.from(inputs); // real Array`,
+    codeSnippet: `const submitBtn = document.querySelector("#submit");
+const inputBlocks = document.querySelectorAll(".text-field");
+const inputsArray = Array.from(inputBlocks); // convert to standard array`,
     relatedExerciseId: "string-html-tag",
   },
   {
     id: "km-dom-elements-classlist",
     categoryId: "dom-browser",
     title: "Styles & ClassList manipulation",
-    summary: "Alter elements appearance and toggle layouts with classes.",
+    summary:
+      "Change element styling, toggle layouts, and update visual designs using CSS classes.",
     details:
-      "classList edits class strings. style updates inline properties. Toggle classes to handle responsive panels.",
+      "Avoid applying inline styles directly inside your JS scripts. Instead, write clean styles inside CSS classes and toggle them onto your elements using `.classList`. This separation of concerns keeps your styling organized and performant.",
     takeaways: [
-      "classList supports add(), remove(), toggle(), and contains()",
-      "Assigning to the .style object directly changes visual css properties",
+      "🎨 .classList: Supports `.add()`, `.remove()`, `.contains()`, and `.toggle()` to manage classes easily.",
+      "🧱 .style: Use only when you need to assign dynamic values (such as pixel positions calculated at runtime).",
     ],
-    codeSnippet: `const sidebar = document.querySelector(".sidebar");
-sidebar.classList.toggle("is-active");
-sidebar.style.opacity = "0.9";`,
-    relatedExerciseId: "string-html-tag",
+    codeSnippet: `const mobileMenu = document.querySelector(".nav-menu");
+// Toggle open class:
+mobileMenu.classList.toggle("is-expanded");`,
+    relatedExerciseId: "ds-profile-updater",
   },
   {
     id: "km-dom-manipulation-attributes",
     categoryId: "dom-browser",
     title: "DOM Attributes & Insertions",
     summary:
-      "Mutate variables values, adjust datasets, and insert direct nodes.",
+      "Read element details, work with custom datasets, and append HTML nodes dynamically.",
     details:
-      "Edit custom properties with getAttribute/setAttribute. Mutate markup trees using innerHTML, insertAdjacentHTML, or .remove().",
+      "Elements often store data in attributes (like `href` or custom `data-*` tags). Use JavaScript's `.dataset` property to read these parameters. You can also crawl up the parent HTML tree using `.closest()` to find wrapping wrappers dynamically.",
     takeaways: [
-      "dataset compiles custom data-* attributes into JavaScript objects",
-      "closest() crawls up parent elements looking for CSS selector matches",
+      "💾 .dataset: Translates custom `data-user-id` attributes on your HTML tags into readable object keys in your scripts.",
+      "🧗 .closest(): Climbs up parent elements to locate the nearest wrapping container that matches the selector.",
     ],
-    codeSnippet: `const el = document.querySelector(".user-row");
-const userId = el.dataset.userId; // matches data-user-id
-const parentCard = el.closest(".card");`,
-    relatedExerciseId: "string-html-tag",
+    codeSnippet: `const rowItem = document.querySelector(".profile-item");
+const rawUserId = rowItem.dataset.userId; // extracts data-user-id
+const parentWrapper = rowItem.closest(".parent-card"); // climbs parent tree`,
+    relatedExerciseId: "safe-path-crawler",
   },
 
   // 11. Promises & Asynchronous JS
@@ -545,16 +584,16 @@ const parentCard = el.closest(".card");`,
     categoryId: "async-javascript",
     title: "Promise Foundations & Resolving",
     summary:
-      "Create, resolve, and handle asynchronous actions using Promises and standard chains.",
+      "Handle background tasks, network requests, and timers without blocking browser actions.",
     details:
-      "A Promise represents the eventual completion of an asynchronous operation. You can resolve a value or reject an error, then attach handlers using .then() and .catch().",
+      "Normally, JavaScript runs consecutively line-by-line. To run background actions that take time (such as database queries or fetch requests) without locking up the page, use Promises. A Promise is a placeholder container for a future value, allowing you to use `.then()` and `.catch()` callbacks to handle outcomes.",
     takeaways: [
-      "Promises have three states: pending, fulfilled, and rejected",
-      "Use new Promise((resolve, reject) => { ... }) to wrap asynchronous operations",
-      "Use .then() for handling resolved values and .catch() for errors",
+      "🧱 Lifecycle States: Promises start as **pending**, and transition to **fulfilled** (success) or **rejected** (failure).",
+      "🤝 Promise Wrapper: Create a Promise with `new Promise((resolve, reject) => { ... })`.",
+      "🧹 Resolving: Call `resolve()` when your background task finishes to return your data to the caller.",
     ],
-    codeSnippet: `const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-wait(1000).then(() => console.log("Done!"));`,
+    codeSnippet: `const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+wait(500).then(() => console.log("Time is up!"));`,
     relatedExerciseId: "delay-resolve",
   },
   {
@@ -562,20 +601,20 @@ wait(1000).then(() => console.log("Done!"));`,
     categoryId: "async-javascript",
     title: "Asynchronous Functions (async/await)",
     summary:
-      "Write synchronous-looking asynchronous code using the async and await keywords.",
+      "Write asynchronous statements that read like simple, clean, linear commands.",
     details:
-      "The async/await keywords are syntactic sugar on top of Promises. Declaring a function as async causes it to automatically return a Promise. Awaiting inside pauses line execution until a Promise resolves, mimicking standard flow.",
+      "The `async/await` syntax makes asynchronous code incredibly clean and easy to follow. Marking a function with `async` ensures it returns a Promise. Writing `await` pauses the code execution thread at that line until the Promise yields its data, eliminating nested callback chains.",
     takeaways: [
-      "Mark a function with async to unlock using the await keyword inside",
-      "Awaiting a promise suspends execution gracefully without blocking client threads",
-      "Wrap async/await calls inside try...catch blocks to cleanly handle failure exceptions",
+      "📝 async keyword: Unlocks the use of `await` inside the function's scope.",
+      "⏸️ await keyword: Suspends code execution cleanly without freezing the browser's thread.",
+      "🛡️ try...catch: Essential safeguard used around await actions to catch and handle errors gracefully.",
     ],
-    codeSnippet: `async function getUser() {
+    codeSnippet: `async function fetchProduct() {
   try {
-    const user = await fetchUser();
-    return user.name;
+    const data = await requestAPI("/product");
+    return data.id;
   } catch (err) {
-    return "GUEST";
+    return "default-product-id"; // safe fallback
   }
 }`,
     relatedExerciseId: "async-fetch-json",
@@ -585,17 +624,17 @@ wait(1000).then(() => console.log("Done!"));`,
     categoryId: "async-javascript",
     title: "Parallel Promise Executions",
     summary:
-      "Trigger and coordinate multiple asynchronous promises concurrently for speed optimizations.",
+      "Coordinate multiple asynchronous promises in parallel to maximize application loading speed.",
     details:
-      "Instead of awaiting multiple async operations one after another in a slow linear sequence, we can fire them off at the same time and wait for all of them to resolve using Promise.all or Promise.allSettled.",
+      "Instead of executing network fetches or timers in sequence (waiting for one to finish before starting the next), trigger them concurrently! Use `Promise.all()` to run files loaded or API fetches in parallel, waiting for all of them to resolve together.",
     takeaways: [
-      "Promise.all(arr) rejects instantly if any single promise fails",
-      "Promise.allSettled(arr) waits for all promises to complete and returns details of all outcomes",
-      "Executing in parallel improves API integration speeds and client response times",
+      "🚀 High Concurrency: Fires all requests together, cutting down page-load times.",
+      "🧱 Promise.all(): Resolves once all items pass successfully, rejecting instantly if any single item fails.",
+      "🛡️ Promise.allSettled(): Waits for all tasks to complete, returning individual outcome details for every item.",
     ],
-    codeSnippet: `const [users, posts] = await Promise.all([
-  fetchUsers(),
-  fetchPosts()
+    codeSnippet: `const [profile, settings] = await Promise.all([
+  loadProfile(),
+  loadSettings()
 ]);`,
     relatedExerciseId: "promise-all-safe",
   },
@@ -604,19 +643,18 @@ wait(1000).then(() => console.log("Done!"));`,
     categoryId: "async-javascript",
     title: "Promisification of Callback APIs",
     summary:
-      "Convert old-school, callback-heavy functions into modern, chainable Promise shapes.",
+      "Adapt old-school, callback-based utilities into modern, clean Promise-based structures.",
     details:
-      "Many older environments and platform APIs use error-first callbacks (e.g. fn(arg, callback)). We can promisify these functions by wrapping them in new Promises, enabling support for async/await.",
+      "Many older JavaScript tools and platform APIs require you to pass an 'error-first callback' function to handle parameters. Bridging these old platforms into modern async/await patterns requires 'Promisification'—wrapping the old callback structure inside a new Promise.",
     takeaways: [
-      "Promisification bridges legacy APIs with modern Promise patterns",
-      "Pass cb(...) arguments into the wrap function and trigger resolve or reject inside",
-      "Allows composing complex network or file system operations using async/await chains",
+      "🌉 API Adapter: Elevates legacy callback utilities so they support standard Async/Await keywords.",
+      "🧱 Pattern: Returns a `new Promise((resolve, reject)` wrapper that intercepts error/success arguments inside callbacks.",
     ],
-    codeSnippet: `const promisified = (val) => {
+    codeSnippet: `const promisifiedTimer = (duration) => {
   return new Promise((resolve, reject) => {
-    legacyCallbackCall(val, (err, res) => {
+    legacyTimerCall(duration, (err, data) => {
       if (err) reject(err);
-      else resolve(res);
+      else resolve(data);
     });
   });
 };`,
@@ -629,37 +667,39 @@ wait(1000).then(() => console.log("Done!"));`,
     categoryId: "classes-oop",
     title: "Classes declaration and constructors",
     summary:
-      "Model data using class blueprints, constructors, and instance variables.",
+      "Model data into self-contained blueprints that group properties and functions together.",
     details:
-      "Constructors run automatically during new allocations. Declaring standard instance variables inside constructors binds them to the instance shape.",
+      "Classes are blueprints for creating structured objects. The constructor function runs automatically whenever a new object is created using the `new` keyword, setting up the initial state properties on your new instance.",
     takeaways: [
-      "Instances are initialized with the 'new' keyword",
-      "Methods on the class are bound to prototypes, conserving memory allocations",
-      "Prototypal inheritance allows sharing functions across object instances",
+      "🧱 Blueprints Class: Defines what specifications (properties) and methods an object has.",
+      "🏗️ Constructor: The initialization function that runs when you call `new ClassName()`.",
+      "🧠 Memory Efficient: Methods declared in the blueprint are shared via the prototype, keeping memory footprint low.",
     ],
-    codeSnippet: `class Laptop {
-  constructor(brand) {
-    this.brand = brand;
+    codeSnippet: `class Book {
+  constructor(title, author) {
+    this.title = title;
+    this.author = author;
   }
 }
-const mac = new Laptop("Apple");`,
+const favBook = new Book("Hobbit", "Tolkien");`,
     relatedExerciseId: "oop-simple-book",
   },
   {
     id: "km-classes-getters-setters",
     categoryId: "classes-oop",
     title: "Getters, Setters & Private Fields",
-    summary: "Build access restrictions and declare private attributes.",
+    summary:
+      "Secure variables within objects using private fields, and control properties access with custom get/set actions.",
     details:
-      "Prefix private fields with #. Utilize get/set keywords to intercept property access and enforce data validations.",
+      "Keep the internal workings of your objects safe from outside code. Prefix properties with `#` to make them completely private. You can then write custom `get` and `set` methods to safely view and update these private values while enforcing strict validations.",
     takeaways: [
-      "get and set methods look like properties on the exterior: obj.balance = 100",
-      "Private block variables (#field) shield fields from external mutations",
+      "🔒 Private Fields (#): Prevents external scripts from reading or altering sensitive variables directly.",
+      "⚙️ Getters & Setters: Act as controlled security checkpoints around your object's internal properties.",
     ],
-    codeSnippet: `class Bank {
-  #balance = 0;
-  get balance() { return this.#balance; }
-  set balance(val) { if (val >= 0) this.#balance = val; }
+    codeSnippet: `class Vault {
+  #code = "1234"; // private property
+  get code() { return "****"; } // secure preview getter
+  set code(newCode) { if (newCode.length === 4) this.#code = newCode; }
 }`,
     relatedExerciseId: "oop-secure-account",
   },
@@ -668,18 +708,18 @@ const mac = new Laptop("Apple");`,
     categoryId: "classes-oop",
     title: "Inheritance, super(), and Prototypes",
     summary:
-      "Extend parent shapes and resolve method chains via the prototype pipeline.",
+      "Extend parent classes to build subcategories of objects, using super() to inherit properties.",
     details:
-      "Extending subclasses inherits parent methods. You must call super() in constructors before using 'this' to link the chain.",
+      "Inheritance allows subclasses to inherit properties and methods from a parent class using the `extends` keyword. When building a subclass constructor, you must call `super()` first to initialize the parent's properties and link the execution context.",
     takeaways: [
-      "extends copies parent behavior into subclasses",
-      "super() runs parent constructors and links execution context 'this'",
-      "PrototypeOf walks up prototype chains for fallback properties",
+      "🧬 extends: Copies the behavior of a parent class into a specialized subclass.",
+      "⚡ super(): Runs the parent's constructor function and initializes the `this` context inside your subclass.",
+      "🧱 Prototype Chain: The lookup system JavaScript uses to search up the parent tree for methods.",
     ],
-    codeSnippet: `class Car extends Vehicle {
-  constructor(model, electric) {
-    super(model); // links parent constructor
-    this.electric = electric;
+    codeSnippet: `class Athlete extends User {
+  constructor(name, sport) {
+    super(name); // parent initialization
+    this.sport = sport;
   }
 }`,
     relatedExerciseId: "oop-inherited-vehicle",
