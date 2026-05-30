@@ -9,6 +9,7 @@ import {
   Sparkles,
   ArrowRight,
   BookMarked,
+  Lock,
 } from "lucide-react";
 import { highlightJS } from "../utils/highlighter.js";
 
@@ -251,39 +252,62 @@ export function Roadmap({
               const isChecked = !!completedTopics[topic.id];
               const isExpanded = expandedTopicId === topic.id;
 
+              // Linear progression syllabus lock:
+              const topicIndex = knowledgeMapTopics.findIndex(
+                (t) => t.id === topic.id,
+              );
+              const isUnlocked =
+                topicIndex <= 0 ||
+                !!completedTopics[knowledgeMapTopics[topicIndex - 1].id];
+
               return (
                 <motion.div
                   layout="position"
                   key={topic.id}
-                  className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-all duration-300 ${
+                  className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-all duration-305 ${
                     isExpanded
                       ? "ring-2 ring-[#F7DF1E] shadow-md col-span-full md:col-span-full"
-                      : "border-zinc-200 hover:shadow-md"
+                      : !isUnlocked
+                        ? "border-zinc-200 opacity-60 bg-zinc-50/50"
+                        : "border-zinc-200 hover:shadow-md"
                   }`}
                 >
                   {/* Card Header Portion */}
                   <div
-                    onClick={() =>
-                      setExpandedTopicId(isExpanded ? null : topic.id)
-                    }
-                    className="p-5 flex items-start gap-4 justify-between cursor-pointer group select-none"
+                    onClick={() => {
+                      if (isUnlocked) {
+                        setExpandedTopicId(isExpanded ? null : topic.id);
+                      }
+                    }}
+                    className={`p-5 flex items-start gap-4 justify-between select-none ${
+                      isUnlocked ? "cursor-pointer group" : "cursor-not-allowed"
+                    }`}
                   >
                     <div className="flex items-start gap-3.5 flex-1 select-none">
                       {/* Checkbox button triggers marker status without toggling card collapse */}
                       <button
                         type="button"
+                        disabled={!isUnlocked}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleTopicProgress(topic.id);
+                          if (isUnlocked) {
+                            toggleTopicProgress(topic.id);
+                          }
                         }}
                         title={
-                          isChecked
-                            ? "Mark topic as incomplete"
-                            : "Mark topic as mastered"
+                          !isUnlocked
+                            ? "This lesson is locked"
+                            : isChecked
+                              ? "Mark topic as incomplete"
+                              : "Mark topic as mastered"
                         }
-                        className="text-zinc-650 hover:text-zinc-900 shrink-0 mt-0.5 cursor-pointer"
+                        className={`shrink-0 mt-0.5 ${isUnlocked ? "text-zinc-655 hover:text-zinc-900 cursor-pointer" : "text-zinc-400 cursor-not-allowed"}`}
                       >
-                        {isChecked ? (
+                        {!isUnlocked ? (
+                          <div className="h-6 w-6 rounded-lg bg-zinc-100 flex items-center justify-center border border-zinc-200">
+                            <Lock className="h-3.5 w-3.5 text-zinc-400" />
+                          </div>
+                        ) : isChecked ? (
                           <CheckCircle className="h-6.5 w-6.5 text-[#F7DF1E] fill-zinc-950" />
                         ) : (
                           <div className="h-6 w-6 rounded-lg border-2 border-zinc-300 hover:border-zinc-505 transition-colors" />
@@ -303,7 +327,10 @@ export function Roadmap({
                             : "Syllabus Group"}
                         </span>
 
-                        <h3 className="text-sm font-extrabold text-zinc-900 tracking-tight group-hover:text-zinc-950 select-none">
+                        <h3 className="text-sm font-extrabold text-zinc-900 tracking-tight group-hover:text-zinc-950 select-none flex items-center gap-1.5">
+                          {!isUnlocked && (
+                            <Lock className="h-3 w-3 text-zinc-400 shrink-0" />
+                          )}
                           {topic.title}
                         </h3>
                       </div>
@@ -311,11 +338,15 @@ export function Roadmap({
 
                     {/* Expand indicator chevron */}
                     <div className="h-8 w-8 rounded-lg bg-zinc-50 flex items-center justify-center border border-zinc-200 text-zinc-400 group-hover:border-zinc-350 shrink-0 mt-0.5">
-                      <ChevronRight
-                        className={`h-4.5 w-4.5 text-zinc-650 transition-transform duration-200 ${
-                          isExpanded ? "rotate-90 text-zinc-900" : ""
-                        }`}
-                      />
+                      {!isUnlocked ? (
+                        <Lock className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
+                      ) : (
+                        <ChevronRight
+                          className={`h-4.5 w-4.5 text-zinc-650 transition-transform duration-200 ${
+                            isExpanded ? "rotate-90 text-zinc-900" : ""
+                          }`}
+                        />
+                      )}
                     </div>
                   </div>
 

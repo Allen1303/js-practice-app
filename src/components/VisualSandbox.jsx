@@ -29,6 +29,7 @@ export function VisualSandbox({
   activeConcept,
   activeExercise,
   solvedExercises,
+  userCodes,
 }) {
   const conceptId = activeConcept?.id || "map-callbacks";
 
@@ -69,6 +70,8 @@ export function VisualSandbox({
   // 6. String Parsing
   const [decompressStr, setDecompressStr] = useState("a4b2c3a1");
   const [decompressedGrid, setDecompressedGrid] = useState([]);
+  const [sandboxLabel, setSandboxLabel] = useState("   Save Changes   ");
+  const [sandboxVariant, setSandboxVariant] = useState("primary");
 
   // 7. Array Search
   const [searchTarget, setSearchTarget] = useState(12);
@@ -325,27 +328,65 @@ export function VisualSandbox({
     return days;
   };
 
+  const exercisesForThisConcept = activeConcept?.exercises || [];
+  const solvedCountInThisConcept = exercisesForThisConcept.filter(
+    (e) => solvedExercises?.[e.id],
+  ).length;
+  const isConceptMastered =
+    solvedCountInThisConcept === exercisesForThisConcept.length &&
+    exercisesForThisConcept.length > 0;
+
   return (
     <div
-      className="space-y-6 flex-1 flex flex-col justify-between"
+      className="space-y-5 flex-1 flex flex-col justify-between"
       id="visual-sandbox-screen"
     >
-      <div>
-        <div className="flex items-center gap-1.5 text-zinc-400 font-mono text-xs uppercase tracking-wider font-bold">
-          <span>Concept visual Simulation Mode</span>
+      {/* Dynamic Capstone Mini-App Premium Banner */}
+      <div className="bg-yellow-500/5 border border-yellow-500/25 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 select-none relative overflow-hidden shadow-3xs">
+        <div className="absolute top-0 bottom-0 left-0 w-1.5 bg-[#F7DF1E]" />
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="h-9 w-9 rounded-xl bg-zinc-900 flex items-center justify-center shrink-0 shadow-sm border border-zinc-800">
+            <Sparkles className="h-4.5 w-4.5 text-[#F7DF1E]" />
+          </div>
+          <div className="text-left">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-800">
+                CAPSTONE MINI-APP
+              </span>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#F7DF1E] animate-ping" />
+            </div>
+            <h3 className="text-xs font-black text-zinc-950 tracking-tight leading-none mt-1 shadow-sm">
+              Active Browser Widget Simulator
+            </h3>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 self-end sm:self-center">
+          {isConceptMastered ? (
+            <span className="text-[10px] font-mono font-black uppercase tracking-wider text-emerald-800 bg-[#F7DF1E]/15 border border-[#edd012] px-3 py-1 rounded-full flex items-center gap-1 shadow-3xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{" "}
+              Custom Logic Unlocked!
+            </span>
+          ) : (
+            <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider bg-zinc-150 border border-zinc-200 text-zinc-650 px-3 py-1 rounded-full">
+              PRACTICE TO UNLOCK • {solvedCountInThisConcept}/
+              {exercisesForThisConcept.length}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-[-8px]">
+        <div className="flex items-center gap-1.5 text-zinc-400 font-mono text-[10px] uppercase tracking-wider font-extrabold pb-0.5">
+          <span>Simulation Console</span>
           <span className="text-zinc-300">•</span>
-          <span className="text-yellow-600 animate-pulse flex items-center gap-1">
-            <Sparkles className="h-3 w-3" /> Live Sandbox
+          <span className="text-[#a38b00] flex items-center gap-1 font-bold">
+            <Sparkles className="h-3 w-3 animate-pulse" /> Live Sandbox
           </span>
         </div>
-        <h2 className="text-lg font-extrabold tracking-tight text-zinc-900 mt-1 flex items-center gap-2">
-          {activeConcept.title} Visual Simulator
+        <h2 className="text-base font-extrabold tracking-tight text-zinc-900 flex items-center gap-2 leading-none">
+          {activeConcept.title} Capstone
         </h2>
-        <p className="text-xs text-zinc-500 mt-1.5 leading-relaxed font-sans">
-          This customized workspace visually demonstrates the core logic behind
-          the chapter capstone. Interact with the interface controls below to
-          inspect active memory changes!
-        </p>
       </div>
 
       {/* CORE GRAPHICAL SIMULATORS BASED ON CONCEPT ID */}
@@ -756,69 +797,255 @@ export function VisualSandbox({
         )}
 
         {/* CHAPTER 6: String Parsing */}
-        {conceptId === "string-parsing" && (
-          <div className="space-y-4 w-full">
-            <div className="bg-white p-4.5 rounded-xl border border-zinc-200 space-y-3 shadow-3xs">
-              <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500 uppercase">
-                Compressed Run-Length Casing String
-              </span>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={decompressStr}
-                  onChange={(e) =>
-                    setDecompressStr(
-                      e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ""),
-                    )
-                  }
-                  placeholder="E.g. a4b2c3"
-                  className="flex-1 text-sm px-3.5 py-2 bg-zinc-50 border border-zinc-200 rounded font-mono focus:border-zinc-550 focus:outline-hidden"
-                />
-                <button
-                  onClick={() => {
-                    const grid = [];
-                    const matches = decompressStr.match(/([a-z])(\d+)/g);
-                    if (matches) {
-                      matches.forEach((m) => {
-                        const char = m[0];
-                        const count = parseInt(m.slice(1), 10);
-                        for (let x = 0; x < count; x++) grid.push(char);
-                      });
-                    }
-                    setDecompressedGrid(grid);
-                  }}
-                  className="bg-zinc-900 text-white hover:bg-[#F7DF1E] hover:text-zinc-950 px-4 rounded text-xs font-mono font-bold transition-all cursor-pointer"
-                >
-                  Decompress
-                </button>
-              </div>
-            </div>
+        {conceptId === "string-parsing" &&
+          (() => {
+            const evalResult = (() => {
+              const userCode = userCodes?.["string-html-builder"];
+              if (!userCode) {
+                return {
+                  isUser: false,
+                  html: `<button class="BTN-${sandboxVariant.toUpperCase()}">${sandboxLabel.trim()}</button>`,
+                  error: null,
+                };
+              }
+              try {
+                const compiledFunction = new Function(`
+                ${userCode}
+                if (typeof buildHTMLButton === 'undefined') {
+                  throw new Error('buildHTMLButton is not defined');
+                }
+                return buildHTMLButton;
+              `);
+                const userFunc = compiledFunction();
+                const output = userFunc(sandboxLabel, sandboxVariant);
+                return { isUser: true, html: output, error: null };
+              } catch (e) {
+                return {
+                  isUser: true,
+                  html: `<button class="BTN-${sandboxVariant.toUpperCase()}">${sandboxLabel.trim()}</button>`,
+                  error: e.message,
+                };
+              }
+            })();
 
-            <div className="bg-white/80 p-5 rounded-xl border border-zinc-200">
-              <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-tight block mb-3">
-                Target Character Canvas Expansion
-              </span>
-              <div className="flex gap-2 flex-wrap justify-center min-h-[48px] items-center">
-                {decompressedGrid.map((c, idx) => (
-                  <motion.span
-                    key={idx}
-                    initial={{ scale: 0.4, rotate: -15 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                    className="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-100 font-mono font-black text-sm flex items-center justify-center uppercase shadow"
-                  >
-                    {c}
-                  </motion.span>
-                ))}
-                {decompressedGrid.length === 0 && (
-                  <span className="text-[11px] font-mono text-zinc-400 italic">
-                    No compressed tokens expanded yet
+            // Determine button style dynamically for the live browser mock preview
+            const variantLower = sandboxVariant.toLowerCase().trim();
+            let buttonBg =
+              "bg-[#F7DF1E] text-zinc-950 hover:bg-zinc-800 hover:text-white";
+            let focusColor = "ring-yellow-400";
+            if (variantLower === "success") {
+              buttonBg = "bg-emerald-600 text-white hover:bg-emerald-700";
+              focusColor = "ring-emerald-400";
+            } else if (variantLower === "danger") {
+              buttonBg = "bg-rose-600 text-white hover:bg-rose-700";
+              focusColor = "ring-rose-400";
+            } else if (
+              variantLower === "warning" ||
+              variantLower === "warning"
+            ) {
+              buttonBg = "bg-amber-500 text-zinc-950 hover:bg-amber-600";
+              focusColor = "ring-amber-400";
+            }
+
+            return (
+              <div className="space-y-4 w-full">
+                {/* Controller Box */}
+                <div className="bg-white p-4.5 rounded-xl border border-zinc-200 space-y-4 shadow-3xs text-left">
+                  <span className="text-[10px] font-mono font-bold tracking-wider text-zinc-500 uppercase block">
+                    Interactive Widget Parameters
                   </span>
-                )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Label Input with visual space markers */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold text-zinc-600 font-mono flex items-center justify-between">
+                        <span>Label String Content:</span>
+                        <span className="text-[9px] text-zinc-400 font-normal">
+                          Trims spaces live
+                        </span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={sandboxLabel}
+                          onChange={(e) => setSandboxLabel(e.target.value)}
+                          placeholder="  Click Me  "
+                          className="w-full text-xs px-3 py-2 bg-zinc-50 border border-zinc-200 rounded font-mono focus:border-zinc-550 focus:outline-hidden"
+                        />
+                        {sandboxLabel.startsWith(" ") ||
+                        sandboxLabel.endsWith(" ") ? (
+                          <span
+                            className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-amber-500"
+                            title="Contains edge spaces"
+                          />
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {/* Variant Selection pills */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold text-zinc-600 font-mono block">
+                        Style Variant (`variant`):
+                      </label>
+                      <div className="flex gap-1.5 flex-wrap">
+                        {["primary", "success", "danger", "warning"].map(
+                          (v) => (
+                            <button
+                              key={v}
+                              onClick={() => setSandboxVariant(v)}
+                              className={`text-[10px] font-mono font-bold px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer capitalize ${
+                                sandboxVariant === v
+                                  ? "bg-zinc-900 border-zinc-900 text-white shadow-3xs"
+                                  : "bg-white border-zinc-200 text-zinc-650 hover:bg-zinc-50"
+                              }`}
+                            >
+                              {v}
+                            </button>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Transformation pipeline view */}
+                <div className="bg-zinc-50/50 p-4 rounded-xl border border-zinc-200 text-left space-y-3">
+                  <span className="text-[10px] font-mono font-extrabold text-zinc-400 uppercase tracking-tight block">
+                    Method Execution Order (Step-by-step)
+                  </span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+                    {/* Step 1 */}
+                    <div className="bg-white p-2.5 rounded-lg border border-zinc-150 flex flex-col justify-between">
+                      <div>
+                        <span className="font-mono text-[9px] font-bold text-[#b59e00] block">
+                          STEP 1 • TEXT DE-SPACING
+                        </span>
+                        <span className="font-semibold text-zinc-800">
+                          .trim()
+                        </span>
+                      </div>
+                      <div className="mt-1.5 font-mono text-[11px] bg-zinc-50 p-1 px-1.5 rounded text-zinc-500 overflow-x-auto whitespace-nowrap">
+                        &quot;
+                        <span className="bg-amber-100 text-amber-800 line-through rounded">
+                          {sandboxLabel.match(/^\s*/)?.[0]}
+                        </span>
+                        <span className="text-zinc-900 font-bold font-sans">
+                          {sandboxLabel.trim()}
+                        </span>
+                        <span className="bg-amber-100 text-amber-800 line-through rounded">
+                          {sandboxLabel.match(/\s*$/)?.[0]}
+                        </span>
+                        &quot;
+                      </div>
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className="bg-white p-2.5 rounded-lg border border-zinc-150 flex flex-col justify-between">
+                      <div>
+                        <span className="font-mono text-[9px] font-bold text-[#b59e00] block">
+                          STEP 2 • CASE ALIGNMENT
+                        </span>
+                        <span className="font-semibold text-zinc-800">
+                          .toUpperCase()
+                        </span>
+                      </div>
+                      <div className="mt-1.5 font-mono text-[11px] bg-zinc-50 p-1 px-1.5 rounded text-zinc-900 font-black">
+                        &quot;{sandboxVariant.toUpperCase()}&quot;
+                      </div>
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className="bg-white p-2.5 rounded-lg border border-zinc-150 flex flex-col justify-between">
+                      <div>
+                        <span className="font-mono text-[9px] font-bold text-[#b59e00] block">
+                          STEP 3 • BRACES INTERPOLATOR
+                        </span>
+                        <span className="font-semibold text-zinc-800">
+                          Template literal (`)
+                        </span>
+                      </div>
+                      <div
+                        className="mt-1.5 font-mono text-[10px] bg-zinc-50 p-1 px-1.5 rounded text-zinc-650 overflow-x-auto whitespace-nowrap"
+                        title={evalResult.html}
+                      >
+                        &lt;button class=&quot;BTN-...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dynamic live browser mini app simulator */}
+                <div className="bg-zinc-100 rounded-xl border border-zinc-200 overflow-hidden shadow-sm">
+                  {/* Simulated Browser Bar */}
+                  <div className="bg-zinc-150 px-3 py-2 border-b border-zinc-200 flex items-center justify-between">
+                    <div className="flex gap-1.5 items-center">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block" />
+                    </div>
+                    <div className="bg-white/80 border border-zinc-200 rounded text-[9.5px] font-mono px-6 py-0.5 text-zinc-500">
+                      localhost:3000/exercise-preview
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {evalResult.isUser && !evalResult.error ? (
+                        <span className="text-[8.5px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
+                          ● Live Code
+                        </span>
+                      ) : (
+                        <span className="text-[8.5px] font-mono font-bold uppercase tracking-wider text-zinc-500 bg-zinc-100 border border-zinc-300 px-2 py-0.5 rounded-full">
+                          Emulated
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Simulated Content Area */}
+                  <div className="bg-white p-6 min-h-[140px] flex flex-col items-center justify-center gap-3 relative">
+                    {/* Compiled error notice if student made syntax code error */}
+                    {evalResult.error ? (
+                      <div className="text-center p-3 max-w-sm bg-rose-50 border border-rose-100 rounded-lg space-y-1">
+                        <span className="text-[9px] font-mono font-bold text-rose-700 uppercase tracking-widest block">
+                          Runtime compilation error
+                        </span>
+                        <p className="text-[11px] font-sans text-rose-600 leading-tight">
+                          {evalResult.error}
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Live rendered interactive element */}
+                        <button
+                          className={`px-4.5 py-2.5 text-xs font-bold rounded-lg font-sans transition-all shadow-3xs cursor-pointer select-none active:scale-98 ${buttonBg}`}
+                        >
+                          {sandboxLabel.trim()}
+                        </button>
+                        <p className="text-[10px] font-sans text-zinc-400 italic">
+                          Click component to inspect interactive press logic
+                          feedback
+                        </p>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Generated Source Output */}
+                  <div className="bg-zinc-950 p-3.5 border-t border-zinc-800 text-left">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[9px] font-mono font-black text-zinc-500 uppercase tracking-wide">
+                        Returned HTML String Output:
+                      </span>
+                      <span className="text-[8px] font-mono text-zinc-500">
+                        String type length: {evalResult.html?.length || 0}
+                      </span>
+                    </div>
+                    <pre className="font-mono text-[11px] text-[#F7DF1E] bg-[#F7DF1E]/5 p-2 rounded border border-yellow-500/10 break-all overflow-x-auto whitespace-pre-wrap select-all">
+                      {evalResult.html}
+                    </pre>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            );
+          })()}
 
         {/* CHAPTER 7: Array Search */}
         {conceptId === "array-search-verification" && (

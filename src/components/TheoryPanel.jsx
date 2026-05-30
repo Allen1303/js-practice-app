@@ -19,6 +19,7 @@ export function TheoryPanel({
   activeExerciseIndex,
   setActiveExerciseIndex,
   setLeftTab,
+  setSandboxView,
 }) {
   const recap = CONCEPT_RECAPS[activeConcept.id] || {
     analogy:
@@ -239,6 +240,9 @@ export function TheoryPanel({
               className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-zinc-150 text-xs shadow-sm hover:border-zinc-300 hover:shadow-md transition-all cursor-pointer group"
               onClick={() => {
                 setActiveExerciseIndex(idx);
+                if (setSandboxView) {
+                  setSandboxView("practice");
+                }
                 setLeftTab("problem");
               }}
             >
@@ -252,7 +256,7 @@ export function TheoryPanel({
                     className={`text-[8px] font-mono font-extrabold uppercase rounded px-1.5 py-0.2 ${
                       idx === activeExerciseIndex
                         ? "bg-zinc-900 text-white"
-                        : "bg-zinc-100 text-zinc-505"
+                        : "bg-zinc-100 text-zinc-500"
                     }`}
                   >
                     {idx === activeExerciseIndex
@@ -279,9 +283,12 @@ export function TheoryPanel({
         <button
           onClick={() => {
             setActiveExerciseIndex(0);
+            if (setSandboxView) {
+              setSandboxView("practice");
+            }
             setLeftTab("problem");
           }}
-          className="px-5 py-3 rounded-xl bg-zinc-905 text-white hover:bg-zinc-800 font-mono text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.98] border border-zinc-850"
+          className="px-5 py-3 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800 font-mono text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.98] border border-zinc-800"
         >
           Start Practice 1: {activeConcept.exercises[0].title}{" "}
           <ArrowRight className="h-4 w-4 text-[#F7DF1E]" />

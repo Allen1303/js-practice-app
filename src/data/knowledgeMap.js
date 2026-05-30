@@ -226,7 +226,7 @@ console.log(sentence.replace(/[^a-zA-Z]/g, "")); // "Grade"`,
     codeSnippet: `const userEmail = "  Allen@gmail.com  ";
 const normalized = userEmail.trim().toLowerCase(); // "allen@gmail.com"
 const secondsText = "5".padStart(2, "0"); // "05" (clean clock output)`,
-    relatedExerciseId: "string-html-tag",
+    relatedExerciseId: "string-html-builder",
   },
 
   // 4. Control Flow & Loops
@@ -541,7 +541,7 @@ console.log(role); // "User"`,
     codeSnippet: `const submitBtn = document.querySelector("#submit");
 const inputBlocks = document.querySelectorAll(".text-field");
 const inputsArray = Array.from(inputBlocks); // convert to standard array`,
-    relatedExerciseId: "string-html-tag",
+    relatedExerciseId: "string-html-builder",
   },
   {
     id: "km-dom-elements-classlist",

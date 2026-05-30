@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { AnimatePresence } from "motion/react";
-import { CONCEPTS } from "./data/exercises.js";
+import { CONCEPTS as RAW_CONCEPTS } from "./data/exercises.js";
 import {
   KNOWLEDGE_MAP_CATEGORIES,
   KNOWLEDGE_MAP_TOPICS,
@@ -30,6 +30,35 @@ import {
   RotateCcw,
 } from "lucide-react";
 
+// Absolute order of concepts from Core Foundations to Practical Algorithms
+const CONCEPTS_ORDER = [
+  "string-parsing",
+  "optional-chaining-coalescing",
+  "array-search-verification",
+  "map-callbacks",
+  "filter-callbacks",
+  "reduce-callbacks",
+  "object-dictionaries",
+  "spread-destructuring-unpack",
+  "set-unique-collections",
+  "es6-maps-collections",
+  "closures-scoping",
+  "two-pointer-sliding-window", // Promises & async
+  "recursion-call-stack",
+  "linked-lists-trees", // Dates & Milestones
+  "oop-classes-prototype",
+  "fcc-basic-algorithms",
+  "stack-queue-dsa",
+  "basic-algorithm-scripting",
+  "intermediate-algorithm-scripting",
+];
+
+const CONCEPTS = [...RAW_CONCEPTS].sort((a, b) => {
+  const indexA = CONCEPTS_ORDER.indexOf(a.id);
+  const indexB = CONCEPTS_ORDER.indexOf(b.id);
+  return (indexA !== -1 ? indexA : 99) - (indexB !== -1 ? indexB : 99);
+});
+
 export default function App() {
   // Navigation / Active Selection State
   const [activeConceptId, setActiveConceptId] = useState(CONCEPTS[0].id);
@@ -44,6 +73,9 @@ export default function App() {
 
   // Left side Tab selection ("theory" | "problem")
   const [leftTab, setLeftTab] = useState("problem");
+
+  // Choose sub-view inside sandbox: "learn" (study guide page) or "practice" (code editor challenge)
+  const [sandboxView, setSandboxView] = useState("learn");
 
   // User source code dictionary
   const [userCodes, setUserCodes] = useState({});
@@ -308,14 +340,52 @@ export default function App() {
         setActiveConceptId(concept.id);
         setActiveExerciseIndex(idx);
         setViewMode("sandbox");
+        setSandboxView("practice");
         setLeftTab("problem");
         return;
       }
     }
   };
 
+  // Sort knowledge map topics in the same order as CONCEPTS in interactive tab
+  const sortedKnowledgeMapTopics = useMemo(() => {
+    return [...KNOWLEDGE_MAP_TOPICS].sort((a, b) => {
+      const idxA = CONCEPTS.findIndex((c) =>
+        c.exercises.some((ex) => ex.id === a.relatedExerciseId),
+      );
+      const idxB = CONCEPTS.findIndex((c) =>
+        c.exercises.some((ex) => ex.id === b.relatedExerciseId),
+      );
+
+      const posA = idxA !== -1 ? idxA : 999;
+      const posB = idxB !== -1 ? idxB : 999;
+
+      if (posA !== posB) {
+        return posA - posB;
+      }
+
+      return KNOWLEDGE_MAP_TOPICS.indexOf(a) - KNOWLEDGE_MAP_TOPICS.indexOf(b);
+    });
+  }, []);
+
+  const sortedKnowledgeMapCategories = useMemo(() => {
+    return [...KNOWLEDGE_MAP_CATEGORIES].sort((a, b) => {
+      const firstTopicIndexA = sortedKnowledgeMapTopics.findIndex(
+        (t) => t.categoryId === a.id,
+      );
+      const firstTopicIndexB = sortedKnowledgeMapTopics.findIndex(
+        (t) => t.categoryId === b.id,
+      );
+
+      const posA = firstTopicIndexA !== -1 ? firstTopicIndexA : 999;
+      const posB = firstTopicIndexB !== -1 ? firstTopicIndexB : 999;
+
+      return posA - posB;
+    });
+  }, [sortedKnowledgeMapTopics]);
+
   // Curriculum stats calculations
-  const totalTopicsCount = KNOWLEDGE_MAP_TOPICS.length;
+  const totalTopicsCount = sortedKnowledgeMapTopics.length;
   const completedTopicsCount = Object.keys(completedTopics).filter(
     (id) => completedTopics[id],
   ).length;
@@ -344,229 +414,280 @@ export default function App() {
 
       {/* Primary Content View Switch */}
       {viewMode === "sandbox" ? (
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 min-w-0">
-          {/* Chapter & Concept Navigation Column */}
-          <ConceptSelector
-            concepts={CONCEPTS}
-            solvedExercises={solvedExercises}
-            activeConceptId={activeConceptId}
-            setActiveConceptId={setActiveConceptId}
-            setActiveExerciseIndex={setActiveExerciseIndex}
-            setLeftTab={setLeftTab}
-          />
+        sandboxView === "learn" ? (
+          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 min-w-0">
+            {/* Chapter & Concept Navigation Column */}
+            <ConceptSelector
+              concepts={CONCEPTS}
+              solvedExercises={solvedExercises}
+              activeConceptId={activeConceptId}
+              setActiveConceptId={setActiveConceptId}
+              setActiveExerciseIndex={setActiveExerciseIndex}
+              setLeftTab={setLeftTab}
+              setSandboxView={setSandboxView}
+            />
 
-          {/* Core Sandbox Working Panels split */}
-          <section className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 min-w-0">
-            {/* Left Column: Learning Materials / Guidelines Tabbed View */}
-            <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col bg-white overflow-y-auto min-h-0 min-w-0">
-              {/* Top Selector ribbon for individual puzzle repetition status */}
-              <ExerciseNavigator
-                activeConcept={activeConcept}
-                activeExerciseIndex={activeExerciseIndex}
-                setActiveExerciseIndex={setActiveExerciseIndex}
-                setLeftTab={setLeftTab}
-                solvedExercises={solvedExercises}
-                currentConceptSolvedCount={currentConceptSolvedCount}
-              />
-
-              {/* Guide/Goal Selection controls */}
-              <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-1 shrink-0 select-none overflow-x-auto">
+            {/* Spacious Concept Study Hub Content Area */}
+            <div className="flex-1 overflow-y-auto bg-white border-l border-zinc-200">
+              <div className="max-w-4xl mx-auto py-10 px-6 sm:px-10">
+                <TheoryPanel
+                  activeConcept={activeConcept}
+                  activeExerciseIndex={activeExerciseIndex}
+                  setActiveExerciseIndex={setActiveExerciseIndex}
+                  setLeftTab={setLeftTab}
+                  setSandboxView={setSandboxView}
+                />
+              </div>
+            </div>
+          </main>
+        ) : (
+          <main className="flex-1 flex flex-col overflow-hidden min-h-0 min-w-0">
+            {/* Compact Practice Workspace Header / Navigation Strip */}
+            <div className="bg-zinc-900 border-b border-zinc-850 px-6 py-2.5 flex items-center justify-between shrink-0 shadow-sm text-white">
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setLeftTab("problem")}
-                  className={`flex-1 min-w-[120px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                    leftTab === "problem"
-                      ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
+                  onClick={() => setSandboxView("learn")}
+                  className="flex items-center gap-2 text-xs font-mono font-bold text-zinc-300 hover:text-white px-3 py-1.5 rounded-lg border border-zinc-805 hover:border-zinc-700 bg-zinc-950/60 transition-all cursor-pointer shadow-inner active:scale-95"
                 >
-                  <Code className="h-3.5 w-3.5 shrink-0" />
-                  <span className="whitespace-nowrap">Problem Goal</span>
+                  <span>←</span> Back to Study Guide
                 </button>
-
-                <button
-                  onClick={() => setLeftTab("theory")}
-                  className={`flex-1 min-w-[120px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                    leftTab === "theory"
-                      ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
-                >
-                  <BookOpen className="h-3.5 w-3.5 shrink-0" />
-                  <span className="whitespace-nowrap">Learn Theory</span>
-                </button>
-
-                <button
-                  onClick={() => setLeftTab("es6")}
-                  className={`flex-1 min-w-[115px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
-                    leftTab === "es6"
-                      ? "bg-white text-zinc-950 border border-[#F7DF1E] shadow-sm font-extrabold"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
-                >
-                  <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-100" />
-                  <span className="whitespace-nowrap">ES6 Sheets</span>
-                </button>
-
-                <button
-                  onClick={() => setLeftTab("notes")}
-                  className={`flex-1 min-w-[110px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
-                    leftTab === "notes"
-                      ? "bg-white text-zinc-950 border border-[#EDD012] shadow-sm font-extrabold"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
-                >
-                  <Edit3 className="h-3.5 w-3.5 text-[#F7DF1E] shrink-0" />
-                  <span className="whitespace-nowrap">My Notes</span>
-                </button>
-
-                <button
-                  onClick={() => setLeftTab("visualizer")}
-                  className={`flex-1 min-w-[125px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer relative ${
-                    leftTab === "visualizer"
-                      ? "bg-white text-zinc-950 border border-purple-300 shadow-sm font-extrabold"
-                      : "text-zinc-500 hover:text-zinc-950"
-                  }`}
-                >
-                  <Sparkles
-                    className={`h-3.5 w-3.5 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`}
-                  />
-                  <span className="whitespace-nowrap flex items-center gap-1.5">
-                    Visual Sandbox
-                    {activeExerciseIndex ===
-                      activeConcept.exercises.length - 1 && (
-                      <span className="h-2 w-2 rounded-full bg-purple-500 relative flex shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                      </span>
-                    )}
+                <div className="h-4 w-[1px] bg-zinc-800 hidden sm:block"></div>
+                <div className="hidden sm:block">
+                  <span className="text-[9px] font-mono text-zinc-400 uppercase font-semibold">
+                    Active Concept
                   </span>
-                </button>
+                  <p className="text-xs font-bold font-sans text-zinc-200 leading-none">
+                    {activeConcept.title}
+                  </p>
+                </div>
               </div>
 
-              {/* Dynamic View Panel (Theory manual / active exercise problem / ES6 cheatsheet) */}
-              <div className="p-6 flex-1 flex flex-col justify-between overflow-y-auto min-h-0">
-                <AnimatePresence mode="wait">
-                  {leftTab === "theory" ? (
-                    <TheoryPanel
-                      activeConcept={activeConcept}
-                      activeExerciseIndex={activeExerciseIndex}
-                      setActiveExerciseIndex={setActiveExerciseIndex}
-                      setLeftTab={setLeftTab}
-                    />
-                  ) : leftTab === "es6" ? (
-                    <ES6CheatSheet
-                      onSelectConcept={(conceptId) => {
-                        setActiveConceptId(conceptId);
-                        setActiveExerciseIndex(0);
-                        setLeftTab("theory");
-                      }}
-                      currActiveConceptId={activeConceptId}
-                    />
-                  ) : leftTab === "notes" ? (
-                    <NotesPanel
-                      activeExercise={activeExercise}
-                      activeConcept={activeConcept}
-                    />
-                  ) : leftTab === "visualizer" ? (
-                    <VisualSandbox
-                      activeConcept={activeConcept}
-                      activeExercise={activeExercise}
-                      solvedExercises={solvedExercises}
-                    />
-                  ) : (
-                    <ProblemGoalPanel
-                      activeConcept={activeConcept}
-                      activeExerciseIndex={activeExerciseIndex}
-                      setActiveExerciseIndex={setActiveExerciseIndex}
-                      setLeftTab={setLeftTab}
-                      activeExercise={activeExercise}
-                      solvedExercises={solvedExercises}
-                      activeHintsCount={activeHintsCount}
-                      setActiveHintsCount={setActiveHintsCount}
-                      handleRevealHint={handleRevealHint}
-                      journeyPreviewIdx={journeyPreviewIdx}
-                      setJourneyPreviewIdx={setJourneyPreviewIdx}
-                    />
-                  )}
-                </AnimatePresence>
+              {/* Quick pagination stepping indicators inside heading bar */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-zinc-400 font-bold hidden md:inline">
+                  Practice Steps:
+                </span>
+                <div className="flex bg-zinc-950 rounded-lg p-1 border border-zinc-800 overflow-x-auto select-none">
+                  {activeConcept.exercises.map((ex, idx) => {
+                    const isCur = idx === activeExerciseIndex;
+                    const isSol = solvedExercises[ex.id];
+                    return (
+                      <button
+                        key={ex.id}
+                        onClick={() => setActiveExerciseIndex(idx)}
+                        className={`h-7 w-7 rounded-md text-[11px] font-mono font-bold flex items-center justify-center transition-all cursor-pointer ${
+                          isCur
+                            ? "bg-[#F7DF1E] text-zinc-955 shadow-md transform scale-105"
+                            : isSol
+                              ? "text-emerald-400 hover:bg-zinc-90 w-7 h-7"
+                              : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"
+                        }`}
+                        title={ex.title}
+                      >
+                        {idx + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
 
-                {/* Exercise Solved Milestone Card */}
-                {currentExerciseStatus && (
-                  <div className="mt-8 bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md border border-zinc-800">
-                    <div className="h-8 w-8 rounded-lg bg-[#F7DF1E] flex items-center justify-center shrink-0">
-                      <CheckCircle className="h-4.5 w-4.5 text-zinc-950" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#F7DF1E]">
-                        Repetition Completed!
-                      </h4>
-                      <p className="text-xs text-zinc-300 font-sans">
-                        You solved this repetition. Switch to the next to keep
-                        building muscle!
-                      </p>
-                    </div>
-                  </div>
-                )}
+            {/* Two-Column Editor Pane Split (Free from Chapter selection crowding!) */}
+            <section className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 min-w-0">
+              {/* Left Column: Learning Materials / Guidelines Tabbed View */}
+              <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col bg-white overflow-y-auto min-h-0 min-w-0">
+                {/* Top Selector ribbon for individual puzzle repetition status */}
+                <ExerciseNavigator
+                  activeConcept={activeConcept}
+                  activeExerciseIndex={activeExerciseIndex}
+                  setActiveExerciseIndex={setActiveExerciseIndex}
+                  setLeftTab={setLeftTab}
+                  solvedExercises={solvedExercises}
+                  currentConceptSolvedCount={currentConceptSolvedCount}
+                />
 
-                {isConceptMastered && (
-                  <div className="mt-4 bg-emerald-950 text-white rounded-xl p-4.5 border border-emerald-800 shadow-lg animate-fade-in space-y-2.5">
-                    <div className="flex items-center gap-2">
-                      <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center text-zinc-100">
-                        <Sparkles className="h-4 w-4 text-zinc-905 fill-zinc-905" />
+                {/* Guide/Goal Selection controls */}
+                <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-1 shrink-0 select-none overflow-x-auto">
+                  <button
+                    onClick={() => setLeftTab("problem")}
+                    className={`flex-1 min-w-[120px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                      leftTab === "problem"
+                        ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
+                        : "text-zinc-500 hover:text-zinc-950"
+                    }`}
+                  >
+                    <Code className="h-3.5 w-3.5 shrink-0" />
+                    <span className="whitespace-nowrap">Problem Goal</span>
+                  </button>
+
+                  <button
+                    onClick={() => setLeftTab("es6")}
+                    className={`flex-1 min-w-[115px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                      leftTab === "es6"
+                        ? "bg-white text-zinc-950 border border-[#F7DF1E] shadow-sm font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950"
+                    }`}
+                  >
+                    <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-101" />
+                    <span className="whitespace-nowrap">ES6 Sheets</span>
+                  </button>
+
+                  <button
+                    onClick={() => setLeftTab("notes")}
+                    className={`flex-1 min-w-[110px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                      leftTab === "notes"
+                        ? "bg-white text-zinc-950 border border-[#EDD012] shadow-sm font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950"
+                    }`}
+                  >
+                    <Edit3 className="h-3.5 w-3.5 text-[#F7DF1E] shrink-0" />
+                    <span className="whitespace-nowrap">My Notes</span>
+                  </button>
+
+                  <button
+                    onClick={() => setLeftTab("visualizer")}
+                    className={`flex-1 min-w-[125px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer relative ${
+                      leftTab === "visualizer"
+                        ? "bg-white text-zinc-950 border border-purple-300 shadow-sm font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950"
+                    }`}
+                  >
+                    <Sparkles
+                      className={`h-3.5 w-3.5 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`}
+                    />
+                    <span className="whitespace-nowrap flex items-center gap-1.5">
+                      Visual Sandbox
+                      {activeExerciseIndex ===
+                        activeConcept.exercises.length - 1 && (
+                        <span className="h-2 w-2 rounded-full bg-purple-500 relative flex shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Dynamic View Panel (Theory manual / active exercise problem / ES6 cheatsheet) */}
+                <div className="p-6 flex-1 flex flex-col justify-between overflow-y-auto min-h-0">
+                  <AnimatePresence mode="wait">
+                    {leftTab === "es6" ? (
+                      <ES6CheatSheet
+                        onSelectConcept={(conceptId) => {
+                          setActiveConceptId(conceptId);
+                          setActiveExerciseIndex(0);
+                          setSandboxView("learn");
+                          setLeftTab("theory");
+                        }}
+                        currActiveConceptId={activeConceptId}
+                      />
+                    ) : leftTab === "notes" ? (
+                      <NotesPanel
+                        activeExercise={activeExercise}
+                        activeConcept={activeConcept}
+                      />
+                    ) : leftTab === "visualizer" ? (
+                      <VisualSandbox
+                        activeConcept={activeConcept}
+                        activeExercise={activeExercise}
+                        solvedExercises={solvedExercises}
+                        userCodes={userCodes}
+                      />
+                    ) : (
+                      <ProblemGoalPanel
+                        activeConcept={activeConcept}
+                        activeExerciseIndex={activeExerciseIndex}
+                        setActiveExerciseIndex={setActiveExerciseIndex}
+                        setLeftTab={setLeftTab}
+                        activeExercise={activeExercise}
+                        solvedExercises={solvedExercises}
+                        activeHintsCount={activeHintsCount}
+                        setActiveHintsCount={setActiveHintsCount}
+                        handleRevealHint={handleRevealHint}
+                        journeyPreviewIdx={journeyPreviewIdx}
+                        setJourneyPreviewIdx={setJourneyPreviewIdx}
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  {/* Exercise Solved Milestone Card */}
+                  {currentExerciseStatus && (
+                    <div className="mt-8 bg-zinc-900 text-white rounded-xl p-4 flex items-center gap-3 shadow-md border border-zinc-800">
+                      <div className="h-8 w-8 rounded-lg bg-[#F7DF1E] flex items-center justify-center shrink-0">
+                        <CheckCircle className="h-4.5 w-4.5 text-zinc-950" />
                       </div>
-                      <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300">
-                        🎓 Concept fully Mastered!
-                      </h4>
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-[#F7DF1E]">
+                          Repetition Completed!
+                        </h4>
+                        <p className="text-xs text-zinc-300 font-sans">
+                          You solved this repetition. Switch to the next to keep
+                          building muscle!
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-[11px] text-zinc-200 leading-relaxed font-sans">
-                      Amazing job! You successfully completed all{" "}
-                      {activeConcept.exercises.length} repetitions for{" "}
-                      <strong>{activeConcept.title}</strong>. Head over to the{" "}
-                      <strong>Concept Guide</strong> tab on the left to review
-                      your interactive, beginner-friendly Concept Recap!
-                    </p>
-                    <button
-                      onClick={() => setLeftTab("theory")}
-                      className="w-full text-center py-2 px-3 rounded bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold font-mono text-[10.5px] tracking-tight uppercase shadow transition-all active:scale-[0.98] cursor-pointer"
-                    >
-                      Open Concept Recap Guide →
-                    </button>
-                  </div>
-                )}
+                  )}
+
+                  {isConceptMastered && (
+                    <div className="mt-4 bg-emerald-950 text-white rounded-xl p-4.5 border border-emerald-800 shadow-lg animate-fade-in space-y-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="h-7 w-7 rounded-lg bg-emerald-500 flex items-center justify-center text-zinc-100">
+                          <Sparkles className="h-4 w-4 text-zinc-905 fill-zinc-905" />
+                        </div>
+                        <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300">
+                          🎓 Concept fully Mastered!
+                        </h4>
+                      </div>
+                      <p className="text-[11px] text-zinc-200 leading-relaxed font-sans">
+                        Amazing job! You successfully completed all{" "}
+                        {activeConcept.exercises.length} repetitions for{" "}
+                        <strong>{activeConcept.title}</strong>. Head over to the{" "}
+                        <strong>Concept Guide</strong> tab on the left to review
+                        your interactive, beginner-friendly Concept Recap!
+                      </p>
+                      <button
+                        onClick={() => setLeftTab("theory")}
+                        className="w-full text-center py-2 px-3 rounded bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold font-mono text-[10.5px] tracking-tight uppercase shadow transition-all active:scale-[0.98] cursor-pointer"
+                      >
+                        Open Concept Recap Guide →
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Right Column: Code Editor workspace & Live assertion outputs */}
-            <div className="flex-1 flex flex-col overflow-hidden bg-white min-h-0 min-w-0">
-              <CodeWorkspace
-                currentCode={currentCode}
-                handleCodeChange={handleCodeChange}
-                handleKeyDown={handleKeyDown}
-                activeExerciseIndex={activeExerciseIndex}
-                showPrevReference={showPrevReference}
-                setShowPrevReference={setShowPrevReference}
-                prevExercise={prevExercise}
-                handleResetCode={handleResetCode}
-                prevCode={prevCode}
-                lineNumbers={lineNumbers}
-                workspaceHeight={workspaceHeight}
-                setWorkspaceHeight={saveWorkspaceHeight}
-              />
+              {/* Right Column: Code Editor workspace & Live assertion outputs */}
+              <div className="flex-1 flex flex-col overflow-hidden bg-white min-h-0 min-w-0">
+                <CodeWorkspace
+                  currentCode={currentCode}
+                  handleCodeChange={handleCodeChange}
+                  handleKeyDown={handleKeyDown}
+                  activeExerciseIndex={activeExerciseIndex}
+                  showPrevReference={showPrevReference}
+                  setShowPrevReference={setShowPrevReference}
+                  prevExercise={prevExercise}
+                  handleResetCode={handleResetCode}
+                  prevCode={prevCode}
+                  lineNumbers={lineNumbers}
+                  workspaceHeight={workspaceHeight}
+                  setWorkspaceHeight={saveWorkspaceHeight}
+                />
 
-              <AssertionConsole
-                activeExercise={activeExercise}
-                currentCode={currentCode}
-                testResults={testResults}
-                isRunningTests={isRunningTests}
-                handleRunTests={handleRunTests}
-              />
-            </div>
-          </section>
-        </main>
+                <AssertionConsole
+                  activeExercise={activeExercise}
+                  currentCode={currentCode}
+                  testResults={testResults}
+                  isRunningTests={isRunningTests}
+                  handleRunTests={handleRunTests}
+                />
+              </div>
+            </section>
+          </main>
+        )
       ) : (
         /* Isolated Curriculum Topics Map / Syllabus Roadmap View */
         <Roadmap
-          knowledgeMapCategories={KNOWLEDGE_MAP_CATEGORIES}
-          knowledgeMapTopics={KNOWLEDGE_MAP_TOPICS}
+          knowledgeMapCategories={sortedKnowledgeMapCategories}
+          knowledgeMapTopics={sortedKnowledgeMapTopics}
           completedTopics={completedTopics}
           completedTopicsCount={completedTopicsCount}
           totalTopicsCount={totalTopicsCount}
@@ -591,6 +712,7 @@ export default function App() {
         setActiveConceptId={setActiveConceptId}
         setActiveExerciseIndex={setActiveExerciseIndex}
         concepts={CONCEPTS}
+        setSandboxView={setSandboxView}
       />
     </div>
   );

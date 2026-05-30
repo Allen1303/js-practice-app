@@ -1108,205 +1108,193 @@ const initialGreeting = firstName + " " + lastName.slice(0, 1) + ".";
 console.log(initialGreeting); // "Sarah C."`,
     exercises: [
       {
-        id: "string-html-tag",
-        title: "Sanitized HTML Tag Wrappers",
+        id: "string-template-interpolation",
+        title: "Template Literal Interpolator",
         difficulty: "Warm-up",
-        codeSnippet: `// Example Use Case: Wrapping lines in HTML tag blocks
-const label = "Home ";
-const tagType = "ANCHOR";
-const html = \`<\${tagType.toLowerCase()}>\${label.trim()}</\${tagType.toLowerCase()}>\`;
-// "<a>Home</a>"`,
+        codeSnippet: `// Example Use Case: String generation
+const user = "Alice";
+const greeting = \`Hello, \${user}!\`; // "Hello, Alice!"`,
         conceptContext:
-          "HTML template generation requires standardizing lowercase identifiers and scrubbing boundary whitespace characters to prevent layout anomalies.",
+          "Template literals inside backticks (`) allow seamless variable and expression injection via standard ${} markers.",
         description:
-          "Let's warm up with custom template constructors.\n\nWrite a function `wrapInHTML(text, tag)` that encloses a string within customized HTML tags.\n\nEnsure that:\n- Whitespaces are trimmed from the `text`.\n- The `tag` value is converted completely to lowercase before generation.\n\nExample: `wrapInHTML(' Hello ', 'DIV')` -> `'<div>Hello</div>'`.",
-        codeTemplate: `function wrapInHTML(text, tag) {
-  // Trim spaces and normalize HTML element names
+          'Let\'s practice the most common way to build modern strings in JavaScript: using backticks and string interpolation!\n\nWrite a function `greetUser(name, role)` that uses a template literal to construct a customized greeting line.\n\nIt should return exactly: `"Welcome, [name]! Your role is: [role]."`',
+        codeTemplate: `function greetUser(name, role) {
+  // Return a template literal combining name and role
   
 }`,
-        functionName: "wrapInHTML",
+        functionName: "greetUser",
         hints: [
-          "Call .trim() on the 'text' string values.",
-          "Call .toLowerCase() on the 'tag' string arguments.",
-          "Return wrapped elements: \`<\${cleanTag}>\${cleanText}</\${cleanTag}>\`.",
+          "Use backticks (`) instead of single or double quotes for the string wrapper.",
+          "Insert variables directly into the template string using ${name} and ${role}.",
         ],
         explanation:
-          "Generating standardized formatting structures represents standard script automation tasks.",
+          "Dynamic string interpolation replaces old string concatenation, creating cleaner and highly readable layouts.",
         testCases: [
           {
             id: 1,
-            input: [[" Hello ", "DIV"]],
-            expected: "<div>Hello</div>",
+            input: ["Alice", "admin"],
+            expected: "Welcome, Alice! Your role is: admin.",
+            description: "Interpolates name 'Alice' and role 'admin'",
+          },
+          {
+            id: 2,
+            input: ["Bob", "moderator"],
+            expected: "Welcome, Bob! Your role is: moderator.",
+            description: "Interpolates name 'Bob' and role 'moderator'",
+          },
+        ],
+      },
+      {
+        id: "string-trim-spaces",
+        title: "User Input Whitespace Cleanser",
+        difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Removing accidental margins from input values
+const message = "  Hello  ";
+const clean = message.trim(); // "Hello"`,
+        conceptContext:
+          "The `.trim()` method removes empty space characters from both the beginning and end of a string without altering the internal text gaps.",
+        description:
+          "Scrub messy inputs by sweeping away accidental spaces at the start or end of a string using `.trim()`!\n\nWrite a function `cleanUsername(username)` that receives a string and returns it with all leading and trailing whitespaces removed.",
+        codeTemplate: `function cleanUsername(username) {
+  // Remove leading and trailing spaces
+  
+}`,
+        functionName: "cleanUsername",
+        hints: [
+          "Call the .trim() method on the username argument.",
+          "Remember that strings are immutable, so .trim() returns a fresh new string. Return this result.",
+        ],
+        explanation:
+          "Cleaning input fields validates names and search queries safely before executing database lookups.",
+        testCases: [
+          {
+            id: 1,
+            input: ["   sarah_connor   "],
+            expected: "sarah_connor",
             description:
-              "Trims contents and forces lowercase tags successfully",
+              "Trims wide borders of leading and trailing spaces successfully",
           },
           {
             id: 2,
-            input: [["Item", "li"]],
-            expected: "<li>Item</li>",
-            description: "Secures custom list structures",
+            input: ["john_doe"],
+            expected: "john_doe",
+            description: "Leaves properly structured names intact",
           },
         ],
       },
       {
-        id: "string-csv-reader",
-        title: "Clean delimiter CSV Row Reader",
+        id: "string-case-normalization",
+        title: "Case-Insensitive Email Normalizer",
+        difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Case-insensitive email checks
+const userEmail = "Sarah.Connor@Skynet.Com";
+const normal = userEmail.toLowerCase(); // "sarah.connor@skynet.com"`,
+        conceptContext:
+          "Using `.toLowerCase()` or `.toUpperCase()` normalizes input elements, securing lookup matching keys from erratic casing mismatches.",
+        description:
+          "Make user searches or credentials case-insensitive by normalizing text to lower or upper case!\n\nWrite a function `normalizeEmail(email)` that receives a string and returns a completely lowercased version of the email address.",
+        codeTemplate: `function normalizeEmail(email) {
+  // Convert input email string to lowercase
+  
+}`,
+        functionName: "normalizeEmail",
+        hints: [
+          "Use the built-in .toLowerCase() method on your email parameter.",
+          "It does not accept any arguments and returns the newly normalized string.",
+        ],
+        explanation:
+          "Normalizing data ensures that comparisons like 'User@Mail.com === user@mail.com' resolve securely to true.",
+        testCases: [
+          {
+            id: 1,
+            input: ["Sarah.Connor@Skynet.Com"],
+            expected: "sarah.connor@skynet.com",
+            description: "Normalizes a mix of upper and lower case letters",
+          },
+          {
+            id: 2,
+            input: ["ADMIN@domain.org"],
+            expected: "admin@domain.org",
+            description: "Slashes general all-cap inputs down",
+          },
+        ],
+      },
+      {
+        id: "string-slice-segments",
+        title: "Area Code Segment Extractor",
+        difficulty: "Warm-up",
+        codeSnippet: `// Example Use Case: Extracting fixed slices from serial text codes
+const text = "JavaScript";
+const part = text.slice(0, 4); // "Java"`,
+        conceptContext:
+          "Extracting specific subsets of characters is simplified using standard string `.slice(startIndex, endIndexExclusive)` offsets.",
+        description:
+          "Extract portions of text from a string using ranges with `.slice(start, end)`!\n\nWrite a function `getAreaCode(phoneNumber)` that extracts and returns only the first three characters of a phone number string.",
+        codeTemplate: `function getAreaCode(phoneNumber) {
+  // Extract the first 3 characters representing the area code
+  
+}`,
+        functionName: "getAreaCode",
+        hints: [
+          "Call .slice() on your phone string argument.",
+          "The start index parameter should be 0, and the end index (exclusive) should be 3.",
+        ],
+        explanation:
+          "Slicing slices complex logs and formatting phone codes into localized regional blocks easily.",
+        testCases: [
+          {
+            id: 1,
+            input: ["415-555-2671"],
+            expected: "415",
+            description: "Extracts area code from formatted phone blocks",
+          },
+          {
+            id: 2,
+            input: ["2129876543"],
+            expected: "212",
+            description: "Processes uniform numeric buffers smoothly",
+          },
+        ],
+      },
+      {
+        id: "string-html-builder",
+        title: "Sanitized HTML Button Builder",
         difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Parsing and brushing spreadsheet entries
-const record = "admin,  moderator , guest ";
-const roles = record.split(",").map(val => val.trim());
-// ["admin", "moderator", "guest"]`,
+        codeSnippet: `// Example Use Case: Combining sanitizers in web component template wrappers
+const choice = "  Save  ";
+const type = "blue";
+const elem = \`<span class="TAG-\${type.toUpperCase()}">\${choice.trim()}</span>\`;
+// "<span class=\"TAG-BLUE\">Save</span>"`,
         conceptContext:
-          "CSV cell splitting parses continuous strings on specific characters to isolate elements, and trims surrounding whitespace to sanitize inputs.",
+          "Production UI component renderers coordinate string template strings, trim whitespace scrubs, and standardize casing blocks simultaneously.",
         description:
-          "Let's build on basic mapping by splitting tabular fields from raw data formats!\n\nWrite a function `parseCSVRow(row, delimiter)` that takes a line of spreadsheet values and a character separator (like a comma).\n\nIt should split the string on that separator into arrays, ensuring that every resulting field has leading and trailing spaces stripped cleanly.",
-        codeTemplate: `function parseCSVRow(row, delimiter) {
-  // Split sequences and map trimmed records
+          "Let's coordinate all the string tools you've learned to build a clean web component!\n\nWrite a function `buildHTMLButton(label, variant)` that constructs an interactive HTML button tag string.\n\nYour function must:\n1. Remove all leading and trailing whitespaces from `label` using `.trim()`.\n2. Convert `variant` completely to uppercase using `.toUpperCase()` so that the output style is formatted like `BTN-PRIMARY`.\n3. Wrap the results inside standard HTML button tags using a backtick template literal: `<button class=\"BTN-[variant]\">[label]</button>`.\n\nExample: `buildHTMLButton('   Click Me   ', 'primary')` would return `'<button class=\"BTN-PRIMARY\">Click Me</button>'`.",
+        codeTemplate: `function buildHTMLButton(label, variant) {
+  // Clean the label, transform the variant, and format the output HTML button tag
   
 }`,
-        functionName: "parseCSVRow",
+        functionName: "buildHTMLButton",
         hints: [
-          "Use row.split(delimiter) to partition elements.",
-          "Chain .map(field => field.trim()) to prune extraneous whitespaces from the output array.",
+          "First call .trim() on label and assign it to a variable.",
+          "Call .toUpperCase() on variant.",
+          'Return the finalized HTML tag using a backtick template literal: \`<button class="BTN-\${cleanVariant}">\${cleanLabel}</button>\`.',
         ],
         explanation:
-          "Splitting line strings and trimming whitespaces is fundamental to parsing file formats.",
+          "Combining multiple string methods enables declarative generation of robust UI views without risking formatting visual leaks.",
         testCases: [
           {
             id: 1,
-            input: [["apple,   banana , orange", ","]],
-            expected: ["apple", "banana", "orange"],
-            description: "Prunes whitespace margins from CSV array parts",
+            input: [["  Save Config  ", "primary"]],
+            expected: '<button class="BTN-PRIMARY">Save Config</button>',
+            description:
+              "Fuses trimmed label and uppercased primary class variant together",
           },
           {
             id: 2,
-            input: [["admin; guest", ";"]],
-            expected: ["admin", "guest"],
-            description: "Supports alternative separators cleanly",
-          },
-        ],
-      },
-      {
-        id: "string-camel-case",
-        title: "CamelCase Variable Standardizer",
-        difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Converting slug labels to camel case variables
-const slug = "active_user_session";
-const camel = slug.split("_").map((w, i) => i === 0 ? w.toLowerCase() : w[0].toUpperCase() + w.slice(1)).join("");
-// "activeUserSession"`,
-        conceptContext:
-          "Transforming standard slugs to camelCase isolates separate words by their boundaries, then capitalizes the subsequent words and joins them back together.",
-        description:
-          "Convert separated inputs into standard camelCase syntax!\n\nWrite a function `toCamelCase(str)` that accepts hyphens, underscores, or space-separated term strings and converts them to modular CamelCase form.\n\nExample:\n- `'first-name'` -> `'firstName'`\n- `'Capitalize space text'` -> `'capitalizeSpaceText'`.",
-        codeTemplate: `function toCamelCase(str) {
-  // Split sentences/slugs and reduce or map elements capitalized
-  
-}`,
-        functionName: "toCamelCase",
-        hints: [
-          "Split variables across delimiters (regex /[\\s-_]+/ is highly useful).",
-          "Map words: the first word is coerced to lowercase. Subsequent words get their first letter capitalized and remainders kept intact.",
-          "Join the results back with a blank character delimiter: .join('').",
-        ],
-        explanation:
-          "Translating dirty filenames and forms keys into normalized variables prevents namespace crash bugs.",
-        testCases: [
-          {
-            id: 1,
-            input: ["first-name"],
-            expected: "firstName",
-            description: "Resolves hyphenated variables to camelCase",
-          },
-          {
-            id: 2,
-            input: ["Capitalize space text"],
-            expected: "capitalizeSpaceText",
-            description: "Handles multi word spaces seamlessly",
-          },
-        ],
-      },
-      {
-        id: "string-brackets",
-        title: "Balanced Bracket sequence Auditor",
-        difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Dynamic parentheses parity verification
-const stack = [];
-const text = "(hello)";
-for (const char of text) {
-  if (char === "(") stack.push("(");
-  if (char === ")") stack.pop();
-}
-const isSafe = stack.length === 0;
-// true`,
-        conceptContext:
-          "Bracket sequences are audited using stack queues. Storing opening delimiters allows us to run chronological parity checks when closing elements are visited.",
-        description:
-          "Build an automated syntax verification engine!\n\nWrite a function `isBalancedBrackets(code)` that inspects a string of code, returning `true` if all parentheses `()`, curly braces `{}`, and square brackets `[]` are properly opened and closed in the correct chronological order.\n\nIf any brackets are closed out of sequence or remain unclosed, return `false`.",
-        codeTemplate: `function isBalancedBrackets(code) {
-  // Use a classic array stack to verify bracket closures
-  
-}`,
-        functionName: "isBalancedBrackets",
-        hints: [
-          "Initialize an empty stack list: const stack = [].",
-          "Identify characters: open characters '({[' get pushed immediately.",
-          "When visiting close chars ')}]': pop the stack and check that it represents the appropriate matching open brace. If false, return false.",
-          "After looping, returns true if stack size is empty (all closed).",
-        ],
-        explanation:
-          "Compilers and linters leverage stack queues to validate brackets boundaries cleanly in linear time.",
-        testCases: [
-          {
-            id: 1,
-            input: ["function() { let x = [1, 2]; }"],
-            expected: true,
-            description: "Correctly closed structures return true",
-          },
-          {
-            id: 2,
-            input: ["( [ ) ]"],
-            expected: false,
-            description: "Catches mismatched bracket sequences",
-          },
-        ],
-      },
-      {
-        id: "string-decompress-rle",
-        title: "Run-Length Sequence Decompressor",
-        difficulty: "DSA Medium",
-        codeSnippet: `// Example Use Case: Replicating repeating character runs
-const symbol = "x";
-const runLength = 12;
-const stream = symbol.repeat(runLength);
-// "xxxxxxxxxxxx"`,
-        conceptContext:
-          "Data expansion reads encoded patterns and multiplies symbols according to the adjacent count parameter using string repeating utilities.",
-        description:
-          "Create an inverse data decompression script!\n\nWrite a function `decompressRLE(str)` that takes a compacted run-length encoded string and expands it back to its original layout.\n\nInput strings are structured as repeating characters followed directly by their occurrences counts (which can be multi-digit numbers).\n\nExample:\n- `'a2b3a1'` -> `'aabbba'`\n- `'x10y1'` -> `'xxxxxxxxxxy'`.",
-        codeTemplate: `function decompressRLE(str) {
-  // Parse letters and trailing numeric count groups sequentially, multiplying characters
-  
-}`,
-        functionName: "decompressRLE",
-        hints: [
-          "Iterate str. Identify letters (regex /[a-zA-Z]/) and number runs (regex /[0-9]/).",
-          "Keep accumulating character digits if they continue sequentially, parsing with parseInt().",
-          "Replicate letters: currentChar.repeat(count) and append to result string.",
-        ],
-        explanation:
-          "Unpacking formatted networks packets reduces transit payload weights safely.",
-        testCases: [
-          {
-            id: 1,
-            input: ["a2b3a1"],
-            expected: "aabbba",
-            description: "Expands compressed streams to original sequences",
-          },
-          {
-            id: 2,
-            input: ["x10y1"],
-            expected: "xxxxxxxxxxy",
-            description: "Supports double-digit multiplier counts",
+            input: [["Delete Record", "danger"]],
+            expected: '<button class="BTN-DANGER">Delete Record</button>',
+            description:
+              "Properly formats danger state classes and preserves input sizes",
           },
         ],
       },

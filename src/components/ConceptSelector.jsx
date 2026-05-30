@@ -8,6 +8,7 @@ import {
   Clock,
   Cpu,
   Award,
+  Lock,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -108,6 +109,7 @@ export function ConceptSelector({
   setActiveConceptId,
   setActiveExerciseIndex,
   setLeftTab,
+  setSandboxView,
 }) {
   return (
     <section className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-zinc-200 bg-white flex flex-col pt-5 px-4 overflow-y-auto shrink-0 max-h-[300px] lg:max-h-none">
@@ -153,18 +155,42 @@ export function ConceptSelector({
                             solvedInConcept === concept.exercises.length &&
                             concept.exercises.length > 0;
 
+                          // Linear progression lock check:
+                          const conceptIndex = concepts.findIndex(
+                            (c) => c.id === concept.id,
+                          );
+                          const isConceptUnlocked =
+                            conceptIndex <= 0 ||
+                            (() => {
+                              const prevConcept = concepts[conceptIndex - 1];
+                              const solvedInPrev = prevConcept.exercises.filter(
+                                (e) => solvedExercises[e.id],
+                              ).length;
+                              return (
+                                solvedInPrev === prevConcept.exercises.length
+                              );
+                            })();
+
                           return (
                             <button
                               key={concept.id}
+                              disabled={!isConceptUnlocked}
                               onClick={() => {
-                                setActiveConceptId(concept.id);
-                                setActiveExerciseIndex(0);
-                                setLeftTab("theory");
+                                if (isConceptUnlocked) {
+                                  setActiveConceptId(concept.id);
+                                  setActiveExerciseIndex(0);
+                                  setLeftTab("theory");
+                                  if (setSandboxView) {
+                                    setSandboxView("learn");
+                                  }
+                                }
                               }}
-                              className={`w-full text-left p-3 rounded-xl border transition-all duration-200 flex flex-col gap-1.5 group relative overflow-hidden cursor-pointer ${
+                              className={`w-full text-left p-3 rounded-xl border transition-all duration-200 flex flex-col gap-1.5 group relative overflow-hidden ${
                                 isSelected
-                                  ? "bg-yellow-50/60 border-[#F7DF1E] shadow-sm text-zinc-900 font-semibold"
-                                  : "bg-white border-zinc-200 hover:bg-zinc-50 text-zinc-700"
+                                  ? "bg-yellow-50/60 border-[#F7DF1E] shadow-sm text-zinc-900 font-semibold cursor-pointer"
+                                  : !isConceptUnlocked
+                                    ? "bg-zinc-50 border-zinc-150 text-zinc-400 cursor-not-allowed opacity-60"
+                                    : "bg-white border-zinc-200 hover:bg-zinc-50 text-zinc-700 cursor-pointer"
                               }`}
                             >
                               {/* Subtle active state visual indicator */}
@@ -172,18 +198,23 @@ export function ConceptSelector({
                                 <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#F7DF1E]" />
                               )}
 
-                              <div className="flex items-start justify-between gap-1.5">
-                                <h4 className="text-[11.5px] font-bold tracking-tight text-zinc-900 group-hover:text-zinc-950 transition-colors">
+                              <div className="flex items-start justify-between gap-1.5 w-full">
+                                <h4 className="text-[11.5px] font-bold tracking-tight text-zinc-900 group-hover:text-zinc-950 transition-colors flex items-center gap-1.5">
+                                  {!isConceptUnlocked && (
+                                    <Lock className="h-3 w-3 text-zinc-400 shrink-0" />
+                                  )}
                                   {concept.title}
                                 </h4>
 
-                                {/* Mastery Level Badge */}
+                                {/* Mastery Level Badge or Lock */}
                                 {isMastered ? (
                                   <span className="flex items-center gap-[2px] text-[8px] font-mono font-bold uppercase tracking-wider text-zinc-800 px-1 py-[1px] rounded bg-[#F7DF1E]/85 border border-[#edd012] shrink-0">
                                     <Check className="h-2 w-2 inline" /> OK
                                   </span>
+                                ) : !isConceptUnlocked ? (
+                                  <Lock className="h-3 w-3 text-zinc-450 shrink-0 mt-0.5" />
                                 ) : (
-                                  <span className="text-[10px] font-mono text-zinc-400 shrink-0">
+                                  <span className="text-[10px] font-mono text-zinc-500 shrink-0">
                                     {solvedInConcept}/{concept.exercises.length}
                                   </span>
                                 )}
@@ -194,7 +225,7 @@ export function ConceptSelector({
                               </p>
 
                               {/* Progressive bar meter */}
-                              <div className="w-full bg-zinc-100 border border-zinc-150 h-1.5 rounded-full overflow-hidden mt-0.5">
+                              <div className="w-full bg-zinc-105 border border-zinc-150 h-1 rounded-full overflow-hidden mt-0.5">
                                 <div
                                   className={`h-full rounded-full transition-all duration-300 ${isMastered ? "bg-[#F7DF1E]" : "bg-zinc-850"}`}
                                   style={{
