@@ -1284,14 +1284,14 @@ const elem = \`<span class="TAG-\${type.toUpperCase()}">\${choice.trim()}</span>
         testCases: [
           {
             id: 1,
-            input: [["  Save Config  ", "primary"]],
+            input: ["  Save Config  ", "primary"],
             expected: '<button class="BTN-PRIMARY">Save Config</button>',
             description:
               "Fuses trimmed label and uppercased primary class variant together",
           },
           {
             id: 2,
-            input: [["Delete Record", "danger"]],
+            input: ["Delete Record", "danger"],
             expected: '<button class="BTN-DANGER">Delete Record</button>',
             description:
               "Properly formats danger state classes and preserves input sizes",
