@@ -57,12 +57,10 @@ export function CodeWorkspace({
   };
 
   const handleKeyDownLocal = (e) => {
-    // 1. Let the parent run its check first (e.g. Ctrl/Cmd+Enter for running tests)
     if (handleKeyDown) {
       handleKeyDown(e);
     }
 
-    // If parent prevented default, skip local handling
     if (e.defaultPrevented) return;
 
     const textarea = textareaRef.current;
@@ -71,7 +69,6 @@ export function CodeWorkspace({
     const { selectionStart, selectionEnd } = textarea;
     const key = e.key;
 
-    // Handle tab key to insert 2 spaces
     if (key === "Tab") {
       e.preventDefault();
       const value = textarea.value;
@@ -114,7 +111,6 @@ export function CodeWorkspace({
         return;
       }
 
-      // Handle backspace when the character to the left and right are matching brackets/quotes
       if (key === "Backspace") {
         const value = textarea.value;
         const prevChar = value[selectionStart - 1];
@@ -141,7 +137,6 @@ export function CodeWorkspace({
         }
       }
 
-      // Handle typing the closing character if it is already right in front of the cursor (overtyping)
       const closingChars = [")", "]", "}", '"', "'", "`"];
       if (closingChars.includes(key)) {
         const value = textarea.value;
@@ -156,14 +151,12 @@ export function CodeWorkspace({
         }
       }
 
-      // Smart newline indentation when Enter is pressed between { and }
       if (key === "Enter") {
         const value = textarea.value;
         const prevChar = value[selectionStart - 1];
         const nextChar = value[selectionStart];
         if (prevChar === "{" && nextChar === "}") {
           e.preventDefault();
-          // Find preceding indentation of current line
           const lines = value.slice(0, selectionStart).split("\n");
           const currentLine = lines[lines.length - 1];
           const indentMatch = currentLine.match(/^\s*/);
@@ -190,41 +183,44 @@ export function CodeWorkspace({
   return (
     <div
       style={{ height: `${workspaceHeight}px` }}
-      className="shrink-0 flex flex-col overflow-hidden bg-white border-b border-zinc-200 relative pb-1.5"
+      className="shrink-0 flex flex-col overflow-hidden bg-[#282c34] border-b border-zinc-800 relative pb-1.5"
     >
-      {/* Editor Action Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 shrink-0 bg-white px-6 py-3">
-        <span className="text-xs font-mono font-bold tracking-wider text-zinc-700 uppercase flex items-center gap-1.5">
-          <Code className="h-4 w-4 text-[#ecd214]" />
-          Interactive JS Workspace
-        </span>
+      {/* Editor Action Code Tab-Strip */}
+      <div className="flex items-center justify-between border-b border-[#181a1f] shrink-0 bg-[#1e222b] px-4 py-1.5">
+        <div className="flex items-center gap-1.5 select-none">
+          {/* Active solution file tab decoration */}
+          <div className="flex items-center gap-2 bg-[#282c34] text-zinc-200 border-t-2 border-yellow-500 rounded-t px-3.5 py-1.5 text-xs font-mono font-bold shadow-xs select-none">
+            <span className="h-3 w-3 bg-[#F7DF1E] text-zinc-900 rounded-[2px] font-mono font-extrabold text-[8px] flex items-center justify-center pt-0.5 leading-none">
+              JS
+            </span>
+            index.js
+          </div>
+        </div>
 
         <div className="flex items-center gap-2">
           {activeExerciseIndex > 0 && (
             <button
               onClick={() => setShowPrevReference(!showPrevReference)}
-              title="See model solution or code from previous challenge as reference"
-              className={`p-1 px-2.5 rounded transition-all flex items-center gap-1.5 text-[11px] font-mono border cursor-pointer ${
+              title="Compare with your solution from previous challenge step"
+              className={`p-1 px-2.5 rounded transition-all flex items-center gap-1.5 text-[10.5px] font-mono border cursor-pointer ${
                 showPrevReference
-                  ? "bg-amber-100/75 text-amber-950 border-amber-300 shadow-sm font-bold"
-                  : "bg-zinc-100 text-zinc-650 hover:text-zinc-950 hover:bg-zinc-200 border-zinc-200"
+                  ? "bg-[#2c2b21] text-yellow-400 border-yellow-800/80 font-bold"
+                  : "bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 border-zinc-700"
               }`}
             >
               <Lightbulb
-                className={`h-3.5 w-3.5 ${showPrevReference ? "text-amber-600 fill-amber-300" : "text-zinc-400"}`}
+                className={`h-3 w-3 ${showPrevReference ? "text-yellow-400 fill-yellow-400/20" : "text-zinc-500"}`}
               />
               <span>
-                {showPrevReference
-                  ? "Hide Evolution Guide"
-                  : "Compare Step Upgrade"}
+                {showPrevReference ? "Hide evolution guide" : "Compare steps"}
               </span>
             </button>
           )}
 
           <button
             onClick={handleResetCode}
-            title="Reset template code"
-            className="p-1 px-2.5 rounded bg-zinc-100 text-zinc-650 hover:text-zinc-950 hover:bg-zinc-200 transition-colors flex items-center gap-1.5 text-[11px] font-mono border border-zinc-200 cursor-pointer"
+            title="Reset active code draft to initial lesson boilerplate"
+            className="p-1 px-2.5 rounded bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors flex items-center gap-1.5 text-[10.5px] font-mono border border-zinc-700 cursor-pointer"
           >
             <RotateCcw className="h-3 w-3" /> Reset
           </button>
@@ -233,8 +229,8 @@ export function CodeWorkspace({
 
       {/* Code Workspace Frame */}
       <div className="flex-1 relative border-b border-[#181a1f] flex overflow-hidden min-h-[160px] bg-[#282c34]">
-        {/* Line numbers rail using Consolas styling */}
-        <div className="w-12 bg-[#21252b] select-none flex flex-col pt-4 pb-4 font-mono text-xs text-[#4b5263] text-right pr-3 leading-6 border-r border-[#181a1f] shrink-0">
+        {/* Line numbers rail */}
+        <div className="w-11 bg-[#21252b] select-none flex flex-col pt-4 pb-4 font-mono text-[11px] text-[#4b5263] text-right pr-3 leading-6 border-r border-[#181a1f] shrink-0">
           {lineNumbers.map((num) => (
             <span key={num} className="block">
               {num}
@@ -246,7 +242,7 @@ export function CodeWorkspace({
         <div className="flex-1 relative overflow-hidden bg-[#282c34]">
           <pre
             ref={highlightRef}
-            className="absolute inset-0 p-4 m-0 w-full h-full bg-[#282c34] font-mono text-sm leading-6 whitespace-pre overflow-hidden pointer-events-none select-none z-0 text-[#abb2bf]"
+            className="absolute inset-0 p-4 m-0 w-full h-full bg-[#282c34] font-mono text-[13px] leading-6 whitespace-pre overflow-hidden pointer-events-none select-none z-0 text-[#abb2bf]"
             dangerouslySetInnerHTML={{
               __html: highlightJS(
                 currentCode.endsWith("\n") ? currentCode + " " : currentCode,
@@ -260,57 +256,55 @@ export function CodeWorkspace({
             onChange={(e) => handleCodeChange(e.target.value)}
             onKeyDown={handleKeyDownLocal}
             onScroll={handleScroll}
-            className="absolute inset-0 p-4 m-0 w-full h-full bg-transparent text-transparent caret-[#528bff] font-mono text-sm focus:outline-none focus:ring-0 leading-6 resize-none overflow-auto whitespace-pre tab-calc selection:bg-[#3e4451]/80 z-10"
+            className="absolute inset-0 p-4 m-0 w-full h-full bg-transparent text-transparent caret-yellow-400 font-mono text-[13px] focus:outline-none focus:ring-0 leading-6 resize-none overflow-auto whitespace-pre tab-calc selection:bg-[#3e4451]/70 z-10 font-bold"
             spellCheck="false"
             placeholder="// Enter your JavaScript code here..."
           />
         </div>
 
         {/* Quick shortcut overlay logo */}
-        <div className="absolute bottom-2 left-16 text-[10px] font-mono text-[#5c6370] select-none pointer-events-none hidden md:block z-20 bg-[#21252b]/60 px-2 py-0.5 rounded border border-[#181a1f]">
-          Press <kbd className="font-bold text-[#abb2bf]">Ctrl + Enter</kbd> to
+        <div className="absolute bottom-2 left-16 text-[9.5px] font-mono text-zinc-500 select-none pointer-events-none hidden md:block z-20 bg-zinc-900/40 px-2 py-0.5 rounded border border-zinc-800">
+          Press <kbd className="font-bold text-zinc-300">Ctrl + Enter</kbd> to
           run tests
         </div>
 
         {/* Side-by-Side Pattern Progression Upgrade Panel */}
         {showPrevReference && prevExercise && (
-          <div className="w-[360px] border-l border-zinc-200 bg-zinc-50 p-4 overflow-y-auto flex flex-col space-y-4 text-xs font-sans shrink-0 shadow-[-4px_0_12px_rgba(0,0,0,0.02)] z-10">
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-2">
-              <span className="font-mono font-bold text-zinc-800 tracking-wider uppercase text-[9.5px] flex items-center gap-1">
-                <Sparkles className="h-3.5 w-3.5 text-[#ecd214] fill-amber-100" />
+          <div className="w-[360px] border-l border-zinc-800 bg-[#21252b] p-4 overflow-y-auto flex flex-col space-y-4 text-xs font-sans shrink-0 shadow-2xl z-10">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+              <span className="font-mono font-bold text-zinc-300 tracking-wider uppercase text-[9.5px] flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-[#ecd214] fill-amber-100/10" />
                 Pattern Evolution
               </span>
-              <span className="text-[9px] font-mono bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200/60 font-semibold">
+              <span className="text-[9px] font-mono bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded border border-yellow-500/10 font-semibold">
                 Step {activeExerciseIndex} → {activeExerciseIndex + 1}
               </span>
             </div>
 
             <div className="space-y-1">
-              <h4 className="font-extrabold text-zinc-805 text-[11px] uppercase tracking-tight">
+              <h4 className="font-extrabold text-zinc-200 text-[11px] uppercase tracking-tight">
                 Active Concept Path:
               </h4>
-              <p className="text-zinc-650 leading-relaxed text-[11px]">
+              <p className="text-zinc-400 leading-relaxed text-[11px]">
                 Building from{" "}
-                <strong className="text-zinc-900">{prevExercise.title}</strong>{" "}
-                to{" "}
-                <strong className="text-zinc-900">{prevExercise.title}</strong>{" "}
-                in the curriculum sequence.
+                <strong className="text-white">{prevExercise.title}</strong> to{" "}
+                <strong className="text-white">{prevExercise.title}</strong> in
+                the curriculum sequence.
               </p>
             </div>
 
-            <div className="bg-amber-50/50 p-3 rounded-lg border border-amber-200/60 space-y-1.5">
-              <span className="text-[9px] font-mono text-amber-800 font-bold uppercase tracking-wider block">
+            <div className="bg-yellow-500/5 p-3 rounded-lg border border-yellow-500/10 space-y-1.5">
+              <span className="text-[9px] font-mono text-yellow-400 font-bold uppercase tracking-wider block">
                 Cognitive Delta (The Upgrade)
               </span>
-              <p className="text-zinc-700 leading-normal text-[11px]">
-                🎯{" "}
-                <strong className="text-zinc-950">Current delta shift:</strong>{" "}
+              <p className="text-zinc-300 leading-normal text-[11px]">
+                🎯 <strong className="text-white">Current delta shift:</strong>{" "}
                 {formatTextWithCode(prevExercise.explanation)}
               </p>
             </div>
 
             <div className="flex-1 flex flex-col space-y-2 min-h-0 font-sans">
-              <div className="flex items-center justify-between text-[9px] font-mono font-bold text-zinc-555 uppercase tracking-wider">
+              <div className="flex items-center justify-between text-[9px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                 <span>Step {activeExerciseIndex} Reference Code</span>
                 <button
                   onClick={() => {
@@ -322,15 +316,15 @@ export function CodeWorkspace({
                       handleCodeChange(prevCode);
                     }
                   }}
-                  className="text-[9px] font-mono font-bold text-zinc-800 bg-[#F7DF1E] hover:bg-[#edd012] border border-zinc-350 px-2 py-0.5 rounded shadow-sm transition-all cursor-pointer active:scale-95"
+                  className="text-[9px] font-mono font-bold text-zinc-950 bg-[#F7DF1E] hover:bg-[#edd012] border border-zinc-700 px-2 py-0.5 rounded shadow-sm transition-all cursor-pointer active:scale-95"
                   title="Load previous code to current workspace as code draft"
                 >
                   Carry Code Forward
                 </button>
               </div>
 
-              <div className="relative flex-1 flex flex-col min-h-[160px] bg-[#282c34] rounded-lg overflow-hidden border border-[#181a1f] shadow-inner">
-                <div className="flex items-center justify-between px-3 py-1.5 bg-[#21252b] border-b border-[#181a1f] text-[9px] font-mono text-[#abb2bf]">
+              <div className="relative flex-1 flex flex-col min-h-[160px] bg-[#282c34] rounded-lg overflow-hidden border border-zinc-950 shadow-inner">
+                <div className="flex items-center justify-between px-3 py-1.5 bg-[#1a1c22] border-b border-[#121317] text-[9px] font-mono text-[#abb2bf]">
                   <span>
                     {prevCode ? "✅ REFERENCE CODE" : "DEFAULT TEMPLATE"}
                   </span>
@@ -350,10 +344,10 @@ export function CodeWorkspace({
       {/* Adjustable Height Resize Drag Edge */}
       <div
         onMouseDown={handleMouseDown}
-        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-zinc-200/40 hover:bg-[#F7DF1E]/50 active:bg-[#F7DF1E]/80 transition-all z-30 flex items-center justify-center group"
+        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-zinc-800/80 hover:bg-[#F7DF1E]/40 active:bg-[#F7DF1E]/70 transition-all z-30 flex items-center justify-center group"
         title="Drag up or down to resize workspace and assertion console"
       >
-        <div className="w-12 h-1 rounded-full bg-zinc-300 group-hover:bg-zinc-650 transition-colors" />
+        <div className="w-12 h-1 rounded-full bg-zinc-650 group-hover:bg-[#F7DF1E] transition-colors" />
       </div>
     </div>
   );

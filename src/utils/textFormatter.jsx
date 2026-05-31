@@ -1,4 +1,5 @@
 import React from "react";
+import { highlightJS } from "./highlighter.js";
 
 /**
  * Formats string text, wrapping any `code` in a <code style={{ fontFamily: 'Consolas, Monaco, monospace' }}>
@@ -17,26 +18,22 @@ export function formatTextWithCode(text) {
       return (
         <code
           key={index}
-          className="bg-zinc-100/80 text-[#e01e5a] border border-zinc-200 px-1.5 py-0.5 rounded font-mono text-[12.5px] mx-[1px]"
-          style={{ fontFamily: "Consolas, Monaco, monospace" }}
-        >
-          {codeContent}
-        </code>
+          className="bg-zinc-150/90 text-zinc-900 border border-zinc-250/65 px-1.5 py-0.2 rounded font-semibold text-[13px] mx-[1px] select-all leading-normal inline-block font-mono"
+          style={{
+            fontFamily: "Consolas, 'Fira Code', ui-monospace, monospace",
+          }}
+          dangerouslySetInnerHTML={{
+            __html: highlightJS(codeContent, false),
+          }}
+        />
       );
     }
     if (part.startsWith("**") && part.endsWith("**")) {
       const boldContent = part.slice(2, -2);
       return (
-        <code
-          key={index}
-          className="bg-zinc-100/80 text-[#e01e5a] border border-zinc-200 px-1.5 py-0.5 rounded font-mono text-[12.5px] mx-[1px]"
-          style={{
-            fontFamily: "Consolas, Monaco, monospace",
-            fontWeight: "normal",
-          }}
-        >
+        <strong key={index} className="font-extrabold text-zinc-950">
           {boldContent}
-        </code>
+        </strong>
       );
     }
     return part;

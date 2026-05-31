@@ -29,19 +29,118 @@ export function highlightJS(code, isDark = true) {
   const combinedRegex =
     /(\/\/.*$)|(\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(`[\s\S]*?`)/gm;
 
-  // Atom One Dark Palette hex-based tailwind classes
-  const commentClass = "text-[#5c6370] italic font-mono";
-  const stringClass = "text-[#98c379] font-mono font-medium";
-  const keywordClass = "text-[#c678dd] font-bold font-mono"; // Purple Control Flow
-  const typeClass = "text-[#d19a66] font-mono"; // Orange constants
-  const globalClass = "text-[#e5c07b] font-mono"; // Yellow Classes
-  const numberClass = "text-[#d19a66] font-mono"; // Orange numbers
-  const fnClass = "text-[#61afef] font-semibold font-mono"; // Blue functions
-  const opClass = "text-[#56b6c2] font-mono"; // Cyan operators
+  // Atom One Dark vs Atom One Light Palette hex-based tailwind classes
+  const commentClass = isDark
+    ? "text-[#5c6370] italic font-mono"
+    : "text-[#a0a1a7] italic font-mono";
+  const stringClass = isDark
+    ? "text-[#98c379] font-mono font-medium"
+    : "text-[#50a14f] font-mono font-semibold";
+  const keywordClass = isDark
+    ? "text-[#c678dd] font-bold font-mono"
+    : "text-[#a626a4] font-bold font-mono"; // Purple Control Flow
+  const typeClass = isDark
+    ? "text-[#d19a66] font-mono"
+    : "text-[#986801] font-mono"; // Orange constants / Brown
+  const globalClass = isDark
+    ? "text-[#e5c07b] font-mono"
+    : "text-[#0184bc] font-mono"; // Yellow Classes / Blue
+  const numberClass = isDark
+    ? "text-[#d19a66] font-mono"
+    : "text-[#986801] font-mono"; // Orange numbers / Brown
+  const fnClass = isDark
+    ? "text-[#61afef] font-semibold font-mono"
+    : "text-[#4078f2] font-extrabold font-mono"; // Blue functions / Blue
+  const opClass = isDark
+    ? "text-[#56b6c2] font-mono"
+    : "text-[#0184bc] font-mono"; // Cyan operators / Blue
+
+  const parseTemplateLiteral = (match) => {
+    if (match.length <= 2) {
+      return '<span class="text-[#e23c3c] font-bold font-mono">`</span><span class="text-[#e23c3c] font-bold font-mono">`</span>';
+    }
+
+    let result = '<span class="text-[#e23c3c] font-bold font-mono">`</span>';
+    let i = 1;
+    let lastIndex = 1;
+
+    while (i < match.length - 1) {
+      if (match[i] === "$" && match[i + 1] === "{") {
+        // Check if the placeholder sequence is escaped by backslashes
+        let backslashCount = 0;
+        let k = i - 1;
+        while (k >= 0 && match[k] === "\\") {
+          backslashCount++;
+          k--;
+        }
+
+        const isEscaped = backslashCount % 2 !== 0;
+
+        if (!isEscaped) {
+          // Append raw string text preceding the placeholder
+          if (i > lastIndex) {
+            const textChunk = match.substring(lastIndex, i);
+            result += `<span class="${isDark ? "text-[#98c379] font-medium" : "text-[#50a14f] font-semibold"} font-mono">${textChunk}</span>`;
+          }
+
+          // Outer standard delimiter decoration -> ${
+          result += `<span class="${isDark ? "text-[#e06c75]" : "text-[#a626a4]"} font-mono font-bold">\${</span>`;
+
+          // Match closing bracket brace depth to isolate template closure
+          let braceDepth = 1;
+          let exprStart = i + 2;
+          let exprEnd = exprStart;
+
+          while (exprEnd < match.length - 1) {
+            if (match[exprEnd] === "{") {
+              braceDepth++;
+            } else if (match[exprEnd] === "}") {
+              braceDepth--;
+              if (braceDepth === 0) {
+                break;
+              }
+            }
+            exprEnd++;
+          }
+
+          // Recurse inner JS grammar highlighter execution safely
+          const expression = match.substring(exprStart, exprEnd);
+          if (expression.trim()) {
+            const unescapedExpr = expression
+              .replace(/&amp;/g, "&")
+              .replace(/&lt;/g, "<")
+              .replace(/&gt;/g, ">");
+            const highlightedExpr = highlightJS(unescapedExpr, isDark);
+            result += highlightedExpr;
+          }
+
+          // Outer standard delimiter decoration -> brace }
+          result += `<span class="${isDark ? "text-[#e06c75]" : "text-[#a626a4]"} font-mono font-bold">}</span>`;
+
+          i = exprEnd + 1;
+          lastIndex = i;
+          continue;
+        }
+      }
+      i++;
+    }
+
+    // Remaining string character queue
+    if (i > lastIndex) {
+      const textChunk = match.substring(lastIndex, match.length - 1);
+      result += `<span class="${isDark ? "text-[#98c379] font-medium" : "text-[#50a14f] font-semibold"} font-mono">${textChunk}</span>`;
+    }
+
+    result += '<span class="text-[#e23c3c] font-bold font-mono">`</span>';
+    return result;
+  };
 
   html = html.replace(combinedRegex, (match, lineComment, blockComment) => {
     if (lineComment || blockComment) {
       return addToken(match, commentClass);
+    } else if (match.startsWith("`")) {
+      const processed = parseTemplateLiteral(match);
+      return addToken(processed, "");
     } else {
       return addToken(match, stringClass);
     }
@@ -110,18 +209,81 @@ export function highlightJS(code, isDark = true) {
 
   // 8. Match and replace operators
   html = html.replace(
-    /(&gt;|&lt;|===|==|!==|!=|=|\+|-|\*|\/|&amp;&amp;|\|\||!)/g,
+    /(&gt;|&lt;|===|==|!==|!=|=|\+|-|\*|\/|%|&amp;&amp;|\|\||!|\.\.\.|\.)/g,
     (m) => addToken(m, opClass),
   );
 
-  // 8.5 Match and replace brackets, parentheses, and braces
-  const parenClass = "text-[#ffd700] font-mono font-bold"; // gold / yellow
-  const bracketClass = "text-[#61afef] font-mono font-bold"; // blue / cyan
-  const braceClass = "text-[#c678dd] font-mono font-bold"; // purple / magenta
+  // 8.5 Match and replace brackets, parentheses, and braces with depth-based rotating colors
+  const parenColors = isDark
+    ? [
+        "text-[#ffd700] font-mono font-bold", // Yellow Gold
+        "text-[#da70d6] font-mono font-bold", // Orchid Magenta
+        "text-[#56b6c2] font-mono font-bold", // Cyan
+      ]
+    : [
+        "text-[#a626a4] font-mono font-bold", // Orchid/Purple
+        "text-[#0184bc] font-mono font-bold", // Blue
+        "text-[#e45649] font-mono font-bold", // Red
+      ];
+  const bracketColors = isDark
+    ? [
+        "text-[#ffd700] font-mono font-bold", // Yellow Gold
+        "text-[#da70d6] font-mono font-bold", // Orchid Magenta
+        "text-[#56b6c2] font-mono font-bold", // Cyan
+      ]
+    : [
+        "text-[#a626a4] font-mono font-bold", // Orchid/Purple
+        "text-[#0184bc] font-mono font-bold", // Blue
+        "text-[#e45649] font-mono font-bold", // Red
+      ];
+  const braceColors = isDark
+    ? [
+        "text-[#ffd700] font-mono font-bold", // Yellow Gold
+        "text-[#da70d6] font-mono font-bold", // Orchid Magenta
+        "text-[#56b6c2] font-mono font-bold", // Cyan
+      ]
+    : [
+        "text-[#a626a4] font-mono font-bold", // Orchid/Purple
+        "text-[#0184bc] font-mono font-bold", // Blue
+        "text-[#e45649] font-mono font-bold", // Red
+      ];
 
-  html = html.replace(/(\(|\))/g, (m) => addToken(m, parenClass));
-  html = html.replace(/(\[|\])/g, (m) => addToken(m, bracketClass));
-  html = html.replace(/(\{|\})/g, (m) => addToken(m, braceClass));
+  let parsedHtml = "";
+  let parenDepth = 0;
+  let bracketDepth = 0;
+  let braceDepth = 0;
+
+  for (let i = 0; i < html.length; i++) {
+    const char = html[i];
+    if (char === "(") {
+      const idx = parenDepth % parenColors.length;
+      parsedHtml += addToken(char, parenColors[idx]);
+      parenDepth++;
+    } else if (char === ")") {
+      parenDepth = Math.max(0, parenDepth - 1);
+      const idx = parenDepth % parenColors.length;
+      parsedHtml += addToken(char, parenColors[idx]);
+    } else if (char === "[") {
+      const idx = bracketDepth % bracketColors.length;
+      parsedHtml += addToken(char, bracketColors[idx]);
+      bracketDepth++;
+    } else if (char === "]") {
+      bracketDepth = Math.max(0, bracketDepth - 1);
+      const idx = bracketDepth % bracketColors.length;
+      parsedHtml += addToken(char, bracketColors[idx]);
+    } else if (char === "{") {
+      const idx = braceDepth % braceColors.length;
+      parsedHtml += addToken(char, braceColors[idx]);
+      braceDepth++;
+    } else if (char === "}") {
+      braceDepth = Math.max(0, braceDepth - 1);
+      const idx = braceDepth % braceColors.length;
+      parsedHtml += addToken(char, braceColors[idx]);
+    } else {
+      parsedHtml += char;
+    }
+  }
+  html = parsedHtml;
 
   // 9. Reconstruct the HTML by replacing placeholders with safe formatted spans in reverse order
   for (let i = tokens.length - 1; i >= 0; i--) {
@@ -133,10 +295,10 @@ export function highlightJS(code, isDark = true) {
       temp = Math.floor(temp / 26) - 1;
     }
     const placeholder = `__JSHL${letterIndex}__`;
-    html = html.replace(
-      new RegExp(placeholder, "g"),
-      `<span class="${token.className}">${token.text}</span>`,
-    );
+    const replacement = token.className
+      ? `<span class="${token.className}">${token.text}</span>`
+      : token.text;
+    html = html.replace(new RegExp(placeholder, "g"), replacement);
   }
 
   return html;

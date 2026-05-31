@@ -8,6 +8,7 @@ export function MasteryCelebration({
   setActiveConceptId,
   setActiveExerciseIndex,
   concepts,
+  setSandboxView,
 }) {
   return (
     <AnimatePresence>
@@ -78,6 +79,9 @@ export function MasteryCelebration({
                   const nextIdx = (currentIdx + 1) % concepts.length;
                   setActiveConceptId(concepts[nextIdx].id);
                   setActiveExerciseIndex(0);
+                  if (setSandboxView) {
+                    setSandboxView("learn");
+                  }
                 }}
                 className="w-full py-3 bg-[#F7DF1E] hover:bg-[#edd012] border border-zinc-300 text-sm font-bold text-zinc-950 rounded-xl shadow-sm cursor-pointer transition-all flex items-center justify-center gap-2"
               >

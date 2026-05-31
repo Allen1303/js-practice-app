@@ -12,7 +12,7 @@ export function ExerciseNavigator({
   return (
     <>
       {/* Horizontal Exercise Selection Indicators */}
-      <div className="flex items-center justify-between border-b border-zinc-200 shrink-0 bg-white/95 backdrop-blur-sm sticky top-0 px-6 py-3 z-10">
+      <div className="flex items-center justify-between border-b border-zinc-200 shrink-0 bg-[#faf8f5]/95 backdrop-blur-sm sticky top-0 px-6 py-3 z-10">
         <span className="text-xs font-mono text-zinc-500 uppercase font-bold tracking-wide">
           Dynamic Reps ({activeConcept.exercises.length} Needed)
         </span>
@@ -26,7 +26,7 @@ export function ExerciseNavigator({
 
       {/* Rep selector ribbon */}
       <div
-        className="grid divide-x divide-zinc-200 border-b border-zinc-200 shrink-0 bg-zinc-50"
+        className="grid divide-x divide-zinc-200 border-b border-zinc-200 shrink-0 bg-[#faf8f5]"
         style={{
           gridTemplateColumns: `repeat(${activeConcept.exercises.length}, minmax(0, 1fr))`,
         }}
@@ -44,7 +44,7 @@ export function ExerciseNavigator({
               }}
               className={`p-3 text-center flex flex-col items-center justify-center gap-1 group relative transition-colors ${
                 isSelected
-                  ? "bg-white text-zinc-900"
+                  ? "bg-[#faf8f5] text-zinc-900"
                   : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
               }`}
             >

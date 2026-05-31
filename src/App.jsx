@@ -6,6 +6,7 @@ import {
   KNOWLEDGE_MAP_TOPICS,
 } from "./data/knowledgeMap.js";
 import { runExerciseTests, runCustomEvaluation } from "./utils/executor.js";
+import { getSampleUsage } from "./utils/sampleGenerator.js";
 
 // Import modular sub-components
 import { Header } from "./components/Header.jsx";
@@ -20,6 +21,7 @@ import { MasteryCelebration } from "./components/MasteryCelebration.jsx";
 import { ES6CheatSheet } from "./components/ES6CheatSheet.jsx";
 import { NotesPanel } from "./components/NotesPanel.jsx";
 import { VisualSandbox } from "./components/VisualSandbox.jsx";
+import { FlashcardWorkspace } from "./components/FlashcardWorkspace.jsx";
 
 import {
   CheckCircle,
@@ -88,6 +90,42 @@ export default function App() {
   const [isRunningTests, setIsRunningTests] = useState(false);
   const [activeHintsCount, setActiveHintsCount] = useState(0);
 
+  // Persistent Auto-Run state mimicking learnjavascript.online
+  const [autoRun, setAutoRun] = useState(() => {
+    try {
+      const stored = localStorage.getItem("learnjs_autorun_tests");
+      return stored === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleAutoRun = () => {
+    const nextVal = !autoRun;
+    setAutoRun(nextVal);
+    try {
+      localStorage.setItem("learnjs_autorun_tests", String(nextVal));
+    } catch {}
+  };
+
+  // Handle moving to the next exercise/concept seamlessly (like learnjavascript.online)
+  const handleNextStep = () => {
+    if (activeExerciseIndex < activeConcept.exercises.length - 1) {
+      setActiveExerciseIndex(activeExerciseIndex + 1);
+      setLeftTab("problem");
+    } else {
+      // Find the next concept
+      const currentIdx = CONCEPTS.findIndex((c) => c.id === activeConceptId);
+      if (currentIdx !== -1 && currentIdx < CONCEPTS.length - 1) {
+        const nextConcept = CONCEPTS[currentIdx + 1];
+        setActiveConceptId(nextConcept.id);
+        setActiveExerciseIndex(0);
+        setSandboxView("learn");
+        setLeftTab("theory");
+      }
+    }
+  };
+
   // Knowledge Map / Curriculum view states
   const [viewMode, setViewMode] = useState("sandbox"); // "sandbox" | "knowledge"
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,13 +158,31 @@ export default function App() {
       const defaultTemplates = {};
       CONCEPTS.forEach((c) => {
         c.exercises.forEach((e) => {
-          defaultTemplates[e.id] = e.codeTemplate;
+          defaultTemplates[e.id] = e.codeTemplate + getSampleUsage(e);
         });
       });
 
       const storedCodes = localStorage.getItem("learnjs_play_codes");
       if (storedCodes) {
-        setUserCodes({ ...defaultTemplates, ...JSON.parse(storedCodes) });
+        const parsed = JSON.parse(storedCodes);
+        const upgraded = { ...defaultTemplates };
+        Object.keys(parsed).forEach((key) => {
+          const exercise = CONCEPTS.flatMap((c) => c.exercises).find(
+            (e) => e.id === key,
+          );
+          if (exercise) {
+            const originalTemplate = exercise.codeTemplate;
+            const parsedVal = parsed[key];
+            if (parsedVal === originalTemplate || !parsedVal) {
+              upgraded[key] = originalTemplate + getSampleUsage(exercise);
+            } else {
+              upgraded[key] = parsedVal;
+            }
+          } else {
+            upgraded[key] = parsed[key];
+          }
+        });
+        setUserCodes(upgraded);
       } else {
         setUserCodes(defaultTemplates);
       }
@@ -188,7 +244,7 @@ export default function App() {
           const defaultTemplates = {};
           CONCEPTS.forEach((c) => {
             c.exercises.forEach((e) => {
-              defaultTemplates[e.id] = e.codeTemplate;
+              defaultTemplates[e.id] = e.codeTemplate + getSampleUsage(e);
             });
           });
           setUserCodes(defaultTemplates);
@@ -232,15 +288,40 @@ export default function App() {
     CONCEPTS.find((c) => c.id === activeConceptId) || CONCEPTS[0];
   const activeExercise =
     activeConcept.exercises[activeExerciseIndex] || activeConcept.exercises[0];
-  const currentCode =
-    userCodes[activeExercise.id] ?? activeExercise.codeTemplate;
+
+  const currentCode = useMemo(() => {
+    const code = userCodes[activeExercise.id];
+    if (!code) {
+      return activeExercise.codeTemplate + getSampleUsage(activeExercise);
+    }
+    if (
+      code === activeExercise.codeTemplate &&
+      !code.includes("// Sample usage")
+    ) {
+      return activeExercise.codeTemplate + getSampleUsage(activeExercise);
+    }
+    return code;
+  }, [userCodes, activeExercise]);
+
   const prevExercise =
     activeExerciseIndex > 0
       ? activeConcept.exercises[activeExerciseIndex - 1]
       : null;
-  const prevCode = prevExercise
-    ? (userCodes[prevExercise.id] ?? prevExercise.codeTemplate)
-    : "";
+
+  const prevCode = useMemo(() => {
+    if (!prevExercise) return "";
+    const code = userCodes[prevExercise.id];
+    if (!code) {
+      return prevExercise.codeTemplate + getSampleUsage(prevExercise);
+    }
+    if (
+      code === prevExercise.codeTemplate &&
+      !code.includes("// Sample usage")
+    ) {
+      return prevExercise.codeTemplate + getSampleUsage(prevExercise);
+    }
+    return code;
+  }, [userCodes, prevExercise]);
 
   // Reset hint count whenever switching exercises
   useEffect(() => {
@@ -254,6 +335,34 @@ export default function App() {
     saveCodesToStorage(updated);
   };
 
+  // Debounced auto-test execution on type (LearnJavaScript style)
+  useEffect(() => {
+    if (!autoRun) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        const evaluation = await runExerciseTests(activeExercise, currentCode);
+        setTestResults(evaluation);
+
+        const allPassed =
+          evaluation.results &&
+          evaluation.results.length > 0 &&
+          evaluation.results.every((res) => res.passed);
+        if (allPassed) {
+          const updatedProgress = {
+            ...solvedExercises,
+            [activeExercise.id]: true,
+          };
+          saveProgressToStorage(updatedProgress);
+        }
+      } catch (err) {
+        console.error("Auto-run tests exception: ", err);
+      }
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [currentCode, autoRun, activeExercise.id]);
+
   // Reset template action
   const handleResetCode = () => {
     if (
@@ -263,7 +372,8 @@ export default function App() {
     ) {
       const updated = {
         ...userCodes,
-        [activeExercise.id]: activeExercise.codeTemplate,
+        [activeExercise.id]:
+          activeExercise.codeTemplate + getSampleUsage(activeExercise),
       };
       saveCodesToStorage(updated);
       setTestResults(null);
@@ -413,7 +523,9 @@ export default function App() {
       />
 
       {/* Primary Content View Switch */}
-      {viewMode === "sandbox" ? (
+      {viewMode === "flashcards" ? (
+        <FlashcardWorkspace />
+      ) : viewMode === "sandbox" ? (
         sandboxView === "learn" ? (
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 min-w-0">
             {/* Chapter & Concept Navigation Column */}
@@ -495,7 +607,7 @@ export default function App() {
             {/* Two-Column Editor Pane Split (Free from Chapter selection crowding!) */}
             <section className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 min-w-0">
               {/* Left Column: Learning Materials / Guidelines Tabbed View */}
-              <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col bg-white overflow-y-auto min-h-0 min-w-0">
+              <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col bg-[#faf8f5] overflow-y-auto min-h-0 min-w-0">
                 {/* Top Selector ribbon for individual puzzle repetition status */}
                 <ExerciseNavigator
                   activeConcept={activeConcept}
@@ -605,6 +717,7 @@ export default function App() {
                         handleRevealHint={handleRevealHint}
                         journeyPreviewIdx={journeyPreviewIdx}
                         setJourneyPreviewIdx={setJourneyPreviewIdx}
+                        handleNextStep={handleNextStep}
                       />
                     )}
                   </AnimatePresence>
@@ -678,6 +791,10 @@ export default function App() {
                   testResults={testResults}
                   isRunningTests={isRunningTests}
                   handleRunTests={handleRunTests}
+                  autoRun={autoRun}
+                  toggleAutoRun={toggleAutoRun}
+                  handleNextStep={handleNextStep}
+                  solvedExercises={solvedExercises}
                 />
               </div>
             </section>

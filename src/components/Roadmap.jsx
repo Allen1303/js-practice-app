@@ -66,14 +66,15 @@ export function Roadmap({
                 Self-Paced Training
               </span>
             </div>
-            <h2 className="text-2xl font-black text-zinc-900 tracking-tight">
-              LearnJS JavaScript Topics Map
+            <h2 className="text-[22px] font-black tracking-tight text-zinc-950 leading-none">
+              LearnJS<span className="text-zinc-500 font-normal">.online</span>{" "}
+              syllabus map
             </h2>
             <p className="text-sm text-zinc-600 leading-relaxed">
               Track your mastery through the official 12-chapter curriculum
               structure modeled after{" "}
               <strong className="text-zinc-900 font-semibold">
-                learnjavascript.online
+                LearnJS.online
               </strong>
               . Tick topics off when you are confident, and jump straight into
               the Interactive Sandbox to practice coding loops, strings, and
