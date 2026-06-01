@@ -1072,8 +1072,8 @@ square(4); // 16 (retrieves from cache)`,
         testCases: [
           {
             id: 1,
-            input: ["mockSquare"],
-            expected: [16, 16],
+            input: [8],
+            expected: 16,
             description:
               "Computes once, while secondary lookups fetch from cached keys",
           },
@@ -1692,13 +1692,11 @@ const value = matrix?.[0]?.[5] ?? -1;
             id: 1,
             input: [
               [
-                [
-                  [1, 2],
-                  [3, 4],
-                ],
-                1,
-                0,
+                [1, 2],
+                [3, 4],
               ],
+              1,
+              0,
             ],
             expected: 3,
             description: "Correctly maps valid row and coordinate indexes",
@@ -1707,13 +1705,11 @@ const value = matrix?.[0]?.[5] ?? -1;
             id: 2,
             input: [
               [
-                [
-                  [1, 2],
-                  [3, 4],
-                ],
-                5,
-                0,
+                [1, 2],
+                [3, 4],
               ],
+              5,
+              0,
             ],
             expected: -1,
             description:
@@ -1892,10 +1888,8 @@ const intersection = listA.filter(item => setB.has(item));
           {
             id: 1,
             input: [
-              [
-                [1, 2, 2, 3],
-                [2, 3, 4],
-              ],
+              [1, 2, 2, 3],
+              [2, 3, 4],
             ],
             expected: [2, 3],
             description: "Finds common intersecting elements",
@@ -1903,10 +1897,8 @@ const intersection = listA.filter(item => setB.has(item));
           {
             id: 2,
             input: [
-              [
-                [5, 9],
-                [1, 2],
-              ],
+              [5, 9],
+              [1, 2],
             ],
             expected: [],
             description: "Correctly handles completely distinct lists",
@@ -1980,10 +1972,8 @@ const diff = [1, 2, 3].filter(x => a.has(x) !== b.has(x));
           {
             id: 1,
             input: [
-              [
-                [1, 2, 3],
-                [3, 4, 5],
-              ],
+              [1, 2, 3],
+              [3, 4, 5],
             ],
             expected: [1, 2, 4, 5],
             description: "Finds symmetric differences correctly",
@@ -1991,10 +1981,8 @@ const diff = [1, 2, 3].filter(x => a.has(x) !== b.has(x));
           {
             id: 2,
             input: [
-              [
-                [1, 1, 2],
-                [2, 2],
-              ],
+              [1, 1, 2],
+              [2, 2],
             ],
             expected: [1],
             description: "Deduplicates exclusive inputs correctly",
@@ -2036,13 +2024,13 @@ for (const val of numbers) {
         testCases: [
           {
             id: 1,
-            input: [[[10, 15, 3, 7], 17]],
+            input: [[10, 15, 3, 7], 17],
             expected: true,
             description: "Matches 10 and 7 summing to 17",
           },
           {
             id: 2,
-            input: [[[1, 2, 3, 9], 8]],
+            input: [[1, 2, 3, 9], 8],
             expected: false,
             description: "Correctly rejects non matching lists",
           },
@@ -4240,14 +4228,8 @@ const record = { email: "a@x.com", auth: { pwd: "123" } };
           {
             id: 1,
             input: [
-              [
-                {
-                  id: 1,
-                  secret: "123",
-                  profile: { name: "Bob", secret: "foo" },
-                },
-                "secret",
-              ],
+              { id: 1, secret: "123", profile: { name: "Bob", secret: "foo" } },
+              "secret",
             ],
             expected: { id: 1, profile: { name: "Bob" } },
             description:
@@ -4255,7 +4237,7 @@ const record = { email: "a@x.com", auth: { pwd: "123" } };
           },
           {
             id: 2,
-            input: [[[{ secret: "xyz", value: 10 }, { value: 20 }], "secret"]],
+            input: [[{ secret: "xyz", value: 10 }, { value: 20 }], "secret"],
             expected: [{ value: 10 }, { value: 20 }],
             description:
               "Handles arrays of nested objects perfectly, deleting targeted keys",

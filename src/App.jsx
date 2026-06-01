@@ -785,6 +785,8 @@ export default function App() {
                         activeExercise={activeExercise}
                         activeConcept={activeConcept}
                         currentCode={currentCode}
+                        activeExerciseIndex={activeExerciseIndex}
+                        solvedExercises={solvedExercises}
                       />
                     ) : (
                       <ProblemGoalPanel
