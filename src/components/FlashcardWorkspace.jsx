@@ -547,17 +547,17 @@ export function FlashcardWorkspace() {
 
                 {/* Content body space */}
                 <div className="flex-1 flex flex-col justify-center space-y-4 select-text">
-                  <h3 className="text-lg md:text-xl font-extrabold text-zinc-900 tracking-tight leading-snug">
-                    {activeCard.question}
+                  <h3 className="text-sm md:text-base font-semibold text-zinc-900 tracking-tight leading-snug">
+                    {formatTextWithCode(activeCard.question, false)}
                   </h3>
 
                   {activeCard.code && (
                     <div
-                      className="border border-zinc-200 rounded-xl bg-zinc-50 p-4 overflow-x-auto text-xs font-mono text-zinc-800 pointer-events-auto leading-relaxed shadow-inner"
+                      className="border border-zinc-200 rounded-xl bg-zinc-50 p-4 overflow-x-auto text-[13px] md:text-sm font-mono text-zinc-800 pointer-events-auto leading-relaxed shadow-inner"
                       onClick={(e) => e.stopPropagation()} // Let users highlight and copy inside
                     >
                       <pre
-                        className="select-all font-semibold"
+                        className="select-all font-medium"
                         style={{
                           fontFamily: "Consolas, Menlo, Monaco, monospace",
                         }}
@@ -600,7 +600,7 @@ export function FlashcardWorkspace() {
                 >
                   <div className="text-zinc-300 font-medium space-y-3 prose-strong:text-white max-h-[220px] overflow-y-auto pr-2">
                     {activeCard.answer.split("\\n").map((para, pIdx) => (
-                      <p key={pIdx}>{formatTextWithCode(para)}</p>
+                      <p key={pIdx}>{formatTextWithCode(para, true)}</p>
                     ))}
                   </div>
                 </div>

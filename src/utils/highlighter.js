@@ -54,6 +54,21 @@ export function highlightJS(code, isDark = true) {
   const opClass = isDark
     ? "text-[#56b6c2] font-mono"
     : "text-[#0184bc] font-mono"; // Cyan operators / Blue
+  const dotClass = isDark
+    ? "text-[#56b6c2] font-mono"
+    : "text-[#0184bc] font-mono"; // Cyan single dot
+  const spreadClass = isDark
+    ? "text-[#56b6c2] font-bold font-mono"
+    : "text-[#01a2b5] font-bold font-mono"; // Cyan spread operator
+  const nullishClass = isDark
+    ? "text-[#56b6c2] font-bold font-mono"
+    : "text-[#01a2b5] font-bold font-mono"; // Cyan nullish operator
+  const colonClass = isDark
+    ? "text-[#56b6c2] font-mono"
+    : "text-[#0184bc] font-mono"; // Cyan colon
+  const logClass = isDark
+    ? "text-[#e06c75] font-bold font-mono"
+    : "text-[#e45649] font-bold font-mono"; // Red keyword log
 
   const parseTemplateLiteral = (match) => {
     if (match.length <= 2) {
@@ -198,6 +213,9 @@ export function highlightJS(code, isDark = true) {
   const globalRegex = new RegExp(`\\b(${globals.join("|")})\\b`, "g");
   html = html.replace(globalRegex, (m) => addToken(m, globalClass));
 
+  // 5.5 Match and replace word "log" with red logClass
+  html = html.replace(/\blog\b/g, (m) => addToken(m, logClass));
+
   // 6. Match and replace function names before parenthesis
   html = html.replace(/\b(\w+)(?=\()/g, (m) => addToken(m, fnClass));
 
@@ -207,9 +225,24 @@ export function highlightJS(code, isDark = true) {
   // 7.8 Match arrow function operator =>
   html = html.replace(/=&gt;/g, (m) => addToken(m, keywordClass));
 
-  // 8. Match and replace operators
+  // 7.9 Match spread operator ...
+  html = html.replace(/\.\.\./g, (m) => addToken(m, spreadClass));
+
+  // 7.91 Match nullish coalescing operator ??
+  html = html.replace(/\?\?/g, (m) => addToken(m, nullishClass));
+
+  // 7.92 Match other nullish question marks (e.g. ternary, optional chain question mark)
+  html = html.replace(/\?/g, (m) => addToken(m, nullishClass));
+
+  // 7.93 Match single dot .
+  html = html.replace(/\./g, (m) => addToken(m, dotClass));
+
+  // 7.94 Match colon :
+  html = html.replace(/:/g, (m) => addToken(m, colonClass));
+
+  // 8. Match and replace remainder operators (without ... or .)
   html = html.replace(
-    /(&gt;|&lt;|===|==|!==|!=|=|\+|-|\*|\/|%|&amp;&amp;|\|\||!|\.\.\.|\.)/g,
+    /(&gt;|&lt;|===|==|!==|!=|=|\+|-|\*|\/|%|&amp;&amp;|\|\||!)/g,
     (m) => addToken(m, opClass),
   );
 

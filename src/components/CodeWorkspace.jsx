@@ -262,12 +262,6 @@ export function CodeWorkspace({
           />
         </div>
 
-        {/* Quick shortcut overlay logo */}
-        <div className="absolute bottom-2 left-16 text-[9.5px] font-mono text-zinc-500 select-none pointer-events-none hidden md:block z-20 bg-zinc-900/40 px-2 py-0.5 rounded border border-zinc-800">
-          Press <kbd className="font-bold text-zinc-300">Ctrl + Enter</kbd> to
-          run tests
-        </div>
-
         {/* Side-by-Side Pattern Progression Upgrade Panel */}
         {showPrevReference && prevExercise && (
           <div className="w-[360px] border-l border-zinc-800 bg-[#21252b] p-4 overflow-y-auto flex flex-col space-y-4 text-xs font-sans shrink-0 shadow-2xl z-10">
@@ -299,7 +293,7 @@ export function CodeWorkspace({
               </span>
               <p className="text-zinc-300 leading-normal text-[11px]">
                 🎯 <strong className="text-white">Current delta shift:</strong>{" "}
-                {formatTextWithCode(prevExercise.explanation)}
+                {formatTextWithCode(prevExercise.explanation, true)}
               </p>
             </div>
 
