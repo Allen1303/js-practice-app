@@ -2,7 +2,138 @@
  * Dynamically computes beautiful, original style console.log examples with expected values
  * for each practice exercise inline template, perfectly matching the learnjavascript.online aesthetic.
  */
-export function getSampleUsage(e) {
+function stringifyJS(obj, indent = "") {
+  if (obj === null) return "null";
+  if (obj === undefined) return "undefined";
+  if (typeof obj === "function") {
+    return obj.toString();
+  }
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) return "[]";
+    // Check if simple small flat array of primitives to keep inline
+    const isSimple = obj.every(
+      (item) =>
+        typeof item === "number" ||
+        typeof item === "boolean" ||
+        typeof item === "string",
+    );
+    if (isSimple && obj.length <= 5) {
+      return (
+        "[" +
+        obj
+          .map((item) =>
+            typeof item === "string" ? `"${item}"` : String(item),
+          )
+          .join(", ") +
+        "]"
+      );
+    }
+    const items = obj.map((item) => stringifyJS(item, indent + "  "));
+    return (
+      "[\n" +
+      items.map((item) => indent + "  " + item).join(",\n") +
+      "\n" +
+      indent +
+      "]"
+    );
+  }
+  if (typeof obj === "object") {
+    const keys = Object.keys(obj);
+    if (keys.length === 0) return "{}";
+    const pairs = keys.map((key) => {
+      const val = obj[key];
+      const formattedKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)
+        ? key
+        : JSON.stringify(key);
+      return `${formattedKey}: ${stringifyJS(val, indent + "  ")}`;
+    });
+    return (
+      "{\n" +
+      pairs.map((pair) => indent + "  " + pair).join(",\n") +
+      "\n" +
+      indent +
+      "}"
+    );
+  }
+  if (typeof obj === "string") {
+    return JSON.stringify(obj);
+  }
+  return String(obj);
+}
+
+export function getTopDeclarations(e) {
+  if (!e) return "";
+
+  // Custom templates of specialized closures/classes or async assertions
+  if (
+    e.id === "closure-counter" ||
+    e.id === "closure-multiplier" ||
+    e.id === "closure-auth" ||
+    e.id === "closure-memoize" ||
+    e.id === "class-book" ||
+    e.id === "class-bank" ||
+    e.id === "class-bank-account" ||
+    e.id === "class-stack" ||
+    e.id === "class-minstack" ||
+    e.id === "class-emitter" ||
+    e.id === "class-event-emitter" ||
+    e.id === "class-query" ||
+    e.id === "query-builder" ||
+    e.id === "async-delay"
+  ) {
+    return "";
+  }
+
+  if (!e.functionName) return "";
+
+  const cases = e.testCases || [];
+  const limit = Math.min(cases.length, 3);
+  let varsDecs = [];
+
+  let paramNames = [];
+  if (e.codeTemplate) {
+    const fnDeclMatch = e.codeTemplate.match(/function\s+(\w+)\s*\(([^)]*)\)/);
+    if (fnDeclMatch && fnDeclMatch[2]) {
+      paramNames = fnDeclMatch[2]
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean);
+    }
+  }
+
+  for (let i = 0; i < limit; i++) {
+    const tc = cases[i];
+    if (!tc) continue;
+
+    if (tc.input && Array.isArray(tc.input)) {
+      tc.input.forEach((arg, j) => {
+        if (arg !== null && typeof arg === "object") {
+          const isArr = Array.isArray(arg);
+          let baseName = "";
+          if (
+            paramNames[j] &&
+            /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(paramNames[j])
+          ) {
+            baseName = paramNames[j];
+          } else {
+            baseName = isArr ? "list" : "data";
+          }
+
+          const varName = `${baseName}${i + 1}`;
+          const valStr = stringifyJS(arg);
+          varsDecs.push(`const ${varName} = ${valStr};`);
+        }
+      });
+    }
+  }
+
+  if (varsDecs.length > 0) {
+    return varsDecs.join("\n") + "\n\n";
+  }
+  return "";
+}
+
+export function getBottomUsage(e) {
   if (!e) return "";
 
   let lines = [];
@@ -114,25 +245,50 @@ export function getSampleUsage(e) {
 
   if (!e.functionName) return "";
 
-  // Dynamic automatic test cases fallback builder
   const cases = e.testCases || [];
   const limit = Math.min(cases.length, 3);
+  let logLines = [];
+
+  let paramNames = [];
+  if (e.codeTemplate) {
+    const fnDeclMatch = e.codeTemplate.match(/function\s+(\w+)\s*\(([^)]*)\)/);
+    if (fnDeclMatch && fnDeclMatch[2]) {
+      paramNames = fnDeclMatch[2]
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean);
+    }
+  }
+
   for (let i = 0; i < limit; i++) {
     const tc = cases[i];
     if (!tc) continue;
 
-    let argsFormatted = "";
+    let argsInCall = [];
     if (tc.input && Array.isArray(tc.input)) {
-      argsFormatted = tc.input
-        .map((arg) => {
-          if (typeof arg === "string") return `"${arg}"`;
-          if (typeof arg === "number" || typeof arg === "boolean")
-            return String(arg);
-          if (arg === null) return "null";
-          if (arg === undefined) return "undefined";
-          return JSON.stringify(arg);
-        })
-        .join(", ");
+      tc.input.forEach((arg, j) => {
+        if (arg !== null && typeof arg === "object") {
+          let baseName = "";
+          if (
+            paramNames[j] &&
+            /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(paramNames[j])
+          ) {
+            baseName = paramNames[j];
+          } else {
+            baseName = Array.isArray(arg) ? "list" : "data";
+          }
+          const varName = `${baseName}${i + 1}`;
+          argsInCall.push(varName);
+        } else {
+          if (typeof arg === "string") {
+            argsInCall.push(`"${arg}"`);
+          } else if (typeof arg === "function") {
+            argsInCall.push(arg.toString());
+          } else {
+            argsInCall.push(String(arg));
+          }
+        }
+      });
     }
 
     let expectedFormatted = "";
@@ -151,13 +307,23 @@ export function getSampleUsage(e) {
       }
     }
 
-    lines.push(
-      `console.log(${e.functionName}(${argsFormatted})); // ${expectedFormatted}`,
+    logLines.push(
+      `console.log(${e.functionName}(${argsInCall.join(", ")})); // ${expectedFormatted}`,
     );
   }
 
-  if (lines.length > 0) {
-    return "\n\n// Sample usage - do not modify\n" + lines.join("\n") + "\n";
+  if (logLines.length > 0) {
+    return "\n\n// Sample usage - do not modify\n" + logLines.join("\n") + "\n";
   }
   return "";
+}
+
+// Alias for backwards-compatibility with older template migrations
+export function getSampleUsage(e) {
+  return getBottomUsage(e);
+}
+
+export function getFullExerciseTemplate(e) {
+  if (!e) return "";
+  return getTopDeclarations(e) + e.codeTemplate + getBottomUsage(e);
 }

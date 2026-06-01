@@ -6,7 +6,12 @@ import {
   KNOWLEDGE_MAP_TOPICS,
 } from "./data/knowledgeMap.js";
 import { runExerciseTests, runCustomEvaluation } from "./utils/executor.js";
-import { getSampleUsage } from "./utils/sampleGenerator.js";
+import {
+  getSampleUsage,
+  getTopDeclarations,
+  getBottomUsage,
+  getFullExerciseTemplate,
+} from "./utils/sampleGenerator.js";
 
 // Import modular sub-components
 import { Header } from "./components/Header.jsx";
@@ -22,6 +27,7 @@ import { ES6CheatSheet } from "./components/ES6CheatSheet.jsx";
 import { NotesPanel } from "./components/NotesPanel.jsx";
 import { VisualSandbox } from "./components/VisualSandbox.jsx";
 import { FlashcardWorkspace } from "./components/FlashcardWorkspace.jsx";
+import { BrowserSimulator } from "./components/BrowserSimulator.jsx";
 
 import {
   CheckCircle,
@@ -30,6 +36,7 @@ import {
   Sparkles,
   Edit3,
   RotateCcw,
+  Globe,
 } from "lucide-react";
 
 // Absolute order of concepts from Core Foundations to Practical Algorithms
@@ -158,7 +165,7 @@ export default function App() {
       const defaultTemplates = {};
       CONCEPTS.forEach((c) => {
         c.exercises.forEach((e) => {
-          defaultTemplates[e.id] = e.codeTemplate + getSampleUsage(e);
+          defaultTemplates[e.id] = getFullExerciseTemplate(e);
         });
       });
 
@@ -173,16 +180,74 @@ export default function App() {
           if (exercise) {
             const originalTemplate = exercise.codeTemplate;
             const parsedVal = parsed[key];
-            if (parsedVal === originalTemplate || !parsedVal) {
-              upgraded[key] = originalTemplate + getSampleUsage(exercise);
+            let nextVal = parsedVal;
+            if (
+              key === "string-template-interpolation" &&
+              typeof nextVal === "string"
+            ) {
+              // Replace old stale expected comments to prevent user confusion
+              nextVal = nextVal.replace(
+                /Welcome,\s*Alice!\s*Your\s*role\s*is:\s*admin\./gi,
+                "Welcome Alice, your role is admin",
+              );
+              nextVal = nextVal.replace(
+                /Welcome,\s*Bob!\s*Your\s*role\s*is:\s*moderator\./gi,
+                "Welcome Bob, your role is moderator",
+              );
+              // Correct the colon insertion so active code matches official assert expectations
+              nextVal = nextVal.replace(
+                /your\s*role\s*is:\s*\$\{role\}/gi,
+                "your role is ${role}",
+              );
+            }
+
+            const cleanParsed =
+              typeof parsedVal === "string"
+                ? parsedVal.split("// Sample usage")[0].trim()
+                : "";
+            const cleanOriginal =
+              typeof originalTemplate === "string"
+                ? originalTemplate.trim()
+                : "";
+            const cleanTopOriginal = (
+              getTopDeclarations(exercise) + originalTemplate
+            ).trim();
+
+            if (typeof nextVal === "string") {
+              const funcBody = nextVal.split("// Sample usage")[0].trim();
+              const topDecs = getTopDeclarations(exercise);
+
+              if (
+                cleanParsed === cleanOriginal ||
+                cleanParsed === cleanTopOriginal ||
+                !parsedVal ||
+                parsedVal === originalTemplate
+              ) {
+                upgraded[key] = getFullExerciseTemplate(exercise);
+              } else {
+                // Keep custom body, ensure it has top declarations
+                let upgradedBody = funcBody;
+                if (topDecs && !upgradedBody.includes(topDecs.trim())) {
+                  upgradedBody = topDecs + upgradedBody;
+                }
+                upgraded[key] = upgradedBody + getBottomUsage(exercise);
+              }
             } else {
-              upgraded[key] = parsedVal;
+              upgraded[key] = getFullExerciseTemplate(exercise);
             }
           } else {
             upgraded[key] = parsed[key];
           }
         });
         setUserCodes(upgraded);
+        try {
+          localStorage.setItem("learnjs_play_codes", JSON.stringify(upgraded));
+        } catch (storageErr) {
+          console.warn(
+            "Could not save migrated codes on initialization: ",
+            storageErr,
+          );
+        }
       } else {
         setUserCodes(defaultTemplates);
       }
@@ -244,7 +309,7 @@ export default function App() {
           const defaultTemplates = {};
           CONCEPTS.forEach((c) => {
             c.exercises.forEach((e) => {
-              defaultTemplates[e.id] = e.codeTemplate + getSampleUsage(e);
+              defaultTemplates[e.id] = getFullExerciseTemplate(e);
             });
           });
           setUserCodes(defaultTemplates);
@@ -292,13 +357,13 @@ export default function App() {
   const currentCode = useMemo(() => {
     const code = userCodes[activeExercise.id];
     if (!code) {
-      return activeExercise.codeTemplate + getSampleUsage(activeExercise);
+      return getFullExerciseTemplate(activeExercise);
     }
     if (
       code === activeExercise.codeTemplate &&
       !code.includes("// Sample usage")
     ) {
-      return activeExercise.codeTemplate + getSampleUsage(activeExercise);
+      return getFullExerciseTemplate(activeExercise);
     }
     return code;
   }, [userCodes, activeExercise]);
@@ -312,13 +377,13 @@ export default function App() {
     if (!prevExercise) return "";
     const code = userCodes[prevExercise.id];
     if (!code) {
-      return prevExercise.codeTemplate + getSampleUsage(prevExercise);
+      return getFullExerciseTemplate(prevExercise);
     }
     if (
       code === prevExercise.codeTemplate &&
       !code.includes("// Sample usage")
     ) {
-      return prevExercise.codeTemplate + getSampleUsage(prevExercise);
+      return getFullExerciseTemplate(prevExercise);
     }
     return code;
   }, [userCodes, prevExercise]);
@@ -372,8 +437,7 @@ export default function App() {
     ) {
       const updated = {
         ...userCodes,
-        [activeExercise.id]:
-          activeExercise.codeTemplate + getSampleUsage(activeExercise),
+        [activeExercise.id]: getFullExerciseTemplate(activeExercise),
       };
       saveCodesToStorage(updated);
       setTestResults(null);
@@ -619,59 +683,71 @@ export default function App() {
                 />
 
                 {/* Guide/Goal Selection controls */}
-                <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-1 shrink-0 select-none overflow-x-auto">
+                <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-0.5 shrink-0 select-none overflow-x-auto">
                   <button
                     onClick={() => setLeftTab("problem")}
-                    className={`flex-1 min-w-[120px] py-1.5 px-3 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                    className={`flex-1 min-w-[110px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
                       leftTab === "problem"
                         ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
                         : "text-zinc-500 hover:text-zinc-950"
                     }`}
                   >
-                    <Code className="h-3.5 w-3.5 shrink-0" />
+                    <Code className="h-3 w-3 shrink-0" />
                     <span className="whitespace-nowrap">Problem Goal</span>
                   </button>
 
                   <button
+                    onClick={() => setLeftTab("browser")}
+                    className={`flex-1 min-w-[110px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                      leftTab === "browser"
+                        ? "bg-white text-zinc-950 border border-emerald-400 shadow-sm font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950"
+                    }`}
+                  >
+                    <Globe className="h-3 w-3 text-emerald-500 shrink-0" />
+                    <span className="whitespace-nowrap">Browser Tab</span>
+                  </button>
+
+                  <button
                     onClick={() => setLeftTab("es6")}
-                    className={`flex-1 min-w-[115px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                    className={`flex-1 min-w-[105px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
                       leftTab === "es6"
                         ? "bg-white text-zinc-950 border border-[#F7DF1E] shadow-sm font-extrabold"
                         : "text-zinc-500 hover:text-zinc-950"
                     }`}
                   >
-                    <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-101" />
+                    <Sparkles className="h-3 w-3 text-yellow-500 shrink-0 fill-yellow-101" />
                     <span className="whitespace-nowrap">ES6 Sheets</span>
                   </button>
 
                   <button
                     onClick={() => setLeftTab("notes")}
-                    className={`flex-1 min-w-[110px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
+                    className={`flex-1 min-w-[100px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${
                       leftTab === "notes"
                         ? "bg-white text-zinc-950 border border-[#EDD012] shadow-sm font-extrabold"
                         : "text-zinc-500 hover:text-zinc-950"
                     }`}
                   >
-                    <Edit3 className="h-3.5 w-3.5 text-[#F7DF1E] shrink-0" />
+                    <Edit3 className="h-3 w-3 text-[#F7DF1E] shrink-0" />
                     <span className="whitespace-nowrap">My Notes</span>
                   </button>
 
                   <button
                     onClick={() => setLeftTab("visualizer")}
-                    className={`flex-1 min-w-[125px] py-1.5 px-2.5 rounded-lg text-xs font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer relative ${
+                    className={`flex-1 min-w-[120px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer relative ${
                       leftTab === "visualizer"
                         ? "bg-white text-zinc-950 border border-purple-300 shadow-sm font-extrabold"
                         : "text-zinc-500 hover:text-zinc-950"
                     }`}
                   >
                     <Sparkles
-                      className={`h-3.5 w-3.5 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`}
+                      className={`h-3 w-3 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`}
                     />
-                    <span className="whitespace-nowrap flex items-center gap-1.5">
+                    <span className="whitespace-nowrap flex items-center gap-1">
                       Visual Sandbox
                       {activeExerciseIndex ===
                         activeConcept.exercises.length - 1 && (
-                        <span className="h-2 w-2 rounded-full bg-purple-500 relative flex shrink-0">
+                        <span className="h-1.5 w-1.5 rounded-full bg-purple-500 relative flex shrink-0">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                         </span>
                       )}
@@ -680,7 +756,7 @@ export default function App() {
                 </div>
 
                 {/* Dynamic View Panel (Theory manual / active exercise problem / ES6 cheatsheet) */}
-                <div className="p-6 flex-1 flex flex-col justify-between overflow-y-auto min-h-0">
+                <div className="p-4 flex-1 flex flex-col justify-between overflow-y-auto min-h-0">
                   <AnimatePresence mode="wait">
                     {leftTab === "es6" ? (
                       <ES6CheatSheet
@@ -703,6 +779,12 @@ export default function App() {
                         activeExercise={activeExercise}
                         solvedExercises={solvedExercises}
                         userCodes={userCodes}
+                      />
+                    ) : leftTab === "browser" ? (
+                      <BrowserSimulator
+                        activeExercise={activeExercise}
+                        activeConcept={activeConcept}
+                        currentCode={currentCode}
                       />
                     ) : (
                       <ProblemGoalPanel

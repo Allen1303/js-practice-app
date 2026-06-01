@@ -13,6 +13,41 @@ import {
 } from "lucide-react";
 import { runCustomEvaluation } from "../utils/executor.js";
 
+const formatArguments = (input) => {
+  if (!Array.isArray(input)) return String(input);
+  return input
+    .map((arg) => {
+      if (arg === null) return "null";
+      if (arg === undefined) return "undefined";
+      if (arg instanceof Map) {
+        try {
+          return "Map(" + JSON.stringify(Array.from(arg.entries())) + ")";
+        } catch {
+          return "Map";
+        }
+      }
+      if (arg instanceof Set) {
+        try {
+          return "Set(" + JSON.stringify(Array.from(arg.values())) + ")";
+        } catch {
+          return "Set";
+        }
+      }
+      if (typeof arg === "object") {
+        try {
+          return JSON.stringify(arg);
+        } catch (e) {
+          return "[Object]";
+        }
+      }
+      if (typeof arg === "string") {
+        return `"${arg}"`;
+      }
+      return String(arg);
+    })
+    .join(", ");
+};
+
 export function AssertionConsole({
   activeExercise,
   currentCode,
@@ -230,7 +265,8 @@ export function AssertionConsole({
                           </span>
                         )}
                         <span className="text-zinc-300 font-bold font-mono">
-                          {activeExercise.functionName}({result.input})
+                          {activeExercise.functionName}(
+                          {formatArguments(result.input)})
                         </span>
                         <span className="text-zinc-500 font-normal italic text-[11px] ml-1">
                           — {result.description}

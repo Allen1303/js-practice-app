@@ -9,10 +9,46 @@ import {
   ChevronRight,
   Trophy,
   Copy,
+  Terminal,
 } from "lucide-react";
 import { formatTextWithCode } from "../utils/textFormatter.jsx";
 import { formatDifficulty } from "../utils/difficultyFormatter.js";
 import { highlightJS } from "../utils/highlighter.js";
+
+const formatArguments = (input) => {
+  if (!Array.isArray(input)) return String(input);
+  return input
+    .map((arg) => {
+      if (arg === null) return "null";
+      if (arg === undefined) return "undefined";
+      if (arg instanceof Map) {
+        try {
+          return "Map(" + JSON.stringify(Array.from(arg.entries())) + ")";
+        } catch {
+          return "Map";
+        }
+      }
+      if (arg instanceof Set) {
+        try {
+          return "Set(" + JSON.stringify(Array.from(arg.values())) + ")";
+        } catch {
+          return "Set";
+        }
+      }
+      if (typeof arg === "object") {
+        try {
+          return JSON.stringify(arg);
+        } catch (e) {
+          return "[Object]";
+        }
+      }
+      if (typeof arg === "string") {
+        return `"${arg}"`;
+      }
+      return String(arg);
+    })
+    .join(", ");
+};
 
 export function ProblemGoalPanel({
   activeConcept,
@@ -126,6 +162,54 @@ export function ProblemGoalPanel({
           {formatTextWithCode(activeExercise.description)}
         </p>
       </div>
+
+      {/* Examples & Test Cases Section */}
+      {activeExercise.testCases && activeExercise.testCases.length > 0 && (
+        <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4.5 space-y-3">
+          <h4 className="text-[11px] font-mono font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-1.5 select-none">
+            <Terminal className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
+            Examples & Test Cases
+          </h4>
+          <div className="space-y-3 font-mono text-[12px] leading-relaxed">
+            {activeExercise.testCases.slice(0, 3).map((tc, idx) => {
+              const formattedArgs = formatArguments(tc.input);
+              const expectedStr =
+                typeof tc.expected === "object"
+                  ? JSON.stringify(tc.expected)
+                  : String(tc.expected);
+              return (
+                <div
+                  key={idx}
+                  className="bg-white border border-zinc-150 rounded-lg p-3 select-text space-y-1 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                >
+                  <div className="text-zinc-500 font-bold text-[10px] uppercase tracking-wider flex items-center justify-between border-b border-zinc-100 pb-1 mb-1">
+                    <span>Example {idx + 1}</span>
+                    <span className="text-[10.5px] text-zinc-400 capitalize font-normal italic font-sans">
+                      {tc.description}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-400 font-semibold mr-1.5 font-mono">
+                      Input:
+                    </span>
+                    <code className="text-zinc-850 font-semibold bg-zinc-100 p-1 rounded break-all selection:bg-yellow-200">
+                      {activeExercise.functionName}({formattedArgs})
+                    </code>
+                  </div>
+                  <div>
+                    <span className="text-zinc-400 font-semibold mr-1.5 font-mono">
+                      Expected output:
+                    </span>
+                    <code className="text-emerald-700 font-bold bg-emerald-50/50 border border-emerald-100 p-1 rounded break-all selection:bg-emerald-200">
+                      {expectedStr}
+                    </code>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Solution Advance CTA (LearnJS style) */}
       {solvedExercises[activeExercise.id] && (

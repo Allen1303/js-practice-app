@@ -670,7 +670,13 @@ const finalConfig = { ...defaults, ...userOverrides };
         description:
           "Let's warm up with basic object key manipulation and fallback searches.\n\nWrite a function `mergeConfig(defaults, overrides)` that takes a defaults dictionary and overrides list of keys.\n\nIt should return a new object containing the default configuration values, except where overriding parameters are provided inside `overrides`.",
         codeTemplate: `function mergeConfig(defaults, overrides) {
-  // Double merge, returning a clean updated parameter object
+  // Example inputs:
+  // defaults = { theme: "light", debug: false }
+  // overrides = { theme: "dark" }
+  //
+  // TODO: Create and return a new object that merges both together.
+  // Properties in 'overrides' should override those in 'defaults'.
+  // Hint: Rest/Spread operators can do this in one line!
   
 }`,
         functionName: "mergeConfig",
@@ -713,7 +719,13 @@ for (let i = 0; i < nums.length; i++) {
         description:
           "Let's build on basic dictionary lookups to solve a classic DSA algorithm in linear time!\n\nWrite a function `twoSumLookup(nums, target)` that seeks the index positions of two numbers in `nums` that add up to `target`.\n\nYou must achieve **O(N) linear runtime** by using an object as a coordinate lookup tracker. Nested loops are forbidden!",
         codeTemplate: `function twoSumLookup(nums, target) {
-  // Create an object to cache numbers you have already evaluated
+  // Example inputs:
+  // nums = [2, 7, 11, 15], target = 9
+  //
+  // TODO: Return an array of the two indices [index1, index2] whose values sum to the target.
+  // Use a lookup object to track numbers we've seen: { [number]: index }
+  // Check if (target - currentNum) is already in your lookup table.
+  const seen = {}; // num -> index
   
 }`,
         functionName: "twoSumLookup",
@@ -755,8 +767,13 @@ for (const char of text) {
         description:
           "Now, let's compare two datasets using maps of character occurrences.\n\nWrite a function `isAnagramLookup(s, t)` which verifies if strings `s` and `t` are anagrams in strict **O(N)** time.\n\nAn anagram contains identical letters in exactly the same quantities (frequency counts).",
         codeTemplate: `function isAnagramLookup(s, t) {
-  // If lengths differ, return false immediately.
-  // Use a hash frequency map to check letter occurrences.
+  // Example inputs:
+  // s = "listen", t = "silent"
+  //
+  // TODO: Return true if s and t are anagrams, false otherwise.
+  // 1. If s.length !== t.length, return false immediately.
+  // 2. Build a frequency count object of letters in s (e.g., { 'l': 1, 'i': 1... })
+  // 3. Loop through t and decrement or check counts.
   
 }`,
         functionName: "isAnagramLookup",
@@ -799,7 +816,15 @@ const index = roles.reduce((acc, obj) => {
         description:
           "Let's build on grouping logic by indexing list datasets into categorized object arrays.\n\nWrite a function `indexUsers(users)` which processes a user objects array: `[{ name: '...', dept: '...' }]`.\n\nIt should return an object where each key is a department name, and its value is an array of names belonging to that department.\n\nExample:\n`[{ name: 'Alice', dept: 'HR' }, { name: 'Bob', dept: 'IT' }, { name: 'Charlie', dept: 'HR' }]` ->\n`{ HR: ['Alice', 'Charlie'], IT: ['Bob'] }`.",
         codeTemplate: `function indexUsers(users) {
-  // Group user strings by matching keys dynamically
+  // Example 'users' input structure:
+  // [
+  //   { name: "Alice", dept: "HR" },
+  //   { name: "Bob", dept: "IT" },
+  //   { name: "Charlie", dept: "HR" }
+  // ]
+  //
+  // TODO: Build and return an object grouping names by department:
+  // { HR: ["Alice", "Charlie"], IT: ["Bob"] }
   
 }`,
         functionName: "indexUsers",
@@ -838,8 +863,13 @@ const findStart = !(100 - 1 in lookup); // true (100 is start)`,
         description:
           "To complete the Object Dictionaries sequence, let's solve a high-speed streak validation test.\n\nWrite a function `longestStreak(nums)` that takes an array of unsorted integers and identifies the length of its longest consecutive sequence of numbers.\n\nExample: `[100, 4, 30, 1, 3, 2]` contains consecutive sequence `1, 2, 3, 4`, returning a length of `4`.\n\nAchieve O(N) complexity using helper hash maps.",
         codeTemplate: `function longestStreak(nums) {
-  // Create an object to cache existence: seen = {}
-  // Only start counting increments if (num - 1) does not exist!
+  // Example inputs:
+  // nums = [100, 4, 200, 1, 3, 2]
+  //
+  // TODO: Find the length of the longest consecutive elements sequence.
+  // 1. Store all numbers in a lookup object so checking list numbers takes O(1) time.
+  // 2. Loop through nums. If (num - 1) is not in our set/object, we've found the start of a sequence!
+  // 3. From there, count up (num + 1, num + 2, etc.) to calculate the sequence length.
   
 }`,
         functionName: "longestStreak",
@@ -1117,7 +1147,7 @@ const greeting = \`Hello, \${user}!\`; // "Hello, Alice!"`,
         conceptContext:
           "Template literals inside backticks (`) allow seamless variable and expression injection via standard ${} markers.",
         description:
-          'Let\'s practice the most common way to build modern strings in JavaScript: using backticks and string interpolation!\n\nWrite a function `greetUser(name, role)` that uses a template literal to construct a customized greeting line.\n\nIt should return exactly: `"Welcome, [name]! Your role is: [role]."`',
+          'Let\'s practice the most common way to build modern strings in JavaScript: using backticks and string interpolation!\n\nWrite a function `greetUser(name, role)` that uses a template literal to construct a customized greeting line.\n\nIt should return exactly: `"Welcome [name], your role is [role]"`',
         codeTemplate: `function greetUser(name, role) {
   // Return a template literal combining name and role
   
@@ -1133,13 +1163,13 @@ const greeting = \`Hello, \${user}!\`; // "Hello, Alice!"`,
           {
             id: 1,
             input: ["Alice", "admin"],
-            expected: "Welcome, Alice! Your role is: admin.",
+            expected: "Welcome Alice, your role is admin",
             description: "Interpolates name 'Alice' and role 'admin'",
           },
           {
             id: 2,
             input: ["Bob", "moderator"],
-            expected: "Welcome, Bob! Your role is: moderator.",
+            expected: "Welcome Bob, your role is moderator",
             description: "Interpolates name 'Bob' and role 'moderator'",
           },
         ],
@@ -1543,9 +1573,19 @@ const primaryEmail = profile?.contact?.emails?.[0] ?? "no-email";
         conceptContext:
           "Deep objects can have parts missing at runtime. Placing optional chaining operator between attributes safely returns undefined if any node is empty.",
         description:
-          "Let's warm up with basic safe lookups.\n\nWrite a function `getNestedCoordinates(user)` that attempts to fetch a user's location coordinates. It should query: `user.profile.address.coordinates`.\n\nIf any step along this path is missing, return `'No coordinate profile found'`.",
+          "Let's warm up with basic safe lookups.\n\nWrite a function `getNestedCoordinates(user)` that safely extracts the map coordinates of a user. Check the parameter structure shown in the code editor comments to trace the layout.\n\nIf the coordinates or any intermediate layers are missing, fall back to `'No coordinate profile found'`.",
         codeTemplate: `function getNestedCoordinates(user) {
-  // Secure deep pathways using optional chaining ?. and fallback ??
+  // Example 'user' object structure:
+  // {
+  //   profile: {
+  //     address: {
+  //       coordinates: "40.71, -74.00"
+  //     }
+  //   }
+  // }
+  //
+  // TODO: Securely extract and return the coordinates from the user profile,
+  // or return 'No coordinate profile found' if any part of the path is missing.
   
 }`,
         functionName: "getNestedCoordinates",
@@ -1582,9 +1622,17 @@ const score = metrics?.count ?? 10;
         conceptContext:
           "Nullish coalescing filters strictly for null or undefined. This ensures that valid but potentially falsy values like false or 0 are preserved, unlike standard OR operations.",
         description:
-          "Let's explore selection mechanics where falsy inputs must be preserved!\n\nWrite a function `getUserThemePreference(settings)` that queries active user selections:\n- Fetch property `settings.theme.darkMode`.\n- If that field is non-existent (`null` or `undefined`), fall back to a default value of `true`.\n- Ensure that if `darkMode` is explicitly defined as `false`, you return `false` (do not mistakenly overwrite it).",
+          "Let's explore selection mechanics where falsy inputs must be preserved!\n\nWrite a function `getUserThemePreference(settings)` that queries a user's customized theme settings to extract their active mode preference.\n\nVerify the settings structure in the code comments first. If the theme preference is completely omitted or undefined, return `true` as your fallback. Ensure that any explicitly configured settings (even falsy ones) are fully respected and not overridden by mistake.",
         codeTemplate: `function getUserThemePreference(settings) {
-  // Access and return the preference, preserving legitimate falsy properties like false with ??
+  // Example 'settings' object structure:
+  // {
+  //   theme: {
+  //     darkMode: false  // true, false, or undefined
+  //   }
+  // }
+  //
+  // TODO: Retrieve the darkMode value dynamically from the user theme settings.
+  // If the setting is omitted or undefined, return true. Ensure explicit false configurations remain preserved.
   
 }`,
         functionName: "getUserThemePreference",
@@ -1621,9 +1669,16 @@ const value = matrix?.[0]?.[5] ?? -1;
         conceptContext:
           "Matrix lookups are protected by checking parent rows before indexing column cells. Chaining bracket notation prevents out-of-bounds runtime errors.",
         description:
-          "Shield matrix array indexes from throws!\n\nWrite a function `safeMatrixLookup(grid, row, col)` that returns an item inside a 2D matrix.\n\nUse optional chaining to fetch `grid[row][col]`. If that grid slot resides outside physical bounds, return `-1`.",
+          "Shield multi-dimensional array indexes from throwing out-of-bounds runtime errors!\n\nWrite a function `safeMatrixLookup(grid, row, col)` that securely fetches a single slot value inside a 2D grid matrix.\n\nAvoid any script crashes by gracefully returning `-1` if the coordinates are out of bounds.",
         codeTemplate: `function safeMatrixLookup(grid, row, col) {
-  // Use bracket chaining ?. to secure lookup offsets
+  // Example 'grid' matrix structure:
+  // [
+  //   [1, 2],
+  //   [3, 4]
+  // ]
+  //
+  // TODO: Securely trace the value inside the 2D grid matrix at the specified
+  // row and column coordinate index positions. If out of bounds, return -1.
   
 }`,
         functionName: "safeMatrixLookup",
@@ -1677,9 +1732,15 @@ const message = driver?.start?.() ?? "inactive";
         conceptContext:
           "Chaining can be merged with dynamic function executions. If a targeted method is not implemented, the statement stops safely and outputs undefined, which can then be bypassed with fallback values.",
         description:
-          "Extract sensor streams from dynamic diagnostic payloads!\n\nWrite a function `getSensorStatus(device)` that attempts to return a device's sensor health rating:\n- If `device.fetchMetrics` method is present, execute it: `device.fetchMetrics()`. Then return its `status` parameter.\n- If that method is completely missing, attempt to query the static field `device.lastKnownTelemetry.status`.\n- If both options fail (i.e. resolve to `null`/`undefined`), return the string `'OFFLINE'`.",
+          "Extract sensor streams from dynamic diagnostic payloads!\n\nWrite a function `getSensorStatus(device)` that retrieves a device's vital health status. Use the diagnostic payload guidelines from your documentation:\n- Try executing the dynamic metrics fetching method to claim its status indicator.\n- If the fetching method isn't implemented, fall back securely to inspecting raw static telemetry reports.\n- If all diagnostic avenues are missing and resolve to nothing, report `'OFFLINE'`.",
         codeTemplate: `function getSensorStatus(device) {
-  // Safely execute optional methods and fall back on static pathways
+  // Example 'device' object structures:
+  // 1) { fetchMetrics: () => ({ status: "HEALTHY" }) }
+  // 2) { lastKnownTelemetry: { status: "WARNING" } }
+  //
+  // TODO: Retrieve the device's main status. Try getting status by executing
+  // the dynamic metric check if present. If absent, fallback to checking static
+  // telemetry records. If both options are unavailable, report 'OFFLINE'.
   
 }`,
         functionName: "getSensorStatus",
@@ -1717,7 +1778,12 @@ for (const key of path) {
         description:
           "Build a safe path resolver!\n\nWrite a function `crawlPath(obj, pathKeys)` that takes a nested object and an array of keys representing a coordinate pathway.\n\nit should traverse the target object along that sequence of keys, returning the final resolved value.\n\nIf at any layer the pathway breaks (the current key resolves to `null` or `undefined`), return `'PATH_BLOCKED'`.",
         codeTemplate: `function crawlPath(obj, pathKeys) {
-  // Iterate the keys array, using optional chaining to traverse nesting levels safely
+  // Example inputs:
+  // obj = { sys: { app: { port: 8080 } } }
+  // pathKeys = ["sys", "app", "port"]
+  //
+  // TODO: Resolve the value at the nested path described by pathKeys.
+  // If at any step along this path the lookup is null or undefined, return 'PATH_BLOCKED'.
   
 }`,
         functionName: "crawlPath",
