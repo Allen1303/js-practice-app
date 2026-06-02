@@ -11,6 +11,7 @@ export function CodeWorkspace({
   showPrevReference,
   setShowPrevReference,
   prevExercise,
+  activeExercise,
   handleResetCode,
   prevCode,
   lineNumbers,
@@ -282,8 +283,10 @@ export function CodeWorkspace({
               <p className="text-zinc-400 leading-relaxed text-[11px]">
                 Building from{" "}
                 <strong className="text-white">{prevExercise.title}</strong> to{" "}
-                <strong className="text-white">{prevExercise.title}</strong> in
-                the curriculum sequence.
+                <strong className="text-white">
+                  {activeExercise?.title || ""}
+                </strong>{" "}
+                in the curriculum sequence.
               </p>
             </div>
 

@@ -105,6 +105,8 @@ export function getTopDeclarations(e) {
     const tc = cases[i];
     if (!tc) continue;
 
+    const usedInTestCase = new Set();
+
     if (tc.input && Array.isArray(tc.input)) {
       tc.input.forEach((arg, j) => {
         if (arg !== null && typeof arg === "object") {
@@ -119,7 +121,16 @@ export function getTopDeclarations(e) {
             baseName = isArr ? "list" : "data";
           }
 
-          const varName = `${baseName}${i + 1}`;
+          let varName = `${baseName}${i + 1}`;
+          if (usedInTestCase.has(varName)) {
+            let k = 2;
+            while (usedInTestCase.has(`${varName}_${k}`)) {
+              k++;
+            }
+            varName = `${varName}_${k}`;
+          }
+          usedInTestCase.add(varName);
+
           const valStr = stringifyJS(arg);
           varsDecs.push(`const ${varName} = ${valStr};`);
         }
@@ -264,6 +275,7 @@ export function getBottomUsage(e) {
     const tc = cases[i];
     if (!tc) continue;
 
+    const usedInTestCase = new Set();
     let argsInCall = [];
     if (tc.input && Array.isArray(tc.input)) {
       tc.input.forEach((arg, j) => {
@@ -277,7 +289,15 @@ export function getBottomUsage(e) {
           } else {
             baseName = Array.isArray(arg) ? "list" : "data";
           }
-          const varName = `${baseName}${i + 1}`;
+          let varName = `${baseName}${i + 1}`;
+          if (usedInTestCase.has(varName)) {
+            let k = 2;
+            while (usedInTestCase.has(`${varName}_${k}`)) {
+              k++;
+            }
+            varName = `${varName}_${k}`;
+          }
+          usedInTestCase.add(varName);
           argsInCall.push(varName);
         } else {
           if (typeof arg === "string") {

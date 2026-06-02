@@ -498,11 +498,40 @@ export default function App() {
     }
   };
 
-  // Keyboard shortcut to run: Cmd+Enter or Ctrl+Enter
+  // Keyboard shortcuts mimicking learnjavascript.online
   const handleKeyDown = (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+    // Cmd+Enter, Ctrl+Enter or Cmd+S, Ctrl+S to run tests
+    if (
+      (e.metaKey || e.ctrlKey) &&
+      (e.key === "Enter" || e.key.toLowerCase() === "s")
+    ) {
       e.preventDefault();
       handleRunTests();
+      return;
+    }
+
+    // Alt + H to reveal next hint
+    if (e.altKey && e.key.toLowerCase() === "h") {
+      e.preventDefault();
+      handleRevealHint();
+      return;
+    }
+
+    // Alt + ArrowRight to go to next step
+    if (e.altKey && e.key === "ArrowRight") {
+      e.preventDefault();
+      handleNextStep();
+      return;
+    }
+
+    // Alt + ArrowLeft to go to previous step
+    if (e.altKey && e.key === "ArrowLeft") {
+      e.preventDefault();
+      if (activeExerciseIndex > 0) {
+        setActiveExerciseIndex(activeExerciseIndex - 1);
+        setLeftTab("problem");
+      }
+      return;
     }
   };
 
@@ -862,6 +891,7 @@ export default function App() {
                   showPrevReference={showPrevReference}
                   setShowPrevReference={setShowPrevReference}
                   prevExercise={prevExercise}
+                  activeExercise={activeExercise}
                   handleResetCode={handleResetCode}
                   prevCode={prevCode}
                   lineNumbers={lineNumbers}
