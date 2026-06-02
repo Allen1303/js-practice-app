@@ -225,9 +225,17 @@ export default function App() {
               ) {
                 upgraded[key] = getFullExerciseTemplate(exercise);
               } else {
-                // Keep custom body, ensure it has top declarations
+                // Keep custom body, ensure it has top declarations without duplicate accumulation
                 let upgradedBody = funcBody;
-                if (topDecs && !upgradedBody.includes(topDecs.trim())) {
+                const bodyStartIdx = funcBody.search(
+                  /\b(function|async\s+function|class)\b/,
+                );
+                if (bodyStartIdx !== -1) {
+                  upgradedBody = funcBody.slice(bodyStartIdx);
+                  if (topDecs) {
+                    upgradedBody = topDecs + upgradedBody;
+                  }
+                } else if (topDecs && !upgradedBody.includes(topDecs.trim())) {
                   upgradedBody = topDecs + upgradedBody;
                 }
                 upgraded[key] = upgradedBody + getBottomUsage(exercise);
