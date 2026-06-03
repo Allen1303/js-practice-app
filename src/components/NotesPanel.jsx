@@ -1,55 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import {
-  BookOpen,
-  Save,
-  Trash2,
-  Search,
-  Download,
-  Sparkles,
-  FileText,
-  CheckCircle,
-  HelpCircle,
-  Edit3,
-} from "lucide-react";
+import { BookOpen, Save, Trash2, Search, Download, Sparkles, FileText, CheckCircle, HelpCircle, Edit3 } from "lucide-react";
 import { CONCEPTS } from "../data/exercises.js";
 
-export function NotesPanel({ activeExercise, activeConcept }) {
-  const [notes, setNotes] = useState({});
+export function NotesPanel({ activeExercise, activeConcept, notes = {}, setNotes }) {
   const [currentNoteText, setCurrentNoteText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [savedStatus, setSavedStatus] = useState(false);
 
-  // Load notes on mount
+  // Sync current note text with parent reactive notes state
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("learnjs_play_notes");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setNotes(parsed);
-        if (activeExercise && parsed[activeExercise.id]) {
-          setCurrentNoteText(parsed[activeExercise.id]);
-        } else {
-          setCurrentNoteText("");
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load notes from localStorage", e);
+    if (activeExercise && notes[activeExercise.id]) {
+      setCurrentNoteText(notes[activeExercise.id]);
+    } else {
+      setCurrentNoteText("");
     }
-  }, [activeExercise]);
+  }, [activeExercise, notes]);
 
   // Save specific note
   const handleSaveNote = (text) => {
     if (!activeExercise) return;
     const updatedNotes = { ...notes, [activeExercise.id]: text };
     setNotes(updatedNotes);
-    try {
-      localStorage.setItem("learnjs_play_notes", JSON.stringify(updatedNotes));
-      setSavedStatus(true);
-      setTimeout(() => setSavedStatus(false), 2000);
-    } catch (e) {
-      console.warn("Storage write failed for notes", e);
-    }
+    setSavedStatus(true);
+    setTimeout(() => setSavedStatus(false), 2000);
   };
 
   const handleTextChange = (e) => {
@@ -63,16 +37,8 @@ export function NotesPanel({ activeExercise, activeConcept }) {
       const updatedNotes = { ...notes };
       delete updatedNotes[exerciseId];
       setNotes(updatedNotes);
-      try {
-        localStorage.setItem(
-          "learnjs_play_notes",
-          JSON.stringify(updatedNotes),
-        );
-        if (activeExercise && exerciseId === activeExercise.id) {
-          setCurrentNoteText("");
-        }
-      } catch (e) {
-        console.warn("Failed to delete note from storage", e);
+      if (activeExercise && exerciseId === activeExercise.id) {
+        setCurrentNoteText("");
       }
     }
   };
@@ -85,14 +51,14 @@ export function NotesPanel({ activeExercise, activeConcept }) {
     handleSaveNote(updated);
   };
 
-  // Create a flattened lookup list for exercises to link notes with real exercises titles
+  // Create a flattened lookup list for exercises to link notes with real exercises titles 
   const exerciseLookup = {};
-  CONCEPTS.forEach((c) => {
-    c.exercises.forEach((e) => {
+  CONCEPTS.forEach(c => {
+    c.exercises.forEach(e => {
       exerciseLookup[e.id] = {
         title: e.description,
         conceptTitle: c.title,
-        id: e.id,
+        id: e.id
       };
     });
   });
@@ -108,10 +74,7 @@ export function NotesPanel({ activeExercise, activeConcept }) {
       const text = notes[exId]?.trim();
       if (text) {
         notesCount++;
-        const info = exerciseLookup[exId] || {
-          title: exId,
-          conceptTitle: "Syllabus",
-        };
+        const info = exerciseLookup[exId] || { title: exId, conceptTitle: "Syllabus" };
         md += `## 📝 ${info.conceptTitle} — ${info.title}\n`;
         md += `**Exercise Ref**: \`${exId}\`\n\n`;
         md += `### My Personal Insights & Snippets:\n`;
@@ -122,9 +85,7 @@ export function NotesPanel({ activeExercise, activeConcept }) {
     });
 
     if (notesCount === 0) {
-      alert(
-        "No notes found! Write some notes for this active challenge or other lessons first.",
-      );
+      alert("No notes found! Write some notes for this active challenge or other lessons first.");
       return;
     }
 
@@ -140,12 +101,12 @@ export function NotesPanel({ activeExercise, activeConcept }) {
 
   // Filter notes that have written content
   const filteredNotesList = Object.keys(notes)
-    .map((exId) => ({
+    .map(exId => ({
       exId,
       text: notes[exId],
-      info: exerciseLookup[exId] || { title: exId, conceptTitle: "Syllabus" },
+      info: exerciseLookup[exId] || { title: exId, conceptTitle: "Syllabus" }
     }))
-    .filter((item) => {
+    .filter(item => {
       if (!item.text.trim()) return false;
       if (!searchQuery) return true;
       const term = searchQuery.toLowerCase();
@@ -182,16 +143,15 @@ export function NotesPanel({ activeExercise, activeConcept }) {
       </div>
 
       <p className="text-xs text-zinc-650 leading-relaxed font-sans">
-        Summarize code structures, write key insights, or document edge-cases.
-        Notes taken here map explicitly to{" "}
-        <strong>{activeExercise?.description || "the current task"}</strong> and
-        stay in your browser standard memory.
+        Summarize code structures, write key insights, or document edge-cases. Notes taken here map explicitly to <strong>{activeExercise?.description || "the current task"}</strong> and stay in your browser standard memory.
       </p>
 
       {/* Main Split Layout: Editor and Sidebar search list side by side or stacked */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 items-stretch flex-1">
+
         {/* Editor (Span 2) */}
         <div className="xl:col-span-2 flex flex-col space-y-4 border border-zinc-200 bg-white p-4 rounded-xl shadow-sm">
+
           <div className="flex items-center justify-between border-b border-zinc-150 pb-2">
             <div>
               <span className="text-[9px] font-mono font-bold text-zinc-400 uppercase block tracking-wider">
@@ -252,18 +212,14 @@ export function NotesPanel({ activeExercise, activeConcept }) {
 
           {/* Character and word indicators */}
           <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-            <span>
-              {currentNoteText
-                ? currentNoteText.trim().split(/\s+/).filter(Boolean).length
-                : 0}{" "}
-              words
-            </span>
+            <span>{currentNoteText ? currentNoteText.trim().split(/\s+/).filter(Boolean).length : 0} words</span>
             <span>{currentNoteText.length} characters</span>
           </div>
         </div>
 
         {/* Saved Notes Sidebar (Span 1) */}
         <div className="flex flex-col space-y-3.5 border border-zinc-200 bg-zinc-50/50 p-4 rounded-xl shadow-inner min-h-[220px]">
+
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1">
               <BookOpen className="h-3 w-3" /> Notebook Index
@@ -298,9 +254,7 @@ export function NotesPanel({ activeExercise, activeConcept }) {
             {filteredNotesList.length === 0 ? (
               <div className="py-8 text-center text-zinc-400 space-y-1">
                 <FileText className="h-5 w-5 text-zinc-300 mx-auto" />
-                <p className="text-[10px] font-mono italic">
-                  No written notes yet.
-                </p>
+                <p className="text-[10px] font-mono italic">No written notes yet.</p>
               </div>
             ) : (
               filteredNotesList.map((item) => (
@@ -337,10 +291,10 @@ export function NotesPanel({ activeExercise, activeConcept }) {
           </div>
 
           <p className="text-[9.5px] font-sans leading-normal text-zinc-450 text-center">
-            💡 Export offline to bundle your written insights as standard
-            readable Markdown summaries anytime!
+            💡 Export offline to bundle your written insights as standard readable Markdown summaries anytime!
           </p>
         </div>
+
       </div>
     </motion.div>
   );

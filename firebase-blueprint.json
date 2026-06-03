@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "Represents the serialized lesson codes, progress, covered topics, and notes for a user.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique user authentication ID."
+        },
+        "codes": {
+          "type": "object",
+          "description": "Keys are exercise IDs, values are the modified code strings."
+        },
+        "progress": {
+          "type": "object",
+          "description": "Keys are exercise IDs, values are booleans indicating if solved."
+        },
+        "completedTopics": {
+          "type": "object",
+          "description": "Keys are roadmap topic IDs, values are booleans."
+        },
+        "notes": {
+          "type": "object",
+          "description": "Keys are exercise IDs, values are the written notebook entries."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time this progress was synced."
+        }
+      },
+      "required": [
+        "uid",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProgress",
+      "description": "Collection of user-individual progress states, notes and code answers."
+    }
+  }
+}

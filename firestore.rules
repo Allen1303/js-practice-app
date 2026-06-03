@@ -1,0 +1,49 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net: Default Deny All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reuseable global helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidUserProgress(data, userId) {
+      return data.uid == userId
+        && data.uid == request.auth.uid
+        && data.updatedAt == request.time
+        && (!('codes' in data) || data.codes is map)
+        && (!('progress' in data) || data.progress is map)
+        && (!('completedTopics' in data) || data.completedTopics is map)
+        && (!('notes' in data) || data.notes is map);
+    }
+
+    // Users Collection Matching Structure
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProgress(incoming(), userId);
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUserProgress(incoming(), userId);
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+  }
+}
