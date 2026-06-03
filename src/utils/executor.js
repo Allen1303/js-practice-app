@@ -376,6 +376,11 @@ export async function runExerciseTests(exercise, userCode) {
             actual = "Error: " + err.message;
           }
           passed = actual === tc.expected;
+        } else if (exercise.id === "safe-log-sensor") {
+          // Normal execution but do not use JSON.stringify because it strips method/functions (like fetchMetrics)
+          const result = userFunc(...tc.input);
+          actual = result instanceof Promise ? await result : result;
+          passed = deepEqual(actual, tc.expected);
         } else {
           // Normal pure function execution
           const inputClones = JSON.parse(JSON.stringify(tc.input));
@@ -728,6 +733,11 @@ export async function runCustomEvaluation(exercise, userCode, rawArgumentsStr) {
         return Promise.resolve("Success");
       };
       resultValue = await userFunc(mockFn, inputClones[1]);
+    } else if (exercise.id === "safe-log-sensor") {
+      // Normal execution but do not use JSON.stringify clones since they strip method/functions (like fetchMetrics)
+      const evalResult = userFunc(...parsedArgs);
+      resultValue =
+        evalResult instanceof Promise ? await evalResult : evalResult;
     } else {
       const evalResult = userFunc(...inputClones);
       resultValue =
