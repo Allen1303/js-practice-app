@@ -33,6 +33,9 @@ import { CheckCircle, Code, BookOpen, Sparkles, Edit3, RotateCcw, Globe } from "
 
 // Absolute order of concepts from Core Foundations to Practical Algorithms
 const CONCEPTS_ORDER = [
+  "variables-numbers",
+  "functions-conditionals",
+  "strings-basics",
   "string-parsing",
   "optional-chaining-coalescing",
   "array-search-verification",
@@ -652,10 +655,6 @@ export default function App() {
         viewMode={viewMode}
         setViewMode={setViewMode}
         handleResetFullWorkspace={handleResetFullWorkspace}
-        user={user}
-        isSyncing={isSyncing}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
       />
 
       {/* Primary Content View Switch */}
@@ -755,59 +754,59 @@ export default function App() {
                 />
 
                 {/* Guide/Goal Selection controls */}
-                <div className="flex border-b border-zinc-200 bg-zinc-100/60 p-0.5 shrink-0 select-none overflow-x-auto">
+                <div className="flex border-b border-zinc-200 bg-zinc-50 shrink-0 select-none overflow-x-auto justify-start">
                   <button
                     onClick={() => setLeftTab("problem")}
-                    className={`flex-1 min-w-[110px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${leftTab === "problem"
-                        ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
-                        : "text-zinc-500 hover:text-zinc-950"
+                    className={`py-3 px-4 text-[12px] font-bold tracking-tight flex items-center justify-center gap-1.5 transition-all cursor-pointer relative font-sans ${leftTab === "problem"
+                        ? "text-emerald-600 border-b-2 border-emerald-500"
+                        : "text-zinc-500 hover:text-zinc-950 border-b-2 border-transparent"
                       }`}
                   >
-                    <Code className="h-3 w-3 shrink-0" />
-                    <span className="whitespace-nowrap">Problem Goal</span>
+                    <Code className="h-3.5 w-3.5 shrink-0" />
+                    <span className="whitespace-nowrap">Instructions</span>
                   </button>
 
                   <button
                     onClick={() => setLeftTab("browser")}
-                    className={`flex-1 min-w-[110px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${leftTab === "browser"
-                        ? "bg-white text-zinc-950 border border-emerald-400 shadow-sm font-extrabold"
-                        : "text-zinc-500 hover:text-zinc-950"
+                    className={`py-3 px-4 text-[12px] font-bold tracking-tight flex items-center justify-center gap-1.5 transition-all cursor-pointer relative font-sans ${leftTab === "browser"
+                        ? "text-emerald-600 border-b-2 border-emerald-500 font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950 border-b-2 border-transparent"
                       }`}
                   >
-                    <Globe className="h-3 w-3 text-emerald-500 shrink-0" />
-                    <span className="whitespace-nowrap">Browser Tab</span>
+                    <Globe className="h-3.5 w-3.5 shrink-0" />
+                    <span className="whitespace-nowrap">Browser</span>
                   </button>
 
                   <button
                     onClick={() => setLeftTab("es6")}
-                    className={`flex-1 min-w-[105px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${leftTab === "es6"
-                        ? "bg-white text-zinc-950 border border-[#F7DF1E] shadow-sm font-extrabold"
-                        : "text-zinc-500 hover:text-zinc-950"
+                    className={`py-3 px-4 text-[12px] font-bold tracking-tight flex items-center justify-center gap-1.5 transition-all cursor-pointer relative font-sans ${leftTab === "es6"
+                        ? "text-emerald-650 border-b-2 border-emerald-500 font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950 border-b-2 border-transparent"
                       }`}
                   >
-                    <Sparkles className="h-3 w-3 text-yellow-500 shrink-0 fill-yellow-101" />
+                    <Sparkles className="h-3.5 w-3.5 text-yellow-500 shrink-0 fill-yellow-101" />
                     <span className="whitespace-nowrap">ES6 Sheets</span>
                   </button>
 
                   <button
                     onClick={() => setLeftTab("notes")}
-                    className={`flex-1 min-w-[100px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer ${leftTab === "notes"
-                        ? "bg-white text-zinc-950 border border-[#EDD012] shadow-sm font-extrabold"
-                        : "text-zinc-500 hover:text-zinc-950"
+                    className={`py-3 px-4 text-[12px] font-bold tracking-tight flex items-center justify-center gap-1.5 transition-all cursor-pointer relative font-sans ${leftTab === "notes"
+                        ? "text-emerald-650 border-b-2 border-emerald-500 font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950 border-b-2 border-transparent"
                       }`}
                   >
-                    <Edit3 className="h-3 w-3 text-[#F7DF1E] shrink-0" />
+                    <Edit3 className="h-3.5 w-3.5 text-[#EDD012] shrink-0" />
                     <span className="whitespace-nowrap">My Notes</span>
                   </button>
 
                   <button
                     onClick={() => setLeftTab("visualizer")}
-                    className={`flex-1 min-w-[120px] py-1 px-2 rounded-md text-[11px] font-bold font-mono tracking-tight flex items-center justify-center gap-1 transition-colors cursor-pointer relative ${leftTab === "visualizer"
-                        ? "bg-white text-zinc-950 border border-purple-300 shadow-sm font-extrabold"
-                        : "text-zinc-500 hover:text-zinc-950"
+                    className={`py-3 px-4 text-[12px] font-bold tracking-tight flex items-center justify-center gap-1.5 transition-all cursor-pointer relative font-sans ${leftTab === "visualizer"
+                        ? "text-emerald-650 border-b-2 border-emerald-500 font-extrabold"
+                        : "text-zinc-500 hover:text-zinc-950 border-b-2 border-transparent"
                       }`}
                   >
-                    <Sparkles className={`h-3 w-3 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`} />
+                    <Sparkles className={`h-3.5 w-3.5 text-purple-500 shrink-0 ${activeExerciseIndex === activeConcept.exercises.length - 1 ? "animate-pulse" : ""}`} />
                     <span className="whitespace-nowrap flex items-center gap-1">
                       Visual Sandbox
                       {activeExerciseIndex === activeConcept.exercises.length - 1 && (
