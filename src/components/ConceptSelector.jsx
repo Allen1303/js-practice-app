@@ -159,17 +159,28 @@ export function ConceptSelector({
                           const conceptIndex = concepts.findIndex(
                             (c) => c.id === concept.id,
                           );
-                          const isConceptUnlocked =
-                            conceptIndex <= 0 ||
-                            (() => {
-                              const prevConcept = concepts[conceptIndex - 1];
-                              const solvedInPrev = prevConcept.exercises.filter(
+                          const activeConceptIndex = concepts.findIndex(
+                            (c) => c.id === activeConceptId,
+                          );
+
+                          // Find the first concept index that is not fully completed
+                          const firstUncompletedIndex = concepts.findIndex(
+                            (c) => {
+                              const solvedCount = c.exercises.filter(
                                 (e) => solvedExercises[e.id],
                               ).length;
-                              return (
-                                solvedInPrev === prevConcept.exercises.length
-                              );
-                            })();
+                              return solvedCount < c.exercises.length;
+                            },
+                          );
+
+                          const isConceptUnlocked =
+                            conceptIndex <= 0 ||
+                            conceptIndex <= activeConceptIndex ||
+                            firstUncompletedIndex === -1 ||
+                            conceptIndex <= firstUncompletedIndex ||
+                            concept.exercises.some(
+                              (e) => solvedExercises[e.id],
+                            );
 
                           return (
                             <button

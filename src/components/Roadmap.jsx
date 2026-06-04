@@ -67,8 +67,7 @@ export function Roadmap({
               </span>
             </div>
             <h2 className="text-[22px] font-black tracking-tight text-zinc-950 leading-none">
-              LearnJS<span className="text-zinc-500 font-normal">.online</span>{" "}
-              syllabus map
+              LearnJS Syllabus map
             </h2>
             <p className="text-sm text-zinc-600 leading-relaxed">
               Track your mastery through the official 12-chapter curriculum
@@ -257,9 +256,18 @@ export function Roadmap({
               const topicIndex = knowledgeMapTopics.findIndex(
                 (t) => t.id === topic.id,
               );
+              const firstUncompletedTopicIdx = knowledgeMapTopics.findIndex(
+                (t) => !completedTopics[t.id],
+              );
+
               const isUnlocked =
                 topicIndex <= 0 ||
-                !!completedTopics[knowledgeMapTopics[topicIndex - 1].id];
+                firstUncompletedTopicIdx === -1 ||
+                topicIndex <= firstUncompletedTopicIdx ||
+                completedTopics[topic.id] ||
+                knowledgeMapTopics
+                  .slice(topicIndex)
+                  .some((t) => completedTopics[t.id]);
 
               return (
                 <motion.div
