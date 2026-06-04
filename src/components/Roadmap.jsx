@@ -29,6 +29,8 @@ export function Roadmap({
   toggleTopicProgress,
   jumpToExercise,
   clearAllMarkers,
+  concepts = [],
+  solvedExercises = {},
 }) {
   const maxedPercent = Math.min(completionRatePercent, 100);
 
@@ -252,6 +254,22 @@ export function Roadmap({
               const isChecked = !!completedTopics[topic.id];
               const isExpanded = expandedTopicId === topic.id;
 
+              // Find the concept that contains `topic.relatedExerciseId`
+              const topicConcept = concepts.find((c) =>
+                c.exercises?.some((e) => e.id === topic.relatedExerciseId),
+              );
+
+              const topicConceptIndex = topicConcept
+                ? concepts.findIndex((c) => c.id === topicConcept.id)
+                : 0;
+
+              // Find the index of the first uncompleted concept in CONCEPTS
+              const firstUncompletedConceptIdx = concepts.findIndex((c) => {
+                const solvedCount =
+                  c.exercises?.filter((e) => solvedExercises[e.id]).length || 0;
+                return solvedCount < (c.exercises?.length || 0);
+              });
+
               // Linear progression syllabus lock:
               const topicIndex = knowledgeMapTopics.findIndex(
                 (t) => t.id === topic.id,
@@ -262,6 +280,11 @@ export function Roadmap({
 
               const isUnlocked =
                 topicIndex <= 0 ||
+                topicConceptIndex <= 0 ||
+                firstUncompletedConceptIdx === -1 ||
+                topicConceptIndex <= firstUncompletedConceptIdx ||
+                (topicConcept &&
+                  topicConcept.exercises?.some((e) => solvedExercises[e.id])) ||
                 firstUncompletedTopicIdx === -1 ||
                 topicIndex <= firstUncompletedTopicIdx ||
                 completedTopics[topic.id] ||
