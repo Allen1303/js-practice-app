@@ -270,27 +270,13 @@ export function Roadmap({
                 return solvedCount < (c.exercises?.length || 0);
               });
 
-              // Linear progression syllabus lock:
-              const topicIndex = knowledgeMapTopics.findIndex(
-                (t) => t.id === topic.id,
-              );
-              const firstUncompletedTopicIdx = knowledgeMapTopics.findIndex(
-                (t) => !completedTopics[t.id],
-              );
-
+              // Linear progression syllabus lock block should only be when trying to move forward to a locked concept:
               const isUnlocked =
-                topicIndex <= 0 ||
-                topicConceptIndex <= 0 ||
+                topicConceptIndex === -1 ||
                 firstUncompletedConceptIdx === -1 ||
                 topicConceptIndex <= firstUncompletedConceptIdx ||
                 (topicConcept &&
-                  topicConcept.exercises?.some((e) => solvedExercises[e.id])) ||
-                firstUncompletedTopicIdx === -1 ||
-                topicIndex <= firstUncompletedTopicIdx ||
-                completedTopics[topic.id] ||
-                knowledgeMapTopics
-                  .slice(topicIndex)
-                  .some((t) => completedTopics[t.id]);
+                  topicConcept.exercises?.some((e) => solvedExercises[e.id]));
 
               return (
                 <motion.div
