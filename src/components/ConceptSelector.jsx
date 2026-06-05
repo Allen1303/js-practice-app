@@ -19,7 +19,13 @@ const CATEGORIES = [
     subgroups: [
       {
         title: "Baseline Elements",
-        concepts: ["string-parsing", "optional-chaining-coalescing"],
+        concepts: [
+          "variables-numbers",
+          "functions-conditionals",
+          "strings-basics",
+          "string-parsing",
+          "optional-chaining-coalescing",
+        ],
       },
     ],
   },
@@ -32,6 +38,7 @@ const CATEGORIES = [
         title: "Transform & Iteration",
         concepts: [
           "array-search-verification",
+          "foreach-callbacks",
           "map-callbacks",
           "filter-callbacks",
           "reduce-callbacks",

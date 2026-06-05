@@ -207,7 +207,7 @@ console.log("5" === 5); // false (strict comparison checks the type)`,
     console.log(sentence.includes("A+")); // true
     // Replace all non-letters with empty spaces:
     console.log(sentence.replace(/[^a-zA-Z]/g, "")); // "Grade"`,
-    relatedExerciseId: "string-case-normalization",
+    relatedExerciseId: "string-regex-match",
   },
   {
     id: "km-string-formatting",

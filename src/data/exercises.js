@@ -2531,6 +2531,53 @@ const normal = userEmail.toLowerCase(); // "sarah.connor@skynet.com"`,
         ],
       },
       {
+        id: "string-regex-match",
+        title: "Secure Warning Validator & Sanitizer",
+        difficulty: "Warm-up",
+        codeSnippet: `// Examples:
+"[SECURE] SPEED WARNING 1".startsWith("[SECURE]"); // true
+"SPEED WARNING".includes("WARNING"); // true
+"WARNING 123".replace(/[0-9]/g, ""); // "WARNING "`,
+        conceptContext:
+          "Use .startsWith(), .includes(), and .replace() with Regex categories to cleanly filter, validate, and sanitize structured log payloads.",
+        description:
+          'Let\'s validate and clean security transmission logs using search indicators and regular expressions!\n\nWrite a function `processMessage(msg)` that checks the following conditions on the input `msg` string:\n1. Check if the message starts with the prefix `"[SECURE]"` using `.startsWith()`.\n2. Check if the message contains the keyword `"WARNING"` using `.includes()`.\n3. If both conditions are met, clean the message by removing all numeric digits (characters `0-9`) using a global replace regex `/\\d/g` or `/[0-9]/g`, and return the cleaned string.\n4. If either condition is not met, return the string `"INVALID"`.',
+        codeTemplate: `function processMessage(msg) {
+  // 1. Verify startsWith "[SECURE]" and includes "WARNING"
+  // 2. If valid, remove all numeric digits and return
+  // 3. Otherwise return "INVALID"
+  
+}`,
+        functionName: "processMessage",
+        hints: [
+          "Use if (msg.startsWith('[SECURE]') && msg.includes('WARNING')) to run the validation check.",
+          "To clean digits, call msg.replace(/[0-9]/g, '') or use the \\\\d pattern regex globally.",
+          "Ensure you return 'INVALID' if the checks fail.",
+        ],
+        explanation:
+          "Combining basic string searches like startsWith and includes with powerful regular expression swaps cleans complex inputs without complex loop logic.",
+        testCases: [
+          {
+            id: 1,
+            input: ["[SECURE] SERVER ALERT WARNING 911"],
+            expected: "[SECURE] SERVER ALERT WARNING ",
+            description: "Valid secure message with digits cleaned",
+          },
+          {
+            id: 2,
+            input: ["[PUBLIC] WARNING LEVEL 4"],
+            expected: "INVALID",
+            description: "Fails prefix check and returns INVALID",
+          },
+          {
+            id: 3,
+            input: ["[SECURE] STANDARD DATA OK 200"],
+            expected: "INVALID",
+            description: "Fails keyword check and returns INVALID",
+          },
+        ],
+      },
+      {
         id: "string-slice-segments",
         title: "Area Code Segment Extractor",
         difficulty: "Warm-up",
