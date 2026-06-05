@@ -93,7 +93,7 @@ export const KNOWLEDGE_MAP_TOPICS = [
 // console.log(counter); // Crash check: ReferenceError!
 const counter = 100;
 let score = 20; // safe block scope`,
-    relatedExerciseId: "closure-counter",
+    relatedExerciseId: "var-declaration",
   },
   {
     id: "km-primitive-types",
@@ -112,7 +112,7 @@ let score = 20; // safe block scope`,
     codeSnippet: `console.log(typeof "learning"); // "string"
 console.log(typeof 2026);       // "number"
 console.log(typeof null);       // "object" (heritage trap!)`,
-    relatedExerciseId: "ds-deep-freeze",
+    relatedExerciseId: "number-typeof",
   },
   {
     id: "km-global-environment",
@@ -130,7 +130,7 @@ console.log(typeof null);       // "object" (heritage trap!)`,
     codeSnippet: `// Identical global objects mapping:
 console.log(globalThis === window); // true inside browser tabs
 console.log("5" === 5); // false (strict comparison checks the type)`,
-    relatedExerciseId: "search-find-positive",
+    relatedExerciseId: "cond-strict",
   },
 
   // 2. Numbers & Remainder
@@ -149,9 +149,9 @@ console.log("5" === 5); // false (strict comparison checks the type)`,
       "💸 Numeric separators (_): Allow you to place underscores inside large numbers (like 1_500_000) to make them readable without affecting calculations.",
     ],
     codeSnippet: `const price = Number.parseInt("150_000 USD", 10); // 150000
-const cleanPi = Number.parseFloat("3.14seconds");  // 3.14
-console.log(Number.isNaN(NaN)); // true`,
-    relatedExerciseId: "stack-evaluate-rpn",
+    const cleanPi = Number.parseFloat("3.14seconds");  // 3.14
+    console.log(Number.isNaN(NaN)); // true`,
+    relatedExerciseId: "num-parse",
   },
   {
     id: "km-division-remainder",
@@ -167,8 +167,8 @@ console.log(Number.isNaN(NaN)); // true`,
       "🧮 Cyclic Patterns: Ideal for building carousel sliders or recurring color sequences.",
     ],
     codeSnippet: `const isEven = (num) => num % 2 === 0;
-const wrapIndex = (step, max) => step % max; // reset boundaries`,
-    relatedExerciseId: "search-all-even-positives",
+    const wrapIndex = (step, max) => step % max; // reset boundaries`,
+    relatedExerciseId: "num-remainder-odd",
   },
 
   // 3. Strings & Text Methods
@@ -186,9 +186,9 @@ const wrapIndex = (step, max) => step % max; // reset boundaries`,
       "✂️ str.slice(start, end): Harvests a clean excerpt of your text from the start index up to (but not including) the end index.",
     ],
     codeSnippet: `const code = "ReactBuild";
-console.log(code.at(-1)); // "d" (retrieved backward)
-console.log(code.slice(0, 5)); // "React" (exclusive slice)`,
-    relatedExerciseId: "recursion-reverse-string",
+    console.log(code.at(-1)); // "d" (retrieved backward)
+    console.log(code.slice(0, 5)); // "React" (exclusive slice)`,
+    relatedExerciseId: "str-length",
   },
   {
     id: "km-string-matching-regex",
@@ -204,10 +204,10 @@ console.log(code.slice(0, 5)); // "React" (exclusive slice)`,
       "🪄 Regular Expressions: Written between slashes (like `/pattern/g`), they allow you to search for abstract categories of characters at once.",
     ],
     codeSnippet: `const sentence = "Grade: A+";
-console.log(sentence.includes("A+")); // true
-// Replace all non-letters with empty spaces:
-console.log(sentence.replace(/[^a-zA-Z]/g, "")); // "Grade"`,
-    relatedExerciseId: "string-camel-case",
+    console.log(sentence.includes("A+")); // true
+    // Replace all non-letters with empty spaces:
+    console.log(sentence.replace(/[^a-zA-Z]/g, "")); // "Grade"`,
+    relatedExerciseId: "string-case-normalization",
   },
   {
     id: "km-string-formatting",
@@ -224,9 +224,9 @@ console.log(sentence.replace(/[^a-zA-Z]/g, "")); // "Grade"`,
       "🕖 padStart(length, char): Pads the beginning of a text with a fallback character until it spans the goal length.",
     ],
     codeSnippet: `const userEmail = "  Allen@gmail.com  ";
-const normalized = userEmail.trim().toLowerCase(); // "allen@gmail.com"
-const secondsText = "5".padStart(2, "0"); // "05" (clean clock output)`,
-    relatedExerciseId: "string-html-builder",
+    const normalized = userEmail.trim().toLowerCase(); // "allen@gmail.com"
+    const secondsText = "5".padStart(2, "0"); // "05" (clean clock output)`,
+    relatedExerciseId: "string-trim-spaces",
   },
 
   // 4. Control Flow & Loops
@@ -268,7 +268,7 @@ for (const task of tasks) {
   console.log("Active Task:", task);
 }
 // Looping over dynamic numbers: for (let i = 0; i < 5; i++) { ... }`,
-    relatedExerciseId: "build-frequency-map",
+    relatedExerciseId: "foreach-sum",
   },
 
   // 5. Functions, Scopes & Closures
@@ -287,7 +287,7 @@ for (const task of tasks) {
     ],
     codeSnippet: `const greetUser = (name = "Developer") => \`Hello, \${name}!\`;
 console.log(greetUser()); // "Hello, Developer!" (default parameter applied)`,
-    relatedExerciseId: "gather-rest-sum",
+    relatedExerciseId: "func-return",
   },
   {
     id: "km-scopes-closures",

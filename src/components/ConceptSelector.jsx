@@ -155,32 +155,8 @@ export function ConceptSelector({
                             solvedInConcept === concept.exercises.length &&
                             concept.exercises.length > 0;
 
-                          // Linear progression lock check:
-                          const conceptIndex = concepts.findIndex(
-                            (c) => c.id === concept.id,
-                          );
-                          const activeConceptIndex = concepts.findIndex(
-                            (c) => c.id === activeConceptId,
-                          );
-
-                          // Find the first concept index that is not fully completed
-                          const firstUncompletedIndex = concepts.findIndex(
-                            (c) => {
-                              const solvedCount = c.exercises.filter(
-                                (e) => solvedExercises[e.id],
-                              ).length;
-                              return solvedCount < c.exercises.length;
-                            },
-                          );
-
-                          const isConceptUnlocked =
-                            conceptIndex <= 0 ||
-                            conceptIndex <= activeConceptIndex ||
-                            firstUncompletedIndex === -1 ||
-                            conceptIndex <= firstUncompletedIndex ||
-                            concept.exercises.some(
-                              (e) => solvedExercises[e.id],
-                            );
+                          // Linear progression lock check removed to support full self-paced practice
+                          const isConceptUnlocked = true;
 
                           return (
                             <button

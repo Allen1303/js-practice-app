@@ -254,29 +254,8 @@ export function Roadmap({
               const isChecked = !!completedTopics[topic.id];
               const isExpanded = expandedTopicId === topic.id;
 
-              // Find the concept that contains `topic.relatedExerciseId`
-              const topicConcept = concepts.find((c) =>
-                c.exercises?.some((e) => e.id === topic.relatedExerciseId),
-              );
-
-              const topicConceptIndex = topicConcept
-                ? concepts.findIndex((c) => c.id === topicConcept.id)
-                : 0;
-
-              // Find the index of the first uncompleted concept in CONCEPTS
-              const firstUncompletedConceptIdx = concepts.findIndex((c) => {
-                const solvedCount =
-                  c.exercises?.filter((e) => solvedExercises[e.id]).length || 0;
-                return solvedCount < (c.exercises?.length || 0);
-              });
-
-              // Linear progression syllabus lock block should only be when trying to move forward to a locked concept:
-              const isUnlocked =
-                topicConceptIndex === -1 ||
-                firstUncompletedConceptIdx === -1 ||
-                topicConceptIndex <= firstUncompletedConceptIdx ||
-                (topicConcept &&
-                  topicConcept.exercises?.some((e) => solvedExercises[e.id]));
+              // Linear progression lock check removed to support full self-paced exploration and sandbox navigation
+              const isUnlocked = true;
 
               return (
                 <motion.div

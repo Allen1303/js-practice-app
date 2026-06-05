@@ -404,6 +404,370 @@ console.log(label.toLowerCase()); // "vite app"`,
     ],
   },
   {
+    id: "foreach-callbacks",
+    title: ".forEach() List Iteration",
+    shortDescription:
+      "Master side-effects, manual accumulation, and array scanning via .forEach() loops.",
+    longExplanation:
+      "The `.forEach()` method executes a provided callback function once for each array element. Unlike `.map()` or `.filter()`, it returns `undefined` and is used strictly to execute side-effects, such as mutating outer variables, logging info, or updating database collections.\n\n- **No New Array**: `.forEach()` does not generate or return a new list. It operates on the existing data or triggers outside actions.\n- **Parameters**: The callback receives the standard (element, index, originalArray) trio.",
+    codeSnippet: `const scores = [10, 20, 30];
+let sum = 0;
+scores.forEach(num => { sum += num; });
+console.log(sum); // 60`,
+    exercises: [
+      {
+        id: "foreach-sum",
+        title: "Manual Sum Accumulator",
+        difficulty: "Warm-up",
+        codeSnippet: `let total = 0;\n[1, 2, 3].forEach(n => total += n); // total is 6`,
+        conceptContext:
+          "While standard for-loops scan indices, `.forEach()` cleanly feeds element values directly into external tracker variables sequentially.",
+        description:
+          "Let's master basic side effects! Write a function `accumulateSum(nums)` that initializes a running sum variable at 0. Use `.forEach()` to iterate over `nums` and add each number to the running sum, then return the final sum.",
+        codeTemplate: `function accumulateSum(nums) {
+  let sum = 0;
+  // Use .forEach() to add each number to sum
+  
+  return sum;
+}`,
+        functionName: "accumulateSum",
+        hints: [
+          "Call nums.forEach(num => { ... })",
+          "Inside the callback, write: sum += num;",
+          "Return the variable sum after the loop finishes.",
+        ],
+        explanation:
+          "Manual state aggregation using local tracker variables is a robust pattern for custom list calculations.",
+        testCases: [
+          {
+            id: 1,
+            input: [[2, 4, 6]],
+            expected: 12,
+            description: "Sums standard positives correctly",
+          },
+          {
+            id: 2,
+            input: [[]],
+            expected: 0,
+            description: "Handles empty array elements",
+          },
+        ],
+      },
+      {
+        id: "foreach-average",
+        title: "Running List Average",
+        difficulty: "Warm-up",
+        codeSnippet: `let sum = 0;\n[2, 4].forEach(n => sum += n);\nconst avg = sum / 2; // 3`,
+        conceptContext:
+          "Building on manual sums, we can find average sizes by accumulating sum and checking lengths directly.",
+        description:
+          "Write a function `calculateAverage(nums)` that finds the numerical average of `nums` using `.forEach()`. If the array is empty, return `0` directly.",
+        codeTemplate: `function calculateAverage(nums) {
+  if (nums.length === 0) return 0;
+  let runningSum = 0;
+  // Use .forEach() to find sum, then divide by elements length
+  
+}`,
+        functionName: "calculateAverage",
+        hints: [
+          "Test if nums.length is 0. If so, return 0.",
+          "Perform nums.forEach(v => runningSum += v).",
+          "Return runningSum / nums.length",
+        ],
+        explanation:
+          "Combining counts with aggregated sums compiles simple average stats smoothly.",
+        testCases: [
+          {
+            id: 1,
+            input: [[10, 20, 30]],
+            expected: 20,
+            description: "Computes positive numbers average cleanly",
+          },
+          {
+            id: 2,
+            input: [[]],
+            expected: 0,
+            description: "An empty array returns 0 safely",
+          },
+        ],
+      },
+      {
+        id: "foreach-log-string",
+        title: "Log Statement Concatenator",
+        difficulty: "Warm-up",
+        codeSnippet: `let log = "";\n["A", "B"].forEach((char, i) => {\n  log += (i > 0 ? ", " : "") + char;\n}); // "A, B"`,
+        conceptContext:
+          "Dynamic string assembly utilizing active index locations lets you form custom comma-separated log structures on top of lists.",
+        description:
+          "Write a function `buildLogString(events)` that loops over an array of event strings using `.forEach()`. It should return a single concatenated string where each event is separated by `' | '`. If the array is empty, return an empty string `\"\"`.",
+        codeTemplate: `function buildLogString(events) {
+  let result = "";
+  // Concatenate events using .forEach() with a ' | ' separator
+  
+  return result;
+}`,
+        functionName: "buildLogString",
+        hints: [
+          "Use the optional index parameter in .forEach((evt, idx) => { ... })",
+          "If idx === 0, assign result = evt; otherwise, result += ' | ' + evt;",
+        ],
+        explanation:
+          "Index checking avoids trailing delimiters in custom text files and log streams.",
+        testCases: [
+          {
+            id: 1,
+            input: [["Login", "Click", "Logout"]],
+            expected: "Login | Click | Logout",
+            description: "Accurately connects list items using custom pipes",
+          },
+          {
+            id: 2,
+            input: [[]],
+            expected: "",
+            description: "Returns empty string for empty input data lists",
+          },
+        ],
+      },
+      {
+        id: "foreach-add-property",
+        title: "Mutating Object List Registrar",
+        difficulty: "DSA Easy",
+        codeSnippet: `const users = [{ name: "A" }];\nusers.forEach((u, i) => u.id = i);\n// users is [{ name: "A", id: 0 }]`,
+        conceptContext:
+          "Because javascript copies object references, mutating properties inside a `.forEach()` iteration modifies the original objects directly.",
+        description:
+          "In full-stack architectures, updating object arrays with identifiers ensures relational integrity. Write a function `registerInboundUsers(users, baseID)` that iterates through an array of user objects and assigns each object an `accountID` property computed as `baseID + index`.",
+        codeTemplate: `function registerInboundUsers(users, baseID) {
+  // Mutate each user object by attaching an accountID computed via baseID + index
+  
+  return users;
+}`,
+        functionName: "registerInboundUsers",
+        hints: [
+          "Call users.forEach((user, index) => { ... })",
+          "Inside the loop, assign: user.accountID = baseID + index;",
+          "Return the modified 'users' array.",
+        ],
+        explanation:
+          "Reference mutations directly inside lists enrich active row variables in-place without copying overhead.",
+        testCases: [
+          {
+            id: 1,
+            input: [[{ name: "Alice" }, { name: "Bob" }], 1000],
+            expected: [
+              { name: "Alice", accountID: 1000 },
+              { name: "Bob", accountID: 1001 },
+            ],
+            description: "Assigns incremental IDs from a base integer offset",
+          },
+        ],
+      },
+      {
+        id: "foreach-classify",
+        title: "List Element Classifier",
+        difficulty: "DSA Easy",
+        codeSnippet: `const scores = [80, 50];\nconst pass = [], fail = [];\nscores.forEach(s => s >= 60 ? pass.push(s) : fail.push(s));`,
+        conceptContext:
+          "Pushing elements into completely separate external arrays compiles multi-bucket categories without modifying the original database arrays.",
+        description:
+          "Let's perform a bulk classification. Write a function `classifyScores(scores, threshold)` that splits a flat list of test scores into two separate arrays inside a return object: `passed` (scores >= threshold) and `failed` (scores < threshold). Return the resulting classification object.",
+        codeTemplate: `function classifyScores(scores, threshold) {
+  const passed = [];
+  const failed = [];
+  // Loop over scores and classify intopassed and failed baskets
+  
+  return { passed, failed };
+}`,
+        functionName: "classifyScores",
+        hints: [
+          "Loop over scores: scores.forEach(score => ...)",
+          "Use condition: if (score >= threshold) passed.push(score); else failed.push(score);",
+        ],
+        explanation:
+          "Multi-destination pushing sorts raw arrays into multi-bucket categories highly productively.",
+        testCases: [
+          {
+            id: 1,
+            input: [[85, 45, 90, 60], 70],
+            expected: { passed: [85, 90], failed: [45, 60] },
+            description:
+              "Dispatches scores into success and failure buckets cleanly",
+          },
+        ],
+      },
+      {
+        id: "foreach-frequency",
+        title: "Frequency Map Generator",
+        difficulty: "DSA Easy",
+        codeSnippet: `const tally = {};\n["a", "b", "a"].forEach(char => {\n  tally[char] = (tally[char] || 0) + 1;\n}); // { a: 2, b: 1 }`,
+        conceptContext:
+          "Initializing missing keys to zero before incrementing counts compiles frequency profiles or lookup map directories.",
+        description:
+          "Write a function `buildFrequencyTally(items)` that returns an object tallying frequency counts. Use `.forEach()` to record how many times each string item appears in the array.",
+        codeTemplate: `function buildFrequencyTally(items) {
+  const tally = {};
+  // Use .forEach() to count occurrences of each item in tally
+  
+  return tally;
+}`,
+        functionName: "buildFrequencyTally",
+        hints: [
+          "Iterate over items: items.forEach(item => { ... })",
+          "Check tally[item]: tally[item] = (tally[item] || 0) + 1;",
+        ],
+        explanation:
+          "Frequency dictionaries are standard for ranking search keywords and word statistics.",
+        testCases: [
+          {
+            id: 1,
+            input: [["apple", "banana", "apple"]],
+            expected: { apple: 2, banana: 1 },
+            description: "Tallies repeated word strings accurately",
+          },
+          {
+            id: 2,
+            input: [[]],
+            expected: {},
+            description: "Yields empty object for empty parameters",
+          },
+        ],
+      },
+      {
+        id: "foreach-match-index",
+        title: "Parity Positional Scaler",
+        difficulty: "DSA Easy",
+        codeSnippet: `const list = [10, 20, 30];\nlist.forEach((val, i, arr) => {\n  if (i % 2 === 0) arr[i] = val * 5;\n}); // [50, 20, 150]`,
+        conceptContext:
+          "Since the callback provides the original array reference, we can mutate or replace values at targeted locations directly inside the loop.",
+        description:
+          "Write a function `scaleEvenIndices(nums)` that takes an array of numbers and multiplies each element located at **even index positions** (0, 2, 4...) by `10`. Return the original modified array.",
+        codeTemplate: `function scaleEvenIndices(nums) {
+  // Use the third parameter of .forEach callback (the original array) to mutate in-place
+  
+  return nums;
+}`,
+        functionName: "scaleEvenIndices",
+        hints: [
+          "Invoke .forEach((val, index, array) => { ... })",
+          "If index is even (index % 2 === 0), write: array[index] = val * 10;",
+        ],
+        explanation:
+          "In-place modifications of arrays using indexing maps sequences efficiently without auxiliary allocations.",
+        testCases: [
+          {
+            id: 1,
+            input: [[1, 2, 3, 4, 5]],
+            expected: [10, 2, 30, 4, 50],
+            description: "Scales indices 0, 2, and 4 in-place cleanly",
+          },
+        ],
+      },
+      {
+        id: "foreach-dom-emulation",
+        title: "Simulated HTML Attributes Hydrator",
+        difficulty: "DSA Easy",
+        codeSnippet: `const elements = [{ tag: "p" }];\nelements.forEach(el => el.class = "lead");\n// elements has class set`,
+        conceptContext:
+          "Frontend state hydration relies on scanning nodes to configure custom stylesheet or configuration options before drawing them.",
+        description:
+          "Let's simulate standard browser UI setup. Write a function `hydrateDOMNodes(nodes, globalTheme)` that processes a list of mock DOM nodes `{ tag, classes: [] }`. It should append `globalTheme` into each node's `classes` array, and if the node represents a `'button'`, also add an `'btn-active'` class. Return the updated array.",
+        codeTemplate: `function hydrateDOMNodes(nodes, globalTheme) {
+  // Iterate and modify lists of node classes in place
+  
+  return nodes;
+}`,
+        functionName: "hydrateDOMNodes",
+        hints: [
+          "Loop over each node block using node.forEach(n => ...)",
+          "Push globalTheme to n.classes.",
+          "Check tag, push 'btn-active' to n.classes if tag matches 'button'.",
+        ],
+        explanation:
+          "Mocking node setups before writing UI components is practical in SPA component designs.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { tag: "div", classes: ["flex"] },
+                { tag: "button", classes: [] },
+              ],
+              "dark-mode",
+            ],
+            expected: [
+              { tag: "div", classes: ["flex", "dark-mode"] },
+              { tag: "button", classes: ["dark-mode", "btn-active"] },
+            ],
+            description:
+              "Applies themes and specialized class conditions correctly",
+          },
+        ],
+      },
+      {
+        id: "foreach-nested-sum",
+        title: "Matrix Flat-Sum Calculator",
+        difficulty: "DSA Medium",
+        codeSnippet: `let total = 0;\n[[1], [2, 3]].forEach(row => {\n  row.forEach(num => total += num);\n}); // total is 6`,
+        conceptContext:
+          "When dealing with multi-dimensional grids, nesting `.forEach()` handlers inside each other parses multi-level numbers perfectly.",
+        description:
+          "Write a function `sumMatrix(matrix)` that calculates the grand total of all numbers inside a 2D grid matrix of numbers using nested `.forEach()` loops.",
+        codeTemplate: `function sumMatrix(matrix) {
+  let grandTotal = 0;
+  // Use nested .forEach() loops to sum each item in matrix
+  
+  return grandTotal;
+}`,
+        functionName: "sumMatrix",
+        hints: [
+          "The outer .forEach() takes a row: matrix.forEach(row => { ... })",
+          "Inside it, write: row.forEach(val => grandTotal += val);",
+        ],
+        explanation:
+          "Traversing grid arrays is straightforward when sequential inner-loop offsets execute row-by-row.",
+        testCases: [
+          {
+            id: 1,
+            input: [[[1, 2], [3], [4, 5]]],
+            expected: 15,
+            description: "Sums arbitrary dimensions correctly",
+          },
+        ],
+      },
+      {
+        id: "foreach-pipeline",
+        title: "Dynamic Processing Pipeline",
+        difficulty: "DSA Medium",
+        codeSnippet: `const state = { value: 10 };\nconst pipeline = [v => v + 2, v => v * 3];\npipeline.forEach(fn => {\n  state.value = fn(state.value);\n}); // state.value is 36`,
+        conceptContext:
+          "A pipeline is an array of functions. Using `.forEach()` to iterate over functions and apply them to a single state builds customizable transformer engines.",
+        description:
+          "Create a data validation compiler! Write a function `runPipeline(input, steps)` that takes an initial input value and an array of helper transformer functions `steps`. Iterate over the functions and pipe the output of each function as the input to the next. Return the final transformed value.",
+        codeTemplate: `function runPipeline(input, steps) {
+  let currentVal = input;
+  // Use .forEach() to pipe currentVal through each step function
+  
+  return currentVal;
+}`,
+        functionName: "runPipeline",
+        hints: [
+          "Loop over steps: steps.forEach(func => { ... })",
+          "Inside the loop, update currentVal: currentVal = func(currentVal);",
+        ],
+        explanation:
+          "Function arrays act as dynamic middleware filters inside compilers and web routing architectures.",
+        testCases: [
+          {
+            id: 1,
+            input: [5, [(x) => x + 3, (x) => x * 2, (x) => x - 1]],
+            expected: 15,
+            description: "Executes pipeline step sequence in correct order",
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: "map-callbacks",
     title: ".map() Callback Transform",
     shortDescription:
@@ -453,172 +817,6 @@ const formatted = raw.map(str => str.trim().toUpperCase());
             input: [["test"]],
             expected: ["TEST"],
             description: "Simple single word check",
-          },
-        ],
-      },
-      {
-        id: "map-scale-parity",
-        title: "Position-Based Scalar Selector",
-        difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Accessing element index in .map()
-const names = ["Alice", "Bob"];
-const positionText = names.map((name, index) => \`\${index + 1}: \${name}\`);
-// ["1: Alice", "2: Bob"]`,
-        conceptContext:
-          "The callback passed to `.map()` receives three arguments: the current element value, its index (zero-based position), and the original array.",
-        description:
-          "Now that you can map simple primitives, let's inject the optional element *index* parameters inside mapping callbacks!\n\nWrite a function `scaleByIndex(nums)` that transforms an array of integers utilizing this condition logic:\n- If the element value is **even**, return its value doubled (`val * 2`).\n- If the element value is **odd**, return its value multiplied by its current *element index* in the array (`val * index`).",
-        codeTemplate: `function scaleByIndex(nums) {
-  // Use the optional index parameter in your callback: .map((val, index) => ...)
-  
-}`,
-        functionName: "scaleByIndex",
-        hints: [
-          "Include both parameters inside mapping callbacks: .map((num, i) => ...)",
-          "Determine if 'num' is even with modulus operator: num % 2 === 0.",
-          "Multiply odd numbers by their index value 'i', keeping even values multiplied by 2.",
-        ],
-        explanation:
-          "Callback mapping handles multi-variable contexts such as matching arrays to their physical positional index values.",
-        testCases: [
-          {
-            id: 1,
-            input: [[10, 3, 5, 2]],
-            expected: [20, 3, 10, 4],
-            description: "Check mixed even and odd values with indices",
-          },
-          {
-            id: 2,
-            input: [[1, 1, 1]],
-            expected: [0, 1, 2],
-            description: "Pure odd arrays scaled strictly by indices",
-          },
-        ],
-      },
-      {
-        id: "map-diff-bounds",
-        title: "Peak Normalized Distance Matrix",
-        difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Mapping with array-wide dynamic helpers
-const grades = [80, 95, 70];
-const maxGrade = Math.max(...grades); // 95
-const gaps = grades.map(g => maxGrade - g);
-// [15, 0, 25]`,
-        conceptContext:
-          "To map arrays relative to their global structure, query global variables or helpers first. For instance, use spread parameters with math helpers to discover the largest number in a dataset.",
-        description:
-          "Sometimes, before performing `.map()`, you need to calculate some collective metrics on the array.\n\nWrite a function `peakNormalize(nums)` that finds the absolute maximum value (the highest peak) in `nums`, and then returns a new array where each element `x` is replaced by its absolute difference from that maximum value (`Math.abs(peak - x)`).",
-        codeTemplate: `function peakNormalize(nums) {
-  // 1. Calculate the maximum value (peak) in the array using Math.max()
-  // 2. Use .map() to calculate the distance of each element from that peak
-  
-}`,
-        functionName: "peakNormalize",
-        hints: [
-          "Find the highest element inside your array using Math.max(...nums).",
-          "Map each value by finding its absolute distance using Math.abs(peak - x).",
-          "Remember that .map() does not alter the original array.",
-        ],
-        explanation:
-          "Array transformations are highly responsive when utilizing aggregated dataset characteristics like average or minimum/maximum bounds first.",
-        testCases: [
-          {
-            id: 1,
-            input: [[2, 10, 6]],
-            expected: [8, 0, 4],
-            description: "Calculates offsets based on maximum peak (10)",
-          },
-          {
-            id: 2,
-            input: [[-5, -10, -1]],
-            expected: [4, 9, 0],
-            description: "Verifies negative peaks function seamlessly",
-          },
-        ],
-      },
-      {
-        id: "map-user-profiles",
-        title: "Structured Profiles Extractor",
-        difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Transforming arrays of objects
-const members = [{ name: "Alice", active: true }, { name: "Bob", active: false }];
-const profiles = members.map(m => ({ username: m.name, status: m.active ? "Online" : "Offline" }));`,
-        conceptContext:
-          "Mapping is extremely useful for transforming arrays of objects. Code inside the map callback returns a brand-new structured object literal.",
-        description:
-          "Let's level up from primitive numbers and strings by transforming nested Objects!\n\nWrite a function `extractAges(users)` that takes an array of user profile objects with the structure: `{ name, birthYear }`.\n\nIt should return a new array containing objects formatted as: `{ username: name, age: currentAge }` where `currentAge` is calculated relative to the reference year **2026** (i.e. `2026 - birthYear`).",
-        codeTemplate: `function extractAges(users) {
-  // Map our list of profile objects to a clean simplified format
-  
-}`,
-        functionName: "extractAges",
-        hints: [
-          "Pass an object inside the map callback, e.g. .map(user => ...)",
-          "Extract properties: user.name and user.birthYear.",
-          "Return a brand new object: { username: ..., age: ... }",
-        ],
-        explanation:
-          "Filtering and reshaping complex key objects into simple payloads is a highly repeated practice in server requests.",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              [
-                { name: "Alice", birthYear: 1996 },
-                { name: "Bob", birthYear: 2002 },
-              ],
-            ],
-            expected: [
-              { username: "Alice", age: 30 },
-              { username: "Bob", age: 24 },
-            ],
-            description: "Computes ages correctly relative to year 2026",
-          },
-        ],
-      },
-      {
-        id: "map-coordinates",
-        title: "Grid Coordinates Flat-Mapper",
-        difficulty: "DSA Medium",
-        codeSnippet: `// Example Use Case: Converting 2D grid coordinates to 1D indexes
-const gridNodes = [{ r: 0, c: 5 }, { r: 2, c: 1 }];
-const itemWidth = 10;
-const linearOffsets = gridNodes.map(n => n.r * itemWidth + n.c);
-// [5, 21]`,
-        conceptContext:
-          "In graphics processors and pathfinding engines, multidimensional coordinates are compressed into high-speed 1D flat lines with linear calculations.",
-        description:
-          "To complete the `.map()` sequence, let's solve a real graphics lookup equation.\n\nWrite a function `flattenCoordinates(nodes, width)` that processes a list of coordinate objects. Each node contains `{ r, c }` (representing rows and columns in a 2D grid matrix of size `width`).\n\nYour task is to map this coordinate array into an array of flat 1D linear indexes using the formula: `index = row * width + column`.",
-        codeTemplate: `function flattenCoordinates(nodes, width) {
-  // Map row/col details to direct linear storage offsets
-  
-}`,
-        functionName: "flattenCoordinates",
-        hints: [
-          "Extract r (row) and c (column) variables from the node object.",
-          "Multiply row index 'r' by 'width', then add column index 'c'.",
-          "Return array of converted linear numbers.",
-        ],
-        explanation:
-          "In discrete graphics software and path searches, high speed multi-dimensional data stores are optimized by flattening layouts to linear indices.",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              [
-                { r: 0, c: 5 },
-                { r: 2, c: 1 },
-              ],
-              10,
-            ],
-            expected: [5, 21],
-            description: "Computes 1D grid mappings accurately for width 10",
-          },
-          {
-            id: 2,
-            input: [[{ r: 1, c: 0 }], 4],
-            expected: [4],
-            description: "Computes single index bounds correctly",
           },
         ],
       },
@@ -694,41 +892,6 @@ const linearOffsets = gridNodes.map(n => n.r * itemWidth + n.c);
         ],
       },
       {
-        id: "map-extract-totals",
-        title: "Cart Item Value Auditor",
-        difficulty: "DSA Easy",
-        codeSnippet: `const cart = [{ price: 10, qty: 2 }];\nconst totals = cart.map(item => item.price * item.qty);`,
-        conceptContext:
-          "E-commerce lists contain multiple product records. Computing line-item totals (price * quantity) transforms object collections into simple transaction streams.",
-        description:
-          "For a shopping cart analytics service, write a function `computeItemTotals(items)` that takes an array of objects representing items in a cart: { name, price, quantity }.\n\nIt should return a new array containing the total price value computed for each cart item (price * quantity).",
-        codeTemplate: `function computeItemTotals(items) {
-  // Map our object array into a single simple array of numbers
-  
-}`,
-        functionName: "computeItemTotals",
-        hints: [
-          "Extract price and quantity from each item using dot notation or destructuring.",
-          "Compute total = price * quantity inside .map().",
-          "Return the calculated numbers array.",
-        ],
-        explanation:
-          "Line-item computations are mapped prior to calculating global grand totals or tax rates.",
-        testCases: [
-          {
-            id: 1,
-            input: [
-              [
-                { name: "Book", price: 15, quantity: 2 },
-                { name: "Pen", price: 2, quantity: 10 },
-              ],
-            ],
-            expected: [30, 20],
-            description: "Accurately computes line-item dollar totals",
-          },
-        ],
-      },
-      {
         id: "map-word-lengths",
         title: "Sentence Word Length Matrix",
         difficulty: "Warm-up",
@@ -773,6 +936,45 @@ const linearOffsets = gridNodes.map(n => n.r * itemWidth + n.c);
         ],
       },
       {
+        id: "map-scale-parity",
+        title: "Position-Based Scalar Selector",
+        difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Accessing element index in .map()
+const names = ["Alice", "Bob"];
+const positionText = names.map((name, index) => \`\${index + 1}: \${name}\`);
+// ["1: Alice", "2: Bob"]`,
+        conceptContext:
+          "The callback passed to `.map()` receives three arguments: the current element value, its index (zero-based position), and the original array.",
+        description:
+          "Now that you can map simple primitives, let's inject the optional element *index* parameters inside mapping callbacks!\n\nWrite a function `scaleByIndex(nums)` that transforms an array of integers utilizing this condition logic:\n- If the element value is **even**, return its value doubled (`val * 2`).\n- If the element value is **odd**, return its value multiplied by its current *element index* in the array (`val * index`).",
+        codeTemplate: `function scaleByIndex(nums) {
+  // Use the optional index parameter in your callback: .map((val, index) => ...)
+  
+}`,
+        functionName: "scaleByIndex",
+        hints: [
+          "Include both parameters inside mapping callbacks: .map((num, i) => ...)",
+          "Determine if 'num' is even with modulus operator: num % 2 === 0.",
+          "Multiply odd numbers by their index value 'i', keeping even values multiplied by 2.",
+        ],
+        explanation:
+          "Callback mapping handles multi-variable contexts such as matching arrays to their physical positional index values.",
+        testCases: [
+          {
+            id: 1,
+            input: [[10, 3, 5, 2]],
+            expected: [20, 3, 10, 4],
+            description: "Check mixed even and odd values with indices",
+          },
+          {
+            id: 2,
+            input: [[1, 1, 1]],
+            expected: [0, 1, 2],
+            description: "Pure odd arrays scaled strictly by indices",
+          },
+        ],
+      },
+      {
         id: "map-html-tags",
         title: "HTML List Tag Wrapper",
         difficulty: "DSA Easy",
@@ -803,6 +1005,168 @@ const linearOffsets = gridNodes.map(n => n.r * itemWidth + n.c);
             ],
             description:
               "Yields clean HTML tags synchronized with active indices",
+          },
+        ],
+      },
+      {
+        id: "map-extract-totals",
+        title: "Cart Item Value Auditor",
+        difficulty: "DSA Easy",
+        codeSnippet: `const cart = [{ price: 10, qty: 2 }];\nconst totals = cart.map(item => item.price * item.qty);`,
+        conceptContext:
+          "E-commerce lists contain multiple product records. Computing line-item totals (price * quantity) transforms object collections into simple transaction streams.",
+        description:
+          "For a shopping cart analytics service, write a function `computeItemTotals(items)` that takes an array of objects representing items in a cart: { name, price, quantity }.\n\nIt should return a new array containing the total price value computed for each cart item (price * quantity).",
+        codeTemplate: `function computeItemTotals(items) {
+  // Map our object array into a single simple array of numbers
+  
+}`,
+        functionName: "computeItemTotals",
+        hints: [
+          "Extract price and quantity from each item using dot notation or destructuring.",
+          "Compute total = price * quantity inside .map().",
+          "Return the calculated numbers array.",
+        ],
+        explanation:
+          "Line-item computations are mapped prior to calculating global grand totals or tax rates.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { name: "Book", price: 15, quantity: 2 },
+                { name: "Pen", price: 2, quantity: 10 },
+              ],
+            ],
+            expected: [30, 20],
+            description: "Accurately computes line-item dollar totals",
+          },
+        ],
+      },
+      {
+        id: "map-user-profiles",
+        title: "Structured Profiles Extractor",
+        difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Transforming arrays of objects
+const members = [{ name: "Alice", active: true }, { name: "Bob", active: false }];
+const profiles = members.map(m => ({ username: m.name, status: m.active ? "Online" : "Offline" }));`,
+        conceptContext:
+          "Mapping is extremely useful for transforming arrays of objects. Code inside the map callback returns a brand-new structured object literal.",
+        description:
+          "Let's level up from primitive numbers and strings by transforming nested Objects!\n\nWrite a function `extractAges(users)` that takes an array of user profile objects with the structure: `{ name, birthYear }`.\n\nIt should return a new array containing objects formatted as: `{ username: name, age: currentAge }` where `currentAge` is calculated relative to the reference year **2026** (i.e. `2026 - birthYear`).",
+        codeTemplate: `function extractAges(users) {
+  // Map our list of profile objects to a clean simplified format
+  
+}`,
+        functionName: "extractAges",
+        hints: [
+          "Pass an object inside the map callback, e.g. .map(user => ...)",
+          "Extract properties: user.name and user.birthYear.",
+          "Return a brand new object: { username: ..., age: ... }",
+        ],
+        explanation:
+          "Filtering and reshaping complex key objects into simple payloads is a highly repeated practice in server requests.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { name: "Alice", birthYear: 1996 },
+                { name: "Bob", birthYear: 2002 },
+              ],
+            ],
+            expected: [
+              { username: "Alice", age: 30 },
+              { username: "Bob", age: 24 },
+            ],
+            description: "Computes ages correctly relative to year 2026",
+          },
+        ],
+      },
+      {
+        id: "map-diff-bounds",
+        title: "Peak Normalized Distance Matrix",
+        difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Mapping with array-wide dynamic helpers
+const grades = [80, 95, 70];
+const maxGrade = Math.max(...grades); // 95
+const gaps = grades.map(g => maxGrade - g);
+// [15, 0, 25]`,
+        conceptContext:
+          "To map arrays relative to their global structure, query global variables or helpers first. For instance, use spread parameters with math helpers to discover the largest number in a dataset.",
+        description:
+          "Sometimes, before performing `.map()`, you need to calculate some collective metrics on the array.\n\nWrite a function `peakNormalize(nums)` that finds the absolute maximum value (the highest peak) in `nums`, and then returns a new array where each element `x` is replaced by its absolute difference from that maximum value (`Math.abs(peak - x)`).",
+        codeTemplate: `function peakNormalize(nums) {
+  // 1. Calculate the maximum value (peak) in the array using Math.max()
+  // 2. Use .map() to calculate the distance of each element from that peak
+  
+}`,
+        functionName: "peakNormalize",
+        hints: [
+          "Find the highest element inside your array using Math.max(...nums).",
+          "Map each value by finding its absolute distance using Math.abs(peak - x).",
+          "Remember that .map() does not alter the original array.",
+        ],
+        explanation:
+          "Array transformations are highly responsive when utilizing aggregated dataset characteristics like average or minimum/maximum bounds first.",
+        testCases: [
+          {
+            id: 1,
+            input: [[2, 10, 6]],
+            expected: [8, 0, 4],
+            description: "Calculates offsets based on maximum peak (10)",
+          },
+          {
+            id: 2,
+            input: [[-5, -10, -1]],
+            expected: [4, 9, 0],
+            description: "Verifies negative peaks function seamlessly",
+          },
+        ],
+      },
+      {
+        id: "map-coordinates",
+        title: "Grid Coordinates Flat-Mapper",
+        difficulty: "DSA Medium",
+        codeSnippet: `// Example Use Case: Converting 2D grid coordinates to 1D indexes
+const gridNodes = [{ r: 0, c: 5 }, { r: 2, c: 1 }];
+const itemWidth = 10;
+const linearOffsets = gridNodes.map(n => n.r * itemWidth + n.c);
+// [5, 21]`,
+        conceptContext:
+          "In graphics processors and pathfinding engines, multidimensional coordinates are compressed into high-speed 1D flat lines with linear calculations.",
+        description:
+          "To complete the `.map()` sequence, let's solve a real graphics lookup equation.\n\nWrite a function `flattenCoordinates(nodes, width)` that processes a list of coordinate objects. Each node contains `{ r, c }` (representing rows and columns in a 2D grid matrix of size `width`).\n\nYour task is to map this coordinate array into an array of flat 1D linear indexes using the formula: `index = row * width + column`.",
+        codeTemplate: `function flattenCoordinates(nodes, width) {
+  // Map row/col details to direct linear storage offsets
+  
+}`,
+        functionName: "flattenCoordinates",
+        hints: [
+          "Extract r (row) and c (column) variables from the node object.",
+          "Multiply row index 'r' by 'width', then add column index 'c'.",
+          "Return array of converted linear numbers.",
+        ],
+        explanation:
+          "In discrete graphics software and path searches, high speed multi-dimensional data stores are optimized by flattening layouts to linear indices.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { r: 0, c: 5 },
+                { r: 2, c: 1 },
+              ],
+              10,
+            ],
+            expected: [5, 21],
+            description: "Computes 1D grid mappings accurately for width 10",
+          },
+          {
+            id: 2,
+            input: [[{ r: 1, c: 0 }], 4],
+            expected: [4],
+            description: "Computes single index bounds correctly",
           },
         ],
       },
@@ -856,6 +1220,162 @@ const positiveScores = scores.filter(score => score >= 0);
         ],
       },
       {
+        id: "filter-range",
+        title: "Dynamic Range Clipper",
+        difficulty: "Warm-up",
+        codeSnippet: `const numbers = [10, 20, 30].filter(n => n >= 15 && n <= 25); // [20]`,
+        conceptContext:
+          "Passing contextual state boundaries in filter comparison routines dynamically limits list outcomes.",
+        description:
+          "Write a function `filterRange(nums, min, max)` that filters the `nums` array to keep only numbers that are between the values of `min` and `max` (inclusive).",
+        codeTemplate: `function filterRange(nums, min, max) {
+  // Return only numbers nested within the inclusive [min, max] range
+  
+}`,
+        functionName: "filterRange",
+        hints: [
+          "Your callback condition is: item >= min && item <= max.",
+          "Pass this simple logical relation to your .filter() statement directly.",
+        ],
+        explanation:
+          "Inclusive interval constraints let you filter pricing ranges and paginated item scopes.",
+        testCases: [
+          {
+            id: 1,
+            input: [[5, 12, 18, 24, 30], 10, 25],
+            expected: [12, 18, 24],
+            description: "Keeps numbers lying within bounds correctly",
+          },
+        ],
+      },
+      {
+        id: "filter-emails",
+        title: "Inbound Email Validator",
+        difficulty: "Warm-up",
+        codeSnippet: `const raw = ["a@b.com", "abc"].filter(e => e.includes("@") && e.endsWith(".com"));`,
+        conceptContext:
+          "Validating inputs via multiple logical checks in filter callbacks helps sanitize raw form lists cleanly.",
+        description:
+          "Let's validate contact options! Write a function `filterEmails(emails)` that filters an array of email strings, keeping only valid email addresses. A valid email address MUST contain the character `'@'` AND end with either `'.com'` or `'.org'`. All other strings are skipped.",
+        codeTemplate: `function filterEmails(emails) {
+  // Filter for strings containing '@' and ending with '.com' or '.org'
+  
+}`,
+        functionName: "filterEmails",
+        hints: [
+          "Use a combination of .includes('@') and checking ends.",
+          "Check: email.includes('@') && (email.endsWith('.com') || email.endsWith('.org'))",
+        ],
+        explanation:
+          "Filtering contact records is essential for keeping clean distribution databases.",
+        testCases: [
+          {
+            id: 1,
+            input: [["contact@company.com", "john.doe", "support@org.org"]],
+            expected: ["contact@company.com", "support@org.org"],
+            description: "Retains only formatted matching domain records",
+          },
+        ],
+      },
+      {
+        id: "filter-symmetric-difference",
+        title: "Exclusive Elements Filter",
+        difficulty: "DSA Easy",
+        codeSnippet: `const list1 = [1, 2], list2 = [2, 3];\nconst diff = list1.filter(x => !list2.includes(x)); // [1]`,
+        conceptContext:
+          "Subtracting sets using filter checks checks which elements are exclusive to particular collections.",
+        description:
+          "Write a function `filterExclusive(arr1, arr2)` that takes two separate arrays of numbers and returns a new list of elements that exist inside `arr1` but are **not** present in `arr2`. Use the array `.includes()` method.",
+        codeTemplate: `function filterExclusive(arr1, arr2) {
+  // Filter elements of arr1 that are not present inside arr2
+  
+}`,
+        functionName: "filterExclusive",
+        hints: [
+          "Call .filter() on arr1.",
+          "Inside callback, verify: !arr2.includes(item);",
+        ],
+        explanation:
+          "Computing set differences is a primary tool for comparing lists.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [1, 2, 3, 4],
+              [3, 4, 5],
+            ],
+            expected: [1, 2],
+            description:
+              "Retains only numbers exclusive to the first parameter array",
+          },
+        ],
+      },
+      {
+        id: "filter-by-map-exists",
+        title: "Index Lookup Integrity Filter",
+        difficulty: "DSA Easy",
+        codeSnippet: `const ids = [1, 2, 3];\nconst store = { 1: true };\nconst active = ids.filter(id => store[id]); // [1]`,
+        conceptContext:
+          "Filtering an array of keys using external index lookups or tables is very common when synchronizing multiple caches.",
+        description:
+          "Write a function `filterRegistered(ids, activeDirectory)` that takes an array of primitive user IDs and a lookup object `activeDirectory` (where registered IDs are keys mapped to boolean values). Filter the list of IDs, keeping only those that are present in the `activeDirectory` and marked `true`.",
+        codeTemplate: `function filterRegistered(ids, activeDirectory) {
+  // Use bracket notation to check existence inside activeDirectory
+  
+}`,
+        functionName: "filterRegistered",
+        hints: [
+          "Check in filter: id => activeDirectory[id] === true or simply activeDirectory[id].",
+        ],
+        explanation:
+          "Using fast dictionary lookups validates membership in constant O(1) time.",
+        testCases: [
+          {
+            id: 1,
+            input: [[101, 102, 103], { 101: true, 103: false }],
+            expected: [101],
+            description:
+              "Matches IDs registered with truthy directories successfully",
+          },
+        ],
+      },
+      {
+        id: "filter-active-students",
+        title: "Academic Honor Roll Filter",
+        difficulty: "DSA Easy",
+        codeSnippet: `const classList = [{ name: "A", grades: [95], active: true }];\nconst honors = classList.filter(s => s.active && s.grades.some(g => g >= 90));`,
+        conceptContext:
+          "Combining flat property flags matching nested array inspections creates sophisticated business rules inside filters.",
+        description:
+          "Write a function `filterHonors(students)` that takes an array of object models represent students: `{ name, active, grades }` (where `grades` is a number list). It should filter the array, keeping only students who are marked `active: true` **AND** have at least one grade in their list of grades that is strictly **greater than or equal to 90**.",
+        codeTemplate: `function filterHonors(students) {
+  // Filter students based on active flag and grade properties
+  
+}`,
+        functionName: "filterHonors",
+        hints: [
+          "Write the filter rule: s => s.active && s.grades.some(g => g >= 90);",
+          "Ensure you use .some() to match if at least one grade qualifies.",
+        ],
+        explanation:
+          "Compound conditions inside filters isolate qualifying entities instantly.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { name: "Alice", active: true, grades: [85, 92] },
+                { name: "Bob", active: false, grades: [95] },
+                { name: "Charlie", active: true, grades: [70, 80] },
+              ],
+            ],
+            expected: [{ name: "Alice", active: true, grades: [85, 92] }],
+            description:
+              "Filters matching active honors list students faithfully",
+          },
+        ],
+      },
+      {
         id: "filter-averages",
         title: "Dynamic Average Outliers Filter",
         difficulty: "DSA Easy",
@@ -894,6 +1414,44 @@ const aboveAverage = points.filter(p => p > average);
             input: [[5, 5, 5]],
             expected: [],
             description: "Handles arrays with no values above average",
+          },
+        ],
+      },
+      {
+        id: "filter-uniques",
+        title: "Occurrence Deduplicator Filter",
+        difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Finding items that appear exactly once
+const items = [1, 2, 2, 3];
+const uniqueItems = items.filter(num => items.indexOf(num) === items.lastIndexOf(num));
+// [1, 3]`,
+        conceptContext:
+          "An element is unique in an array if its first occurrence index matches its last occurrence index, which can be queried using built-in array index helpers.",
+        description:
+          "Let's build on local searches to handle global-occurrence uniqueness filtering.\n\nWrite a function `filterUnique(nums)` that processes an array, returning a standard array containing only elements that appear **exactly once** in the entire collection.\n\nExample: `[1, 2, 2, 3]` should return `[1, 3]` since `2` has duplicate records.",
+        codeTemplate: `function filterUnique(nums) {
+  // Use indexOf and lastIndexOf in combination inside .filter()
+  
+}`,
+        functionName: "filterUnique",
+        hints: [
+          "If an item is unique inside an array, its first index matches its last index position.",
+          "Check in filter: nums.indexOf(num) === nums.lastIndexOf(num).",
+        ],
+        explanation:
+          "Positional index searches like indexOf and lastIndexOf let you check uniqueness profiles in regular arrays directly.",
+        testCases: [
+          {
+            id: 1,
+            input: [[1, 2, 2, 3, 4, 4, 5]],
+            expected: [1, 3, 5],
+            description: "Prunes any repeated occurrences elements",
+          },
+          {
+            id: 2,
+            input: [[1, 1, 1]],
+            expected: [],
+            description: "Correctly handles completely duplicate series",
           },
         ],
       },
@@ -938,44 +1496,6 @@ const valleys = list.filter((num, i, arr) => {
             input: [[1, 3, 2]],
             expected: [1, 2],
             description: "Correctly evaluates indexes at boundaries",
-          },
-        ],
-      },
-      {
-        id: "filter-uniques",
-        title: "Occurrence Deduplicator Filter",
-        difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Finding items that appear exactly once
-const items = [1, 2, 2, 3];
-const uniqueItems = items.filter(num => items.indexOf(num) === items.lastIndexOf(num));
-// [1, 3]`,
-        conceptContext:
-          "An element is unique in an array if its first occurrence index matches its last occurrence index, which can be queried using built-in array index helpers.",
-        description:
-          "Let's build on local searches to handle global-occurrence uniqueness filtering.\n\nWrite a function `filterUnique(nums)` that processes an array, returning a standard array containing only elements that appear **exactly once** in the entire collection.\n\nExample: `[1, 2, 2, 3]` should return `[1, 3]` since `2` has duplicate records.",
-        codeTemplate: `function filterUnique(nums) {
-  // Use indexOf and lastIndexOf in combination inside .filter()
-  
-}`,
-        functionName: "filterUnique",
-        hints: [
-          "If an item is unique inside an array, its first index matches its last index position.",
-          "Check in filter: nums.indexOf(num) === nums.lastIndexOf(num).",
-        ],
-        explanation:
-          "Positional index searches like indexOf and lastIndexOf let you check uniqueness profiles in regular arrays directly.",
-        testCases: [
-          {
-            id: 1,
-            input: [[1, 2, 2, 3, 4, 4, 5]],
-            expected: [1, 3, 5],
-            description: "Prunes any repeated occurrences elements",
-          },
-          {
-            id: 2,
-            input: [[1, 1, 1]],
-            expected: [],
-            description: "Correctly handles completely duplicate series",
           },
         ],
       },
@@ -1043,6 +1563,41 @@ const totalProduct = dimensions.reduce((product, value) => product * value, mult
 console.log(totalProduct); // 240 (10 * 2 * 3 * 4)`,
     exercises: [
       {
+        id: "reduce-find-max",
+        title: "Maximum Number Finder",
+        difficulty: "Warm-up",
+        codeSnippet: `const max = [1, 5, 2].reduce((acc, curr) => curr > acc ? curr : acc, -Infinity); // 5`,
+        conceptContext:
+          "Instead of doing array sorting or math functions, comparing values element-by-element inside a reduce loop isolates maximums cleanly.",
+        description:
+          "Write a function `findMax(nums)` that takes an array of numbers and returns the maximum value in the array using `.reduce()`. If the array is empty, return `-Infinity`.",
+        codeTemplate: `function findMax(nums) {
+  // Use .reduce() to traverse and locate the largest number, starting the accumulator at -Infinity
+  
+}`,
+        functionName: "findMax",
+        hints: [
+          "Set the initial accumulator value to -Infinity.",
+          "Inside callback return: curr > acc ? curr : acc;",
+        ],
+        explanation:
+          "Evaluating comparative maximums during reduction reduces auxiliary memory allocations to zero.",
+        testCases: [
+          {
+            id: 1,
+            input: [[-10, 5, 20, -2]],
+            expected: 20,
+            description: "Extracts highest positive boundary accurately",
+          },
+          {
+            id: 2,
+            input: [[]],
+            expected: -Infinity,
+            description: "Returns -Infinity for empty array fields",
+          },
+        ],
+      },
+      {
         id: "reduce-multiplier",
         title: "Secure Value Product Reducer",
         difficulty: "Warm-up",
@@ -1076,38 +1631,106 @@ const product = nums.reduce((acc, curr) => acc * curr, factor);
         ],
       },
       {
-        id: "reduce-parity-obj",
-        title: "Parity Object Partition Aggregator",
+        id: "reduce-cart-total",
+        title: "Aesthetic Cart Value Aggregator",
         difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Grouping values into structured objects
-const values = [1, 2, 3, 4];
-const grouped = values.reduce((acc, num) => {
-  if (num % 2 === 0) acc.evens.push(num);
-  else acc.odds.push(num);
-  return acc;
-}, { evens: [], odds: [] });
-// { evens: [2, 4], odds: [1, 3] }`,
+        codeSnippet: `const items = [{ price: 10, count: 2 }];\nconst total = items.reduce((acc, x) => acc + x.price * x.count, 0);`,
         conceptContext:
-          "The initial value can be an object instead of a primitive. Be sure to push to nested arrays and return the updated accumulator reference from each callback step.",
+          "Financial and cart calculations frequently summarize nested quantities using a seed starting at zero.",
         description:
-          "Now let's transition from accumulating single numbers to aggregating into *objects* with nested lists!\n\nWrite a function `partitionParity(nums)` that takes an array of integers and splits them into an object with two keys:\n- `evens`: An array containing all even values.\n- `odds`: An array containing all odd values.\n\nSolve this strictly inside a single functional `.reduce()` statement.",
-        codeTemplate: `function partitionParity(nums) {
-  // Map integers, initializing the reduce with custom object: { evens: [], odds: [] }
+          "Write a function `computeCartTotal(items)` that takes an array of items: `{ price, multiplier, count }` and returns the aggregated billing total using `.reduce()`. Check if a `multiplier` exists on the item and apply it: `price * count * multiplier` (default multiplier to `1` if undefined). Start the accumulator at `0`.",
+        codeTemplate: `function computeCartTotal(items) {
+  // Accumulate total with .reduce() checking multiplication rules
   
 }`,
-        functionName: "partitionParity",
+        functionName: "computeCartTotal",
         hints: [
-          "Pass an object with initial empty lists { evens: [], odds: [] } inside reduce.",
-          "Add current values to either key, then return the updated accumulator reference!",
+          "Initialise reduce with a starting value of 0.",
+          "Inside accumulator callback add: acc + item.price * item.count * (item.multiplier || 1)",
         ],
         explanation:
-          "Grouping and classifying arrays into key-value map indices is a classic database aggregation scenario.",
+          "Using fallback logical OR boundaries for optional properties ensures clean billing math.",
         testCases: [
           {
             id: 1,
-            input: [[1, 2, 3, 4]],
-            expected: { evens: [2, 4], odds: [1, 3] },
-            description: "Partitions integers correctly",
+            input: [
+              [
+                { price: 10, count: 2, multiplier: 1.5 },
+                { price: 5, count: 4 },
+              ],
+            ],
+            expected: 50,
+            description: "Computes quantities and multipliers correctly",
+          },
+        ],
+      },
+      {
+        id: "reduce-flatten",
+        title: "Matrix Rows Grid Flattener",
+        difficulty: "DSA Easy",
+        codeSnippet: `// Example Use Case: Flat-concatenating structural multi-level matrices
+const matrix = [[1, 2], [3], [4, 5]];
+const flattened = matrix.reduce((acc, row) => acc.concat(row), []);
+// [1, 2, 3, 4, 5]`,
+        conceptContext:
+          "An empty array initialized as the accumulator can be concatenated sequentially with nested rows inside a map closure.",
+        description:
+          "Now, let's learn how to flatten complex matrices without using the built-in `.flat()` array method.\n\nWrite a function `flattenGrid(grid)` that processes an array of nested arrays, merging them into a single 1D flat array using `.reduce()`.",
+        codeTemplate: `function flattenGrid(grid) {
+  // Melt nested grid array rows into a 1D collection
+  
+}`,
+        functionName: "flattenGrid",
+        hints: [
+          "Initialize reduce with an empty array [].",
+          "For each row inside the grid nested structure, merge items with: acc.concat(row).",
+        ],
+        explanation:
+          "Merging nested levels is necessary when compiling raw spreadsheet row grids prior to parsing datasets.",
+        testCases: [
+          {
+            id: 1,
+            input: [[[1, 2], [3, 4], [5]]],
+            expected: [1, 2, 3, 4, 5],
+            description: "Concatenates rows to single dimension array",
+          },
+        ],
+      },
+      {
+        id: "reduce-pivot-map",
+        title: "Relational Pivot Mapper",
+        difficulty: "DSA Easy",
+        codeSnippet: `const list = [{ id: "a", name: "Alice" }];\nconst pivot = list.reduce((acc, u) => { acc[u.id] = u; return acc; }, {});`,
+        conceptContext:
+          "Grouping or index-mapping arrays of database objects into custom key-indexed maps speeds up search queries significantly.",
+        description:
+          "Let's pivot our rows! Write a function `pivotUserMap(users)` that takes an array of user objects: `{ id, name, role }` and reduces them into a single object keyed by each user's unique `id` property.",
+        codeTemplate: `function pivotUserMap(users) {
+  // Use .reduce() with an initial accumulator of an empty object {}
+  
+}`,
+        functionName: "pivotUserMap",
+        hints: [
+          "Pass a callback (acc, user) => { ... } with initial value {}.",
+          "Inside the callback, assign: acc[user.id] = user; and always return the accumulator: return acc;",
+        ],
+        explanation:
+          "Pivoting rows into records simplifies linking active items with external state IDs.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { id: "u1", name: "Alice" },
+                { id: "u2", name: "Bob" },
+              ],
+            ],
+            expected: {
+              u1: { id: "u1", name: "Alice" },
+              u2: { id: "u2", name: "Bob" },
+            },
+            description:
+              "Re-keys array items into object dictionary maps successfully",
           },
         ],
       },
@@ -1148,34 +1771,104 @@ const tally = tallyWords.reduce((acc, word) => {
         ],
       },
       {
-        id: "reduce-flatten",
-        title: "Matrix Rows Grid Flattener",
+        id: "reduce-parity-obj",
+        title: "Parity Object Partition Aggregator",
         difficulty: "DSA Easy",
-        codeSnippet: `// Example Use Case: Flat-concatenating structural multi-level matrices
-const matrix = [[1, 2], [3], [4, 5]];
-const flattened = matrix.reduce((acc, row) => acc.concat(row), []);
-// [1, 2, 3, 4, 5]`,
+        codeSnippet: `// Example Use Case: Grouping values into structured objects
+values = [1, 2, 3, 4];
+grouped = values.reduce((acc, num) => {
+  if (num % 2 === 0) acc.evens.push(num);
+  else acc.odds.push(num);
+  return acc;
+}, { evens: [], odds: [] });
+// { evens: [2, 4], odds: [1, 3] }`,
         conceptContext:
-          "An empty array initialized as the accumulator can be concatenated sequentially with nested rows inside a map closure.",
+          "The initial value can be an object instead of a primitive. Be sure to push to nested arrays and return the updated accumulator reference from each callback step.",
         description:
-          "Now, let's learn how to flatten complex matrices without using the built-in `.flat()` array method.\n\nWrite a function `flattenGrid(grid)` that processes an array of nested arrays, merging them into a single 1D flat array using `.reduce()`.",
-        codeTemplate: `function flattenGrid(grid) {
-  // Melt nested grid array rows into a 1D collection
+          "Now let's transition from accumulating single numbers to aggregating into *objects* with nested lists!\n\nWrite a function `partitionParity(nums)` that takes an array of integers and splits them into an object with two keys:\n- `evens`: An array containing all even values.\n- `odds`: An array containing all odd values.\n\nSolve this strictly inside a single functional `.reduce()` statement.",
+        codeTemplate: `function partitionParity(nums) {
+  // Map integers, initializing the reduce with custom object: { evens: [], odds: [] }
   
 }`,
-        functionName: "flattenGrid",
+        functionName: "partitionParity",
         hints: [
-          "Initialize reduce with an empty array [].",
-          "For each row inside the grid nested structure, merge items with: acc.concat(row).",
+          "Pass an object with initial empty lists { evens: [], odds: [] } inside reduce.",
+          "Add current values to either key, then return the updated accumulator reference!",
         ],
         explanation:
-          "Merging nested levels is necessary when compiling raw spreadsheet row grids prior to parsing datasets.",
+          "Grouping and classifying arrays into key-value map indices is a classic database aggregation scenario.",
         testCases: [
           {
             id: 1,
-            input: [[[1, 2], [3, 4], [5]]],
-            expected: [1, 2, 3, 4, 5],
-            description: "Concatenates rows to single dimension array",
+            input: [[1, 2, 3, 4]],
+            expected: { evens: [2, 4], odds: [1, 3] },
+            description: "Partitions integers correctly",
+          },
+        ],
+      },
+      {
+        id: "reduce-group-by-grade",
+        title: "Category Classifier Reducer",
+        difficulty: "DSA Medium",
+        codeSnippet: `const users = [{ name: "A", role: "admin" }];\nconst grouped = users.reduce((acc, u) => {\n  acc[u.role] = acc[u.role] || [];\n  acc[u.role].push(u.name);\n  return acc;\n}, {});\n// { admin: ["A"] }`,
+        conceptContext:
+          "Combining dynamic array creation and lookup keys inside one reduction loop builds complete category group dictionaries.",
+        description:
+          "Write a function `groupByGrade(students)` that takes an array of student objects: `{ name, grade }` (where `grade` is a string letter like `'A'`, `'B'`).\n\nIt should reduce the list into a single grouping object where each key is a grade and the value is a standard array of student strings (`name`) corresponding to that grade.\n\nExample:\n`[{ name: 'Alice', grade: 'A' }, { name: 'Bob', grade: 'B' }, { name: 'Charlie', grade: 'A' }]` -> `{\n  A: ['Alice', 'Charlie'],\n  B: ['Bob']\n}`.",
+        codeTemplate: `function groupByGrade(students) {
+  // Reduce students into a group lookup object, starting with {}
+  
+}`,
+        functionName: "groupByGrade",
+        hints: [
+          "The initial value of reduce must be an empty object {}.",
+          "Initialize the array if missing: acc[student.grade] = acc[student.grade] || [];",
+          "Push student.name into that array and always return acc.",
+        ],
+        explanation:
+          "Reducing array tracks to categorized lists performs structured analytics transformations instantly.",
+        testCases: [
+          {
+            id: 1,
+            input: [
+              [
+                { name: "Alice", grade: "A" },
+                { name: "Bob", grade: "B" },
+                { name: "Charlie", grade: "A" },
+              ],
+            ],
+            expected: { A: ["Alice", "Charlie"], B: ["Bob"] },
+            description: "Assembles clean group list buckets keyed by grade",
+          },
+        ],
+      },
+      {
+        id: "reduce-pipeline",
+        title: "Array-Driven Middleware Composer",
+        difficulty: "DSA Medium",
+        codeSnippet: `const fns = [x => x + 2, x => x * 3];\nconst res = fns.reduce((val, f) => f(val), 10); // 36`,
+        conceptContext:
+          "Reducers are the canonical way to execute functional compositions, passing the resulting output of each step into the subsequent callback.",
+        description:
+          "Write a function `composeFunctions(initialVal, pipeline)` that takes a starting value and an array of mathematical functions. It should use `.reduce()` to pass the running value through each function in the pipeline in order, returning the final transformed output.",
+        codeTemplate: `function composeFunctions(initialVal, pipeline) {
+  // Use .reduce() to pipe initialVal through each function in pipeline
+  
+}`,
+        functionName: "composeFunctions",
+        hints: [
+          "The accumulator acts as the running value, starting at initialVal.",
+          "Simply return: pipeline.reduce((currVal, fn) => fn(currVal), initialVal);",
+        ],
+        explanation:
+          "Pipeline compositions structure middleware frameworks like Redux and Express.",
+        testCases: [
+          {
+            id: 1,
+            input: [100, [(x) => x / 2, (x) => x - 10]],
+            expected: 40,
+            description:
+              "Flows variable inputs through sequence boundaries sequentially",
           },
         ],
       },
