@@ -50,11 +50,13 @@ import {
 // Absolute order of concepts from Core Foundations to Practical Algorithms
 const CONCEPTS_ORDER = [
   "variables-numbers",
-  "functions-conditionals",
+  "functions-basics",
+  "conditionals-logic",
   "strings-basics",
   "string-parsing",
   "optional-chaining-coalescing",
   "array-search-verification",
+  "foreach-callbacks",
   "map-callbacks",
   "filter-callbacks",
   "reduce-callbacks",
@@ -779,9 +781,13 @@ export default function App() {
 
   // Curriculum stats calculations
   const totalTopicsCount = sortedKnowledgeMapTopics.length;
-  const completedTopicsCount = Object.keys(completedTopics).filter(
-    (id) => completedTopics[id],
-  ).length;
+  const completedTopicsCount = useMemo(() => {
+    return sortedKnowledgeMapTopics.filter(
+      (topic) =>
+        !!completedTopics[topic.id] ||
+        !!solvedExercises[topic.relatedExerciseId],
+    ).length;
+  }, [sortedKnowledgeMapTopics, completedTopics, solvedExercises]);
   const completionRatePercent =
     totalTopicsCount > 0
       ? Math.round((completedTopicsCount / totalTopicsCount) * 100)

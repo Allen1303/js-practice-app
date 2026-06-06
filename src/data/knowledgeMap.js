@@ -233,21 +233,25 @@ console.log("5" === 5); // false (strict comparison checks the type)`,
   {
     id: "km-conditions-ternary",
     categoryId: "control-flow",
-    title: "Branching Checks: if vs Ternary",
+    title: "Branching Checks: If, Ternary & Switch",
     summary:
       "Learn to design decision pathways inside your programs, choosing when to use conditional blocks.",
     details:
-      "Programs must react dynamically depending on user preferences. Use traditional `if/else` paths for large structural branches. For simpler variable assignments, choose the inline 'Ternary Operator' (`condition ? ifTrue : ifFalse`). To handle optional or missing settings securely, deploy modern safeguards like Nullish Coalescing (`??`) to provide reliable default options.",
+      "Programs must react dynamically depending on user preferences. Use traditional `if/else` paths for large structural branches. For simpler variable assignments, choose the inline 'Ternary Operator' (`condition ? ifTrue : ifFalse`). To handle multiple option states gracefully, use the structured matching power of switch-case statements.",
     takeaways: [
       "🧱 if/else blocks: Direct large execution pathways inside your algorithms.",
       "🔀 Ternary (? :): An inline shortcut that makes assignments short, clean, and highly readable.",
-      "⚙️ Nullish Coalescing (??): Checks strictly for null or undefined. This ensures that legitimate falsy values (like 0 or false) are not mistakenly ignored.",
+      "⚡ switch-case: Matches expressions cleanly against numerous prospective values, avoiding nesting logs.",
       "❌ Falsy equivalents: In JavaScript, only 6 values evaluate as false: false, 0, '', null, undefined, and NaN.",
     ],
     codeSnippet: `const age = 21;
 const message = age >= 18 ? "Access Granted" : "Too Young";
-const theme = userTheme ?? "default-light"; // coalescing fallback`,
-    relatedExerciseId: "safe-preference-lookup",
+
+switch (action) {
+  case 'PLAY': return 'Playing';
+  default: return 'Stopped';
+}`,
+    relatedExerciseId: "cond-ternary",
   },
   {
     id: "km-loops-statements",

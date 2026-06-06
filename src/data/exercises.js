@@ -195,20 +195,22 @@ console.log(typeof age); // "number"`,
     ],
   },
   {
-    id: "functions-conditionals",
-    title: "Functions, Returns & Conditionals",
+    id: "functions-basics",
+    title: "Functions, Returns & Operators",
     shortDescription:
-      "Learn explicit vs implicit returns, and logical branch conditions.",
+      "Learn parameters, return values, arrow syntax, and logical operators.",
     longExplanation:
-      'Functions take inputs (parameters), do some calculations, and return a final value. Conditions like `if` and `else` let your application execute different directions of code depending on calculations.\n\n- **Explicit Return**: Always write the word `return` inside a standard function body. If you omit it, the function returns `undefined`!\n- **Strict Equality**: Always use `===` instead of `==`. The triple-equals verifies that both values are identical in value *and* data type.\n- **Truthy/Falsy**: Values like `0`, `""`, `null`, `undefined`, and `false` are naturally falsy. Almost everything else evaluates to truthy.',
-    codeSnippet: `function getStatus(score) {
-  if (score >= 100) {
-    return "Winner";
-  } else {
-    return "Active";
-  }
+      "Functions take inputs (parameters), do some calculations, and return a final value. Inside modern JavaScript, functions can be declared using the traditional function keyword or modern compact Arrow functions. You can also combine parameters using logical operators (like AND, OR, and NOT) to represent checks elegantly.\n\n- **Explicit Return**: Always write the word `return` inside a standard function body. If you omit it, the function returns `undefined`!\n- **Logical AND (`&&`)**: Checks if both conditions are true. If they are, it evaluates to true.\n- **Logical OR (`||`)**: Checks if at least one of the conditions is true. If yes, it evaluates to true.\n- **Logical NOT (`!`)**: Inverts any boolean value (e.g. `!true` is `false`).\n- **Arrow Functions**: Compact arrow syntax `() => ...` provides short, readable ways to declare functions.",
+    codeSnippet: `// Standard declaration with logical AND operator
+function isEligible(age, hasConsent) {
+  return age >= 18 && hasConsent;
 }
-console.log(getStatus(120)); // "Winner"`,
+
+// Compact Arrow function with implicit return
+const double = (num) => num * 2;
+
+console.log(isEligible(19, true)); // true
+console.log(double(10));           // 20`,
     exercises: [
       {
         id: "func-return",
@@ -235,6 +237,99 @@ console.log(getStatus(120)); // "Winner"`,
           { id: 2, input: [-4], expected: -8, description: "Doubles -4 to -8" },
         ],
       },
+      {
+        id: "func-arrow",
+        title: "Refactoring to Arrow Function",
+        difficulty: "Easy",
+        codeSnippet: `const multiply = (x, y) => x * y;`,
+        conceptContext:
+          "Arrow functions (`const fn = (param) => expression`) are a modern, high-speed way to declare functions in ES6. If you omit the curly braces, the calculated result is returned implicitly without the `return` keyword!",
+        description:
+          "Write an arrow function named `tripleValue` that takes a single number parameter and returns it multiplied by three. Use the ES6 arrow function syntax with implicit return (no curly braces and no `return` keyword).",
+        codeTemplate: `const tripleValue = `,
+        functionName: "tripleValue",
+        hints: [
+          "The arrow function should be structured as: const tripleValue = (num) => num * 3;",
+          "Ensure you do not write curly braces or the word return, so that ES6 returns it implicitly.",
+        ],
+        explanation:
+          "Implicit returns in short arrows eliminate function-call clutter and look highly professional in modern codebases.",
+        testCases: [
+          { id: 1, input: [10], expected: 30, description: "Triples 10 to 30" },
+          { id: 2, input: [-3], expected: -9, description: "Triples -3 to -9" },
+          { id: 3, input: [0], expected: 0, description: "Triples 0 to 0" },
+        ],
+      },
+      {
+        id: "func-logical-operators",
+        title: "Secure Access Passcode Gate",
+        difficulty: "Easy",
+        codeSnippet: `const canPass = (code, isAdmin) => code === 2026 || isAdmin;`,
+        conceptContext:
+          "Combine multiple rules inside your return statements using logical operators: `&&` (AND), `||` (OR), and `!` (NOT). This avoids complex nested `if` blocks and keeps your functions beautifully clean, returning simple true/false results.",
+        description:
+          "Write an arrow function `hasAccess(age, hasInvite, hasVipTicket)` that returns `true` if the person is an adult (age `18` or older) AND either has an invitation OR has a VIP ticket. Avoid using `if` or `else` statements — simply return the combined boolean expression containing your logical operators.",
+        codeTemplate: `function hasAccess(age, hasInvite, hasVipTicket) {
+  // Use logical operators (&&, ||) to check age and credentials together
+  
+}`,
+        functionName: "hasAccess",
+        hints: [
+          "Check if age is adult: age >= 18",
+          "Check credentials: hasInvite || hasVipTicket",
+          "Combine them together with AND: (age >= 18) && (hasInvite || hasVipTicket)",
+        ],
+        explanation:
+          "Short-circuiting boolean checking bypasses multi-layer execution logic, returning high-performance answers.",
+        testCases: [
+          {
+            id: 1,
+            input: [20, true, false],
+            expected: true,
+            description: "Adult with invite gets access",
+          },
+          {
+            id: 2,
+            input: [25, false, true],
+            expected: true,
+            description: "Adult with VIP ticket gets access",
+          },
+          {
+            id: 3,
+            input: [15, true, true],
+            expected: false,
+            description: "Underage with invite and VIP ticket is rejected",
+          },
+          {
+            id: 4,
+            input: [30, false, false],
+            expected: false,
+            description: "Adult without any credentials is rejected",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "conditionals-logic",
+    title: "Conditionals, Switch & Ternaries",
+    shortDescription:
+      "Master control structures: if-else, switch cases, and ternary operators.",
+    longExplanation:
+      "Conditions let your application execute different directions of code depending on calculations. Modern JavaScript uses standard if-else blocks, compact conditional (ternary) operators for fast state assignments, and switch statements to handle multiple concrete routes.\n\n- **If / Else**: Executes the first block if true, fallback block if false.\n- **Strict Equality (`===`)**: Always use `===` instead of `==`. The triple-equals verifies that both values are identical in value *and* data type.\n- **Ternary Operator (`? :`)**: A short inline if-else formula: `condition ? value_if_true : value_if_false`.\n- **Switch Case**: Matches an expression value against multiple case clauses.",
+    codeSnippet: `// Ternary assignment
+const message = isAdult ? "Adult" : "Minor";
+
+// Switch statement
+switch (command) {
+  case "START":
+    return "Running";
+  case "STOP":
+    return "Idle";
+  default:
+    return "Unknown";
+}`,
+    exercises: [
       {
         id: "cond-if",
         title: "Age Greeting Classifier",
@@ -309,6 +404,89 @@ console.log(getStatus(120)); // "Winner"`,
             expected: false,
             description:
               "Prevents string and integer false equivalence matches",
+          },
+        ],
+      },
+      {
+        id: "cond-ternary",
+        title: "Inline Ternary Operator",
+        difficulty: "Easy",
+        codeSnippet: `const state = count > 0 ? "Active" : "Empty";`,
+        conceptContext:
+          "The ternary operator (`condition ? val1 : val2`) is a concise way to pick between two outcomes. It is extensively used in modern frontend development (such as React rendering elements conditionally).",
+        description:
+          "Write a function `checkAccessCode(entered, correct)` that returns `'Access Granted'` if the entered code is exactly equal to the correct code, and `'Access Denied'` otherwise. You MUST use a single ternary operator inside your return statement.",
+        codeTemplate: `function checkAccessCode(entered, correct) {
+  // Return a single conditional (ternary) expression
+  
+}`,
+        functionName: "checkAccessCode",
+        hints: [
+          "Check equality: entered === correct",
+          "Synthesize with the ternary: return entered === correct ? 'Access Granted' : 'Access Denied';",
+        ],
+        explanation:
+          "Ternary shorthand reduces line nesting and keeps React state declarations neat.",
+        testCases: [
+          {
+            id: 1,
+            input: [2026, 2026],
+            expected: "Access Granted",
+            description: "Matching access codes grant entry",
+          },
+          {
+            id: 2,
+            input: [1234, 5678],
+            expected: "Access Denied",
+            description: "Mismatched access codes deny entry",
+          },
+        ],
+      },
+      {
+        id: "cond-switch",
+        title: "Action Dispatch Router",
+        difficulty: "Easy",
+        codeSnippet: `switch (action) {\n  case "PLAY": return "Playing";\n  default: return "Stopped";\n}`,
+        conceptContext:
+          "When dealing with multiple exact value comparisons (like menu options, action keys, or command logs), a nested structure of `if / else if` can look messy. A `switch` statement maps specific conditions to their corresponding results cleanly.",
+        description:
+          "Write a function `getSystemStatus(phase)` that takes a string of system states (`'INIT'`, `'RUNNING'`, `'PAUSED'`) and returns a translated feedback line:\\n- `'INIT'` returns `'System is starting up.'`\\n- `'RUNNING'` returns `'System is fully operational.'`\\n- `'PAUSED'` returns `'System is temporarily on hold.'`\\n- If it doesn't match any of these (default), it must return `'Unknown status.'`\\nUse a `switch` statement inside your function.",
+        codeTemplate: `function getSystemStatus(phase) {
+  // Implement a switch-case router for the 'phase' parameter
+  
+}`,
+        functionName: "getSystemStatus",
+        hints: [
+          "Use: switch (phase) { ... }",
+          "Provide distinct: case 'INIT': return 'System is starting up.';",
+          "Make sure to add: default: return 'Unknown status.';",
+        ],
+        explanation:
+          "Switch case actions map router events cleanly and avoid complex branch logic conditions.",
+        testCases: [
+          {
+            id: 1,
+            input: ["INIT"],
+            expected: "System is starting up.",
+            description: "INIT status maps correctly",
+          },
+          {
+            id: 2,
+            input: ["RUNNING"],
+            expected: "System is fully operational.",
+            description: "RUNNING status maps correctly",
+          },
+          {
+            id: 3,
+            input: ["PAUSED"],
+            expected: "System is temporarily on hold.",
+            description: "PAUSED status maps correctly",
+          },
+          {
+            id: 4,
+            input: ["UNKNOWN_XYZ"],
+            expected: "Unknown status.",
+            description: "Default status catches fallback cases",
           },
         ],
       },

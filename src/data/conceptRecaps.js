@@ -254,4 +254,34 @@ export const CONCEPT_RECAPS = {
       "⚠️ **Default Alphabetical Sorting**: Remember that in JavaScript, calling `.sort()` sorts items *alphabetically* by default! To sort intervals correctly by numbers, always pass a comparison function: `.sort((a, b) => a[0] - b[0])`.",
     ],
   },
+  "functions-basics": {
+    analogy:
+      "🥤 Think of a function like a specialized kitchen blender. You load ingredients (parameters), press a button (the call), and it hands you back a delicious smoothie (the return value). If you forget the return keyword inside standard curly boundaries, the ingredients blend in background memory but the blender stays sealed shut—meaning you receive an empty 'undefined' back!",
+    tldr: "Write clean, parameterized blocks of code using modern ES6 arrow shorthand and elegant logical short-circuits.",
+    keyTakeaways: [
+      "⚡ **The Arrow Shorthand**: Modern syntax of `(param) => value` allows you to define clean, compact functions without typing the word function.",
+      "📦 **Implicit Returns**: If you omit curly braces `{}` in an arrow function, the calculated expression is returned automatically.",
+      "🌉 **Logical Combinations**: Operators like `&&` (AND), `||` (OR), and `!` (NOT) help you chain requirements elegantly inside single return lines.",
+      "🛡️ **Parameter Default Fallbacks**: Protect your execution logic from crashing by initializing optional parameters (e.g., `(user = 'Guest') => ...`).",
+    ],
+    commonTraps: [
+      "⚠️ **Implicit Return Caveat**: If you write curly braces `{}` inside an arrow function (e.g. `const double = (x) => { x * 2 }`), ES6 disables implicit returns! You *must* write the `return` keyword, or erase the curly braces entirely.",
+      "⚠️ **Return Interrupts**: Remember that as soon as a `return` keyword is executed inside a function, all lines following it are completely ignored.",
+    ],
+  },
+  "conditionals-logic": {
+    analogy:
+      "🎛️ Think of control structures like a train track switch. A standard if-else guides the train down track A or fallback track B. A ternary operator is a fast mechanical switch for single-second assignments. A switch statement behaves like a train-depot turntable, instantly matching and rotating the tracks to line up with the exact station code.",
+    tldr: "Guide the direction of code execution based on dynamic checks using standard if-else branches, inline ternary shorthand, and structured switch-case statements.",
+    keyTakeaways: [
+      "🧱 **If-Else Splits**: Direct big blocks of divergent calculations using standard nested branching conditions.",
+      "🎟️ **The Ternary Switcher (? :)**: A highly concise shorthand (`check ? optionA : optionB`) that is perfect for conditional assignments in state variables and rendering trees.",
+      "🗃️ **Switch Case Routers**: Matches a single test value cleanly against multiple distinct labels without ugly, endless `else if` ladders.",
+      "⚖️ **Identity Rule (===)**: Always use modern strict equality to verify that comparing data types are identical, avoiding automatic browser coercion.",
+    ],
+    commonTraps: [
+      "⚠️ **The Forgotten Break**: Inside standard `switch` statements, if you don't use `return` or write a `break;` statement at the end of a cases branch, execution will 'fall through' and trigger the next case's calculations too!",
+      "⚠️ **Strict Type Checking**: A ternary check like `status === 1 ? 'OK' : 'Error'` will evaluate to 'Error' if your status variable is the string `'1'`, because comparison is type-strict!",
+    ],
+  },
 };

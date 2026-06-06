@@ -21,7 +21,8 @@ const CATEGORIES = [
         title: "Baseline Elements",
         concepts: [
           "variables-numbers",
-          "functions-conditionals",
+          "functions-basics",
+          "conditionals-logic",
           "strings-basics",
           "string-parsing",
           "optional-chaining-coalescing",
