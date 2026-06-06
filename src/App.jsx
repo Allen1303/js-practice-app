@@ -639,7 +639,11 @@ export default function App() {
 
   // Curriculum stats calculations
   const totalTopicsCount = sortedKnowledgeMapTopics.length;
-  const completedTopicsCount = Object.keys(completedTopics).filter(id => completedTopics[id]).length;
+  const completedTopicsCount = useMemo(() => {
+    return sortedKnowledgeMapTopics.filter(topic =>
+      !!completedTopics[topic.id] || !!solvedExercises[topic.relatedExerciseId]
+    ).length;
+  }, [sortedKnowledgeMapTopics, completedTopics, solvedExercises]);
   const completionRatePercent = totalTopicsCount > 0 ? Math.round((completedTopicsCount / totalTopicsCount) * 100) : 0;
 
   // Line wrapping logic for custom editor lines
