@@ -562,7 +562,7 @@ const inputsArray = Array.from(inputBlocks); // convert to standard array`,
     codeSnippet: `const mobileMenu = document.querySelector(".nav-menu");
 // Toggle open class:
 mobileMenu.classList.toggle("is-expanded");`,
-    relatedExerciseId: "ds-profile-updater",
+    relatedExerciseId: "foreach-dom-emulation",
   },
   {
     id: "km-dom-manipulation-attributes",
