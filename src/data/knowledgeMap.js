@@ -545,7 +545,7 @@ console.log(role); // "User"`,
     codeSnippet: `const submitBtn = document.querySelector("#submit");
 const inputBlocks = document.querySelectorAll(".text-field");
 const inputsArray = Array.from(inputBlocks); // convert to standard array`,
-    relatedExerciseId: "string-html-builder",
+    relatedExerciseId: null,
   },
   {
     id: "km-dom-elements-classlist",
@@ -562,7 +562,7 @@ const inputsArray = Array.from(inputBlocks); // convert to standard array`,
     codeSnippet: `const mobileMenu = document.querySelector(".nav-menu");
 // Toggle open class:
 mobileMenu.classList.toggle("is-expanded");`,
-    relatedExerciseId: "foreach-dom-emulation",
+    relatedExerciseId: null,
   },
   {
     id: "km-dom-manipulation-attributes",
@@ -579,7 +579,7 @@ mobileMenu.classList.toggle("is-expanded");`,
     codeSnippet: `const rowItem = document.querySelector(".profile-item");
 const rawUserId = rowItem.dataset.userId; // extracts data-user-id
 const parentWrapper = rowItem.closest(".parent-card"); // climbs parent tree`,
-    relatedExerciseId: "safe-path-crawler",
+    relatedExerciseId: null,
   },
 
   // 11. Promises & Asynchronous JS

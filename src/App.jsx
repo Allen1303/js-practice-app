@@ -785,7 +785,7 @@ export default function App() {
     return sortedKnowledgeMapTopics.filter(
       (topic) =>
         !!completedTopics[topic.id] ||
-        !!solvedExercises[topic.relatedExerciseId],
+        (topic.relatedExerciseId && !!solvedExercises[topic.relatedExerciseId]),
     ).length;
   }, [sortedKnowledgeMapTopics, completedTopics, solvedExercises]);
   const completionRatePercent =
